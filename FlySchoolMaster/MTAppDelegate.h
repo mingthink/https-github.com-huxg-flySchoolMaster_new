@@ -7,9 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface MTAppDelegate : UIResponder <UIApplicationDelegate>
+#import <AVFoundation/AVFoundation.h>
+#import "MTTabrViewController.h"
+@interface MTAppDelegate : UIResponder <UIApplicationDelegate,AVAudioPlayerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property(nonatomic,retain)MTTabrViewController *tab;
+-(void)changeroot;
 
 @end

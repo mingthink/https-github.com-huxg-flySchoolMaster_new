@@ -14,3 +14,34 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
 #endif
+#define SERVER @"http://172.16.1.1:91"
+//#define SERVER @"http://220.175.104.19:81"
+#define SERVER1 @"http://220.175.104.19:81"
+#define SERVER2 @"http://192.168.1.110:36"
+
+#define DEVW [[UIScreen mainScreen] bounds].size.width
+#define DEVH [[UIScreen mainScreen] bounds].size.height
+
+#define GATEWAY_DELAYER 30
+
+#define IS_IPHONE_5 ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )568 ) < DBL_EPSILON )
+#define IS_IPHONE_6 [[[UIDevice currentDevice] systemVersion] floatValue] >= 6
+#define IS_IPHONE_7 [[[UIDevice currentDevice] systemVersion] floatValue] >= 7
+#define DATA(X)	[X dataUsingEncoding:NSUTF8StringEncoding]
+#define DocumentsPath [NSHomeDirectory() stringByAppendingString:@"/Docunents/"]
+
+#define ItemTag 1000
+#define ImageTag 2000
+#define dialogTag 888888
+
+#define PageSize 10
+#define kPageSize @"10"
+
+#define kSchoolPageSize @"30"
+#define SchoolPageSize 30
+
+#define kMessage @"请检查网络连接"
+#define EMessage @"数据已完全加载"
+#define NAME @"NEWUSER6"
+#define DBName @"NewUser.sqlite"
+
