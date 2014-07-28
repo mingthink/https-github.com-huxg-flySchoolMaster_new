@@ -12,6 +12,7 @@
 #import "FuncPublic.h"
 #import "SVHTTPRequest.h"
 #import "WToast.h"
+#import "MTWebView.h"
 @interface MTZiYuanViewController ()
 {
     CGPoint startPoint;
@@ -22,6 +23,7 @@
     NSMutableArray *delebutarr;
     UIView *backview;
     UIView *doneview;
+    UILabel *labels;
 
 }
 @end
@@ -39,21 +41,42 @@
 
 - (void)viewDidLoad
 {
+    //此界面为功能列表模式
+
     [super viewDidLoad];
-    NSLog(@"chaunguol数据%@",self.MouDic);
+    
+    //当模块改变时监听通知
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(notihandel:) name:@"chageindex" object:nil];
+    
+    //自定义导航条视图
     UIView *vi = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVW, 60)];
     vi.backgroundColor = [UIColor darkGrayColor];
-    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(120, 10, 100, 40)];
-    label.text = [_MouDic objectForKey:@"name"];
-    [vi addSubview:label];
+    labels = [[UILabel alloc]initWithFrame:CGRectMake(120, 10, 100, 40)];
+   
+    [vi addSubview:labels];
     [self.view addSubview:vi];
+    
+    
+    
+    
     [self handeldata];
+    
     // Do any additional setup after loading the view from its nib.
+}
+-(void)notihandel:(NSNotification *)no
+{
+    NSLog(@"收到通知......");
+    self.MouDic = no.object;
+    //  NSLog(@"收到的字典长度:%d")
+    [self handeldata];
 }
 -(void)handeldata
 {
     [[MyDbHandel defaultDBManager]openDb:DBName];
     NSArray *arr = [_MouDic objectForKey:@"functions"];
+   
+    NSString *mouname = [_MouDic objectForKey:@"name"];
+   
     NSMutableArray *insarr = [NSMutableArray array];
     for(int i =0;i<arr.count;i++)
     {
@@ -66,7 +89,8 @@
         [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"param"]];
         [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"status"]];
         [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"ver"]];
-        [insarr addObject:[NSNumber numberWithInt:2]];
+        [insarr addObject:mouname];
+       // [insarr addObject:[NSNumber numberWithInt:2]];
         /*
          //                         NSArray *insarr = [NSArray arrayWithObjects:[[arr objectAtIndex:i]objectForKey:@"createDatetime"],[[arr objectAtIndex:i]objectForKey:@"id"],[[arr objectAtIndex:i]objectForKey:@"moduleFlag"],[[arr objectAtIndex:i]objectForKey:@"moduleImage"], [[arr objectAtIndex:i]objectForKey:@"moduleName"], [[arr objectAtIndex:i]objectForKey:@"moduleUrl"], [[[arr objectAtIndex:i]objectForKey:@"sortNumber"]integerValue], [[arr objectAtIndex:i]objectForKey:@"status"],nil];
          //                         */
@@ -87,6 +111,8 @@
 }
 -(void)DrawUI
 {
+     NSString *mouname = [_MouDic objectForKey:@"name"];
+     labels.text = [_MouDic objectForKey:@"name"];
     itemarr = [NSMutableArray array];
     delebutarr = [NSMutableArray array];
     
@@ -100,7 +126,7 @@
     
     
     
-    NSString *sql = [NSString stringWithFormat:@"select * from %@ where mounum = 2 order by num asc ",NAME];
+    NSString *sql = [NSString stringWithFormat:@"select * from %@ where mouname = '%@' order by num asc ",NAME,mouname];
     NSArray *arrr = [[MyDbHandel defaultDBManager]select:sql];
     
     NSMutableArray *mutaarr = [NSMutableArray array];
@@ -185,6 +211,7 @@
 #pragma mark -longpress action
 - (void)buttonLongPressed:(UILongPressGestureRecognizer *)sender
 {
+    NSString *mouname = [_MouDic objectForKey:@"name"];
     UIView *btn = (UIView *)sender.view;
     
     // NSLog(@"change view tag = %d",sender.view.tag);
@@ -258,15 +285,15 @@
                 doneview.hidden = NO;
                 [[MyDbHandel defaultDBManager]openDb:DBName];
                // [self creatdatabase];
-                NSString *sql = [NSString stringWithFormat:@"update %@ set num=%d where num = %d and  mounum = 2",NAME,0,btn.tag];
+                NSString *sql = [NSString stringWithFormat:@"update %@ set num=%d where num = %d and  mouname = '%@'",NAME,0,btn.tag,mouname];
                 [[MyDbHandel defaultDBManager]updata:sql];
               //  [self creatdatabase];
                  [[MyDbHandel defaultDBManager]openDb:DBName];
-                NSString *sql1 = [NSString stringWithFormat:@"update %@ set num =%d where num = %d and  mounum = 2",NAME,btn.tag,index+1];
+                NSString *sql1 = [NSString stringWithFormat:@"update %@ set num =%d where num = %d and  mouname = '%@'",NAME,btn.tag,index+1,mouname];
                 [[MyDbHandel defaultDBManager]updata:sql1];
               //  [self creatdatabase];
                  [[MyDbHandel defaultDBManager]openDb:DBName];
-                NSString *sql2 = [NSString stringWithFormat:@"update %@ set num =%d where num = %d and  mounum = 2",NAME,index+1,0];
+                NSString *sql2 = [NSString stringWithFormat:@"update %@ set num =%d where num = %d and  mouname = '%@'",NAME,index+1,0,mouname];
                 [[MyDbHandel defaultDBManager]updata:sql2];
                 [self performSelector:@selector(DrawUI) withObject:nil afterDelay:.7];
                 [self performSelector:@selector(missview:) withObject:doneview afterDelay:2.4];
@@ -296,6 +323,7 @@
 //button点击动作
 -(void)selectitem:(UIButton *)btm
 {
+    NSString *mouname = [_MouDic objectForKey:@"name"];
     if(shake)
     {
         //  shake = NO;
@@ -306,15 +334,28 @@
         }
         return;
     }
+    [[MyDbHandel defaultDBManager]openDb:DBName];
+    NSString *sql = [NSString stringWithFormat:@"select * from %@ where num = %d and  mouname = '%@'",NAME,btm.tag,mouname];
+    
+    MTMudelDaTa *data =  [[[MyDbHandel defaultDBManager]select:sql]objectAtIndex:0];
+    if([data.mode isEqualToString:@"webview"])
+    {
+        MTWebView *webv = [[MTWebView alloc]init];
+        webv.urlstr = data.param;
+        webv.titlestr = data.name;
+        [self.navigationController pushViewController:webv animated:NO];
+    }
+    
 }
 //删除某个功能操作
 -(void)deletebtn:(UIButton *)btn
 {
+    NSString *mouname = [_MouDic objectForKey:@"name"];
     // NSLog(@"删除的编号:%d",btn.tag-1001);
     //  [self EndWobble];
    // [self creatdatabase];
     [[MyDbHandel defaultDBManager]openDb:DBName];
-    NSString *sql = [NSString stringWithFormat:@"update %@ set status = '0' where num=%d and  mounum = 2",NAME,btn.tag-1001];
+    NSString *sql = [NSString stringWithFormat:@"update %@ set status = '0' where num=%d and  mouname ='%@'",NAME,btn.tag-1001,mouname];
     [[MyDbHandel defaultDBManager]updata:sql];
     doneview.hidden = NO;
     [self performSelector:@selector(missview:) withObject:doneview afterDelay:2.4];
@@ -323,8 +364,9 @@
 //保存当前设置并上传至服务器
 -(void)chagejson
 {
+    NSString *mouname = [_MouDic objectForKey:@"name"];
     doneview.hidden = YES;
-    NSString *sql = [NSString stringWithFormat:@"select * from %@ where mounum = 2 order by num asc ",NAME];
+    NSString *sql = [NSString stringWithFormat:@"select * from %@ where mouname = '%@' order by num asc ",NAME,mouname];
     NSString *upstr = [[MyDbHandel defaultDBManager]jsonwrite:sql];
     // NSLog(@"上传的str：------%@",upstr);
     //  doneview.hidden = YES;
@@ -335,7 +377,7 @@
     [dic setObject:[FuncPublic emptyStr:upstr] forKey:@"data"];
     [dic setObject:@"saveModule" forKey:@"action"];
     [SVHTTPRequest POST:@"/action/test.ashx" parameters:dic completion:^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
-        NSLog(@"come request.....%@",response);
+       
         if(error!=nil)
         {
             [WToast showWithText:kMessage];

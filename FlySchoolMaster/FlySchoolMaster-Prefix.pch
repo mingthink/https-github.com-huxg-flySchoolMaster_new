@@ -42,6 +42,6 @@
 
 #define kMessage @"请检查网络连接"
 #define EMessage @"数据已完全加载"
-#define NAME @"NEWUSER6"
+#define NAME @"NEWUSER8"
 #define DBName @"NewUser.sqlite"
 

@@ -20,6 +20,7 @@
 #import "MTFuncListView.h"
 #import "MTWebView.h"
 #import "MTBulitinView.h"
+#import "MyDbHandel.h"
 @interface MTTabrViewController ()
 {
     UIImageView *selectimage;
@@ -47,23 +48,24 @@
     [super viewDidLoad];
     mainv = [[MTMainViewController alloc]init];
     [self getdata];
-       // [self getvision];
-
-
+    // [self getvision];
+    
+    
     // Do any additional setup after loading the view from its nib.
 }
 //从接口获取功能数据
 -(void)getdata
 {
-   
+    
     NSString *fiel = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)objectAtIndex:0];
-    NSString *fielpath = [fiel stringByAppendingString:@"/FileDocuments/NuserINFo.txt"];
+    NSString *fielpath = [fiel stringByAppendingString:@"/FileDocuments/NewUser.txt"];
     NSDictionary * ddict = [[NSDictionary alloc]initWithContentsOfFile:fielpath];
+    NSLog(@"功能整体数据:%@",ddict);
     MAAry = [ddict objectForKey:@"data"];
-//   // NSLog(@"本地存储数据%@",dict);
+    
     if(MAAry!=NULL)
     {
-       
+        
         [self layoutMoudel:MAAry];
         return;
     }
@@ -72,16 +74,17 @@
     [SVHTTPRequest GET:@"/api/module/getModule.html" parameters:dic
             completion:^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
                 
-              //  NSLog(@"返回数据%@",response);
-                [ FuncPublic saveDataToLocal:response toFileName:@"NuserINFo.txt"];
+                //  NSLog(@"返回数据%@",response);
+                [ FuncPublic saveDataToLocal:response toFileName:@"NuserINFoo.txt"];
                 NSArray *arrar = [response objectForKey:@"data"];
                 [self layoutMoudel:arrar];
                 MAAry = [response objectForKey:@"data"];
+                [[MyDbHandel defaultDBManager]openDb:DBName];
+                NSString *sql = [NSString stringWithFormat:@"drop table %@",NAME];
+                [[MyDbHandel defaultDBManager]creatTab:sql];
                 
-               // NSLog(@"返回数据%@",[[response objectForKey:@"data"]objectForKey:@"Modules"]);
-              //  NSLog(@"第一块功能数据:%@",[[[response objectForKey:@"data"]objectForKey:@"Modules"]objectAtIndex:0]);
-       
-    }];
+                
+            }];
 }
 -(void)layoutMoudel:(NSArray *)Marry
 {
@@ -95,19 +98,20 @@
     selectimage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, wid, 50)];
     selectimage.image = [UIImage imageNamed:@"weibo_detail_buttombar_itembg_on"];
     [image addSubview:selectimage];
-
+    
     //tabbar自动配置
     for(int i =0;i<Marry.count;i++)
     {
         int num = [[[Marry objectAtIndex:i]objectForKey:@"num"]integerValue];
         
-        UIImageView *imag = [[UIImageView alloc]initWithFrame:CGRectMake(wid*(num-1)+20, 5, 40, 20)];
+        UIImageView *imag = [[UIImageView alloc]initWithFrame:CGRectMake(wid*(num-1), 5, wid, 20)];
         imag.contentMode = UIViewContentModeScaleAspectFit;
         imag.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@",[[Marry objectAtIndex:i]objectForKey:@"icon"]]];
         [image addSubview:imag];
         
-        UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(wid*(num-1)+20, 25, 40, 25)];
+        UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(wid*(num-1), 25, wid, 25)];
         label.text = [NSString stringWithFormat:@"%@",[[Marry objectAtIndex:i]objectForKey:@"name"]];
+        label.textAlignment = 1;
         [image addSubview:label];
         
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -117,64 +121,38 @@
         
         [image addSubview:btn];
     }
-
-  //主功能模块配置
-    MTAdAndFuncView *AdvFun = [[MTAdAndFuncView alloc]init];
-    MTFuncListView *Funlist = [[MTFuncListView alloc]init];
-    MTWebView *Webview = [[MTWebView alloc]init];
-    MTBulitinView *Bulitin = [[MTBulitinView alloc]init];
-    for(int i=0;i<Marry.count;i++)
-    {
-        NSString *mode = [[Marry objectAtIndex:i]objectForKey:@"mode"];
-        if([mode isEqualToString:@"adAndFunctionList"])
-        {
-            AdvFun.MoudelDic = [Marry objectAtIndex:i];
-        }
-        if([mode isEqualToString:@"functionList"])
-        {
-             Funlist.MoudelDic = [Marry objectAtIndex:i];
-        }
-        if([mode isEqualToString:@"webview"])
-        {
-             Webview.MoudelDic = [Marry objectAtIndex:i];
-        }
-        if([mode isEqualToString:@"builtin"])
-        {
-             Bulitin.MoudelDic = [Marry objectAtIndex:i];
-        }
-    }
-  //  self.viewControllers = [NSArray arrayWithObjects:AdvFun,Funlist,Webview,Bulitin, nil];
-    //AdvFunCClass
-   // MTMainViewController *mainview = [[MTMainViewController alloc]init];
+    
+    //主功能模块配置
+    
     mainv.Mudic = [Marry objectAtIndex:0];
     self.nav = [[UINavigationController alloc]initWithRootViewController:mainv];
+    
+    
     //FuncListclass
     MTZiYuanViewController  *ziyuanview = [[MTZiYuanViewController alloc]init];
     UINavigationController *nav = [[UINavigationController alloc]initWithRootViewController:ziyuanview];
-  //  ziyuanview.MouDic = [Marry objectAtIndex:1];
-   // ziyuanview.timr = @"tabar";
+    
     //WebviewClass
     MTWebView *searchview = [[MTWebView alloc]init];
-   // searchview.MoudelDic = [Marry objectAtIndex:2];
     UINavigationController *nav1 = [[UINavigationController alloc]initWithRootViewController:searchview];
-  //  searchview.backbutton.hidden = YES;
-  //  searchview.time = @"tabar";
+    
+    
     //BulitinClass
     MTSetViewController *setview = [[MTSetViewController alloc]init];
     UINavigationController *nav3 = [[UINavigationController alloc]initWithRootViewController:setview];
-   // self.viewControllers = [NSArray arrayWithObject:self.nav,ziyuanview];
+    // self.viewControllers = [NSArray arrayWithObject:self.nav,ziyuanview];
     self.viewControllers = [NSArray arrayWithObjects:self.nav, nil];
     commenmoud = [NSArray arrayWithObjects:self.nav,nav,nav1,nav3, nil];
-//    //
     
-//    NSArray *arr = [NSArray arrayWithObjects:@"main_home.png",@"main_source.png",@"main_search.png",@"main_setting.png", nil];
-//    NSArray *titlearr = [NSArray arrayWithObjects:@"主页",@"资源",@"查询",@"设置", nil];
+    
+    //    NSArray *arr = [NSArray arrayWithObjects:@"main_home.png",@"main_source.png",@"main_search.png",@"main_setting.png", nil];
+    //    NSArray *titlearr = [NSArray arrayWithObjects:@"主页",@"资源",@"查询",@"设置", nil];
     
 }
 -(void)getvision
 {
     NSDictionary *dic = [FuncPublic GetDefaultInfo:@"APPVersion"] ;
-    // NSLog(@"----版本信息是:%@",dic);
+    
     if (dic !=nil && ![[dic objectForKey:@"versionCode"] isEqualToString:@"1"]) {
         //更新版本
         updateurl = [dic objectForKey:@"file"];
@@ -189,56 +167,46 @@
 
 -(void)btnclick:(UIButton *)sendre
 {
-    NSLog(@"进入选择点击.....");
+    
     NSDictionary *modic = [MAAry objectAtIndex:sendre.tag];
     NSString *mode = [modic objectForKey:@"mode"];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"chageindex" object:modic];
+    //先判断模块的模式，选择相应模式进入
     if([mode isEqualToString:@"adAndFunctionList"])
     {
-      //  MTMainViewController *main = [[MTMainViewController alloc]init];
-        [[NSNotificationCenter defaultCenter]postNotificationName:@"chageindex" object:modic];
-       // mainv.Mudic = modic;
+        
+        
         UINavigationController *nav = (UINavigationController *)[commenmoud objectAtIndex:0];
+        [nav popToRootViewControllerAnimated:NO];
         self.viewControllers = [NSArray arrayWithObject:nav];
     }
     if([mode isEqualToString:@"functionList"])
     {
-        MTZiYuanViewController  *ziyuanview = [[MTZiYuanViewController alloc]init];
-         ziyuanview.MouDic = modic;
+        
         UINavigationController *nav = (UINavigationController *)[commenmoud objectAtIndex:1];
+        nav.navigationBarHidden = YES;
+        [nav popToRootViewControllerAnimated:NO];
+        MTZiYuanViewController  *ziyuanview = nav.viewControllers[0];
+        ziyuanview.MouDic = modic;
         self.viewControllers = [NSArray arrayWithObject:nav];
     }
     if([mode isEqualToString:@"webview"])
     {
         UINavigationController *nav = (UINavigationController *)[commenmoud objectAtIndex:2];
+        nav.navigationBarHidden = YES;
+        [nav popToRootViewControllerAnimated:NO];
         self.viewControllers = [NSArray arrayWithObject:nav];
     }
     if([mode isEqualToString:@"builtin"])
     {
         UINavigationController *nav = (UINavigationController *)[commenmoud objectAtIndex:3];
+        nav.navigationBarHidden = YES;
+        
         self.viewControllers = [NSArray arrayWithObject:nav];
     }
-
-    
-   // MTZiYuanViewController  *ziyuanview = [[MTZiYuanViewController alloc]init];
-   // ziyuanview.MouDic = [Marry objectAtIndex:1];
-    // ziyuanview.timr = @"tabar";
-  //  MTWebView *searchview = [[MTWebView alloc]init];
-   // searchview.MoudelDic = [Marry objectAtIndex:2];
-   // UINavigationController *nav1 = [[UINavigationController alloc]initWithRootViewController:searchview];
-    //  searchview.backbutton.hidden = YES;
-    //  searchview.time = @"tabar";
-  //  MTSetViewController *setview = [[MTSetViewController alloc]init];
-  //  UINavigationController *nav3 = [[UINavigationController alloc]initWithRootViewController:setview];
     int wid = DEVW/MAAry.count;
     selectimage.frame =CGRectMake(sendre.tag*wid, 0, wid, 50);
-   // self.selectedIndex = sendre.tag;
-   // self.viewControllers = [NSArray arrayWithObject:searchview];
-//    if(sendre.tag==2)
-//    {
-//        MTGKZSViewController *zsview = [[MTGKZSViewController alloc]init];
-//        zsview.backbutton.hidden = YES;
-//        [self.navigationController pushViewController:zsview animated:NO];
-//    }
+    
 }
 - (void)didReceiveMemoryWarning
 {
