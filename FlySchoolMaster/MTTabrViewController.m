@@ -21,6 +21,7 @@
 #import "MTWebView.h"
 #import "MTBulitinView.h"
 #import "MyDbHandel.h"
+#import "MTStrToColor.h"
 @interface MTTabrViewController ()
 {
     UIImageView *selectimage;
@@ -46,6 +47,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    MAAry = [NSArray array];
     mainv = [[MTMainViewController alloc]init];
     [self getdata];
     // [self getvision];
@@ -58,45 +60,86 @@
 {
     
     NSString *fiel = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)objectAtIndex:0];
-    NSString *fielpath = [fiel stringByAppendingString:@"/FileDocuments/NewUser.txt"];
+    NSString *fielpath = [fiel stringByAppendingString:[NSString stringWithFormat:@"/FileDocuments/%@",CachePath]];
     NSDictionary * ddict = [[NSDictionary alloc]initWithContentsOfFile:fielpath];
-    NSLog(@"功能整体数据:%@",ddict);
+    //  NSLog(@"真机上的路径:%@",fielpath);
+    //  NSLog(@"功能整体数据:%@",ddict);
     MAAry = [ddict objectForKey:@"data"];
+   
     
     if(MAAry!=NULL)
     {
-        
+       // NSLog(@"进入缓存数据........");
         [self layoutMoudel:MAAry];
-        return;
+        
+        //return;
     }
-    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-    [dic setObject:[FuncPublic createUUID] forKey:@"r"];
-    [SVHTTPRequest GET:@"/api/module/getModule.html" parameters:dic
-            completion:^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
-                
-                //  NSLog(@"返回数据%@",response);
-                [ FuncPublic saveDataToLocal:response toFileName:@"NuserINFoo.txt"];
-                NSArray *arrar = [response objectForKey:@"data"];
-                [self layoutMoudel:arrar];
-                MAAry = [response objectForKey:@"data"];
-                [[MyDbHandel defaultDBManager]openDb:DBName];
-                NSString *sql = [NSString stringWithFormat:@"drop table %@",NAME];
-                [[MyDbHandel defaultDBManager]creatTab:sql];
-                
-                
-            }];
+    else
+    {
+        // NSLog(@"进入网络请求.......");
+        NSDictionary *dicc = [FuncPublic GetDefaultInfo:@"Newuser"];
+        NSString *uuid = [dicc objectForKey:@"rid"];
+        NSString *ridd = [dicc objectForKey:@"id"];
+        NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+        [dic setObject:[FuncPublic createUUID] forKey:@"r"];
+        [dic setObject:uuid forKey:@"rid"];
+        [dic setObject:ridd forKey:@"uid"];
+        
+        [SVHTTPRequest GET:@"/api/module/getModule.html" parameters:dic
+                completion:^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
+                    
+                    if(error!=nil)
+                    {
+                        [WToast showWithText:kMessage];
+                        return;
+                    }
+                    else if([[response objectForKey:@"status"]isEqualToString:@"true"])
+                    {
+                        // NSLog(@"返回的数据信息:%@",response);
+                        [ FuncPublic saveDataToLocal:response toFileName:CachePath];
+                        NSArray *arrar = [response objectForKey:@"data"];
+                        [self layoutMoudel:arrar];
+                        MAAry = [response objectForKey:@"data"];
+                        
+                        [[MyDbHandel defaultDBManager]openDb:DBName];
+                        NSString *sql = [NSString stringWithFormat:@"drop table  if  EXISTS %@",NAME];
+                        [[MyDbHandel defaultDBManager]creatTab:sql];
+                        //同时将数据通过粘贴板共享出去
+                        UIPasteboard *pd = [UIPasteboard pasteboardWithName:SharedData create:YES];
+                        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:response];
+                        [pd setData:data forPasteboardType:@"userinfo"];
+                    }
+                    
+                    
+                }];
+    }
 }
 -(void)layoutMoudel:(NSArray *)Marry
 {
-    
+    NSString *fiel = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)objectAtIndex:0];
+    NSString *fielpath = [fiel stringByAppendingString:[NSString stringWithFormat:@"/FileDocuments/%@",PaGeCtrlCache]];
+    NSFileManager *FM = [NSFileManager defaultManager];
+    //如果颜色配置缓存数据没有，则去请求数据
+    if(![FM fileExistsAtPath:fielpath isDirectory:NO])
+    {
+        
+    }
+    NSDictionary * ddict = [[NSDictionary alloc]initWithContentsOfFile:fielpath];
+    NSDictionary *dicc = [[ddict objectForKey:@"data"]objectForKey:@"background"];
+    //   NSLog(@"传入的数据:%d",Marry.count);
     self.tabBar.hidden = YES;
     UIImageView *image = [[UIImageView alloc]initWithFrame:CGRectMake(0, DEVH-50, DEVW, 50)];
-    image.image = [UIImage imageNamed:@"title_bar_bg_blue.png"];
+    NSString *barimage = [dicc objectForKey:@"moduleBg"];
+    NSString *barseleimg = [dicc objectForKey:@"selectedBg"];
+    image.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@_640",barimage]];
     image.userInteractionEnabled = YES;
     [self.view addSubview:image];
     int wid = DEVW/Marry.count;
     selectimage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, wid, 50)];
-    selectimage.image = [UIImage imageNamed:@"weibo_detail_buttombar_itembg_on"];
+    // UIColor *col = [UIColor c]
+    UIColor *colr = [MTStrToColor hexStringToColor:barseleimg];
+    selectimage.backgroundColor = colr;
+    // selectimage.image = [UIImage imageNamed:barseleimg];
     [image addSubview:selectimage];
     
     //tabbar自动配置
@@ -167,7 +210,7 @@
 
 -(void)btnclick:(UIButton *)sendre
 {
-    
+   // NSLog(@"come this clicked........");
     NSDictionary *modic = [MAAry objectAtIndex:sendre.tag];
     NSString *mode = [modic objectForKey:@"mode"];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"chageindex" object:modic];
@@ -178,6 +221,8 @@
         
         UINavigationController *nav = (UINavigationController *)[commenmoud objectAtIndex:0];
         [nav popToRootViewControllerAnimated:NO];
+        MTMainViewController *main = nav.viewControllers[0];
+        main.Mudic = modic;
         self.viewControllers = [NSArray arrayWithObject:nav];
     }
     if([mode isEqualToString:@"functionList"])
@@ -188,6 +233,7 @@
         [nav popToRootViewControllerAnimated:NO];
         MTZiYuanViewController  *ziyuanview = nav.viewControllers[0];
         ziyuanview.MouDic = modic;
+       // NSLog(@"传过去的字典数据:H%@",ziyuanview.MouDic);
         self.viewControllers = [NSArray arrayWithObject:nav];
     }
     if([mode isEqualToString:@"webview"])
@@ -195,6 +241,9 @@
         UINavigationController *nav = (UINavigationController *)[commenmoud objectAtIndex:2];
         nav.navigationBarHidden = YES;
         [nav popToRootViewControllerAnimated:NO];
+        MTWebView *web = nav.viewControllers[0];
+        web.MoudelDic = modic;
+        web.isroot = YES;
         self.viewControllers = [NSArray arrayWithObject:nav];
     }
     if([mode isEqualToString:@"builtin"])

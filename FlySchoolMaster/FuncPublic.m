@@ -9,7 +9,8 @@
 #import "FuncPublic.h" 
 #import "MTAppDelegate.h"
 #import <CommonCrypto/CommonDigest.h>
-
+#import "MTPageModel.h"
+#import "MTStrToColor.h"
 FuncPublic * _funcPublic    =   nil;
 @implementation FuncPublic
 @synthesize spin;
@@ -731,5 +732,33 @@ FuncPublic * _funcPublic    =   nil;
     
     boxView.frame = CGRectMake(20,(DEVH-labelsize.height-80)/2, 280, labelsize.height+80);
 } 
-
++(void)InstanceNavgationBar:(NSString *)title action:(SEL)action superclass:(UIViewController *)controll isroot:(BOOL)isroot
+{
+    MTPageModel *page = [MTPageModel getPageModel];
+    
+    NSString *colostr = [page.backgroud objectForKey:@"titleBg"];
+    
+    UIColor *colr = [MTStrToColor hexStringToColor:colostr];
+    UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVW, 60)];
+    UIImageView *image = [[UIImageView alloc]initWithFrame:v.bounds];
+   // image.image = [UIImage imageNamed:@"title_bar_bg_blue"];
+    image.backgroundColor = colr;
+    UILabel *lebl = [[UILabel alloc]initWithFrame:v.bounds];
+    lebl.text = title;
+    lebl.textAlignment = 1;
+    
+    lebl.textColor = [UIColor whiteColor];
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn.frame = CGRectMake(10, 10, 60, 40);
+    [btn setTitle:@"返回" forState:UIControlStateNormal];
+    [btn addTarget:controll action:action forControlEvents:UIControlEventTouchUpInside];
+    
+    [controll.view addSubview:v];
+    [v addSubview:image];
+    [v addSubview:lebl];
+    [v addSubview:btn];
+    if(isroot)
+        btn.hidden = YES;
+    
+}
 @end

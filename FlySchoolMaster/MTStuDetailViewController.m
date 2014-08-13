@@ -41,7 +41,7 @@
 {
     UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 64, 320, 39)];
     v.backgroundColor = [UIColor grayColor];
-   // v.backgroundColor = [UIColor colorWithRed:0 green:205. blue:55. alpha:1];
+    // v.backgroundColor = [UIColor colorWithRed:0 green:205. blue:55. alpha:1];
     [self.view addSubview:v];
     UIImageView *image = [[UIImageView alloc]initWithFrame:CGRectMake(0, 64, 160, 40)];
     image.image = [UIImage imageNamed:@"未标题-26.png"];
@@ -58,7 +58,7 @@
         [self.view addSubview:btn];
     }
     scro = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 104, 320, DEVH-50-104)];
-   // scro.backgroundColor = [UIColor redColor];
+    // scro.backgroundColor = [UIColor redColor];
     scro.contentSize = CGSizeMake(320, (DEVH-50-104)*2.2);
     [self.view addSubview:scro];
     
@@ -68,7 +68,7 @@
     backscro1 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, scro.contentSize.height)];
     [scro addSubview:backscro1];
     backscro1.hidden = YES;
-  //边框图片
+    //边框图片
     UIImageView *ima = [[UIImageView alloc]initWithFrame:CGRectMake(10, 0, 300, 80)];
     ima.image = [UIImage imageNamed:@"未标题-33.png"];
     [backscro addSubview:ima];
@@ -123,8 +123,8 @@
     
     zonghLb = [FuncPublic InstanceLabel:nil RECT:CGRectMake(0, 120, 200, 39) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:ima2 Lines:1 TAG:1 Ailgnment:2];
     zonghsc = [FuncPublic InstanceLabel:nil RECT:CGRectMake(200, 120, 80, 39) FontName:nil Red:255. green:0 blue:0 FontSize:18 Target:ima2 Lines:1 TAG:1 Ailgnment:3];
-
-//边框图片4
+    
+    //边框图片4
     [FuncPublic InstanceLabel:@"以下成绩只有部分考生有：" RECT:CGRectMake(10,445,300,30) FontName:nil Red:0 green:0 blue:0 FontSize:19 Target:backscro Lines:1 TAG:1 Ailgnment:1];
     UIImageView *ima3 = [[UIImageView alloc]initWithFrame:CGRectMake(10, 475, 300, 160)];
     ima3.image = [UIImage imageNamed:@"未标题-33.png"];
@@ -134,13 +134,13 @@
         [FuncPublic InstanceImageView:@"未标题-31" Ect:@"png" RECT:CGRectMake(0, 39+40*i, 300, 1) Target:ima3 TAG:1];
         
     }
-TongYJs = [FuncPublic InstanceLabel:nil RECT:CGRectMake(0, 0, 200, 39) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:ima3 Lines:1 TAG:1 Ailgnment:2];
+    TongYJs = [FuncPublic InstanceLabel:nil RECT:CGRectMake(0, 0, 200, 39) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:ima3 Lines:1 TAG:1 Ailgnment:2];
     tongyjssc = [FuncPublic InstanceLabel:nil RECT:CGRectMake(200, 0, 80, 39) FontName:nil Red:255. green:0 blue:0 FontSize:18 Target:ima3 Lines:1 TAG:1 Ailgnment:3];
     
     RuWLB = [FuncPublic InstanceLabel:nil RECT:CGRectMake(0, 40, 300, 39) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:ima3 Lines:1 TAG:1 Ailgnment:2];
     ruwsc = [FuncPublic InstanceLabel:nil RECT:CGRectMake(200, 40, 80, 39) FontName:nil Red:255. green:0 blue:0 FontSize:18 Target:ima3 Lines:1 TAG:1 Ailgnment:3];
-
-JiafenLb = [FuncPublic InstanceLabel:nil RECT:CGRectMake(0, 80, 300, 39) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:ima3 Lines:1 TAG:1 Ailgnment:2];
+    
+    JiafenLb = [FuncPublic InstanceLabel:nil RECT:CGRectMake(0, 80, 300, 39) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:ima3 Lines:1 TAG:1 Ailgnment:2];
     jiafensc = [FuncPublic InstanceLabel:nil RECT:CGRectMake(200, 80, 80, 39) FontName:nil Red:255. green:0 blue:0 FontSize:18 Target:ima3 Lines:1 TAG:1 Ailgnment:3];
     
     WeiJLB = [FuncPublic InstanceLabel:nil RECT:CGRectMake(0, 120, 300, 39) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:ima3 Lines:1 TAG:1 Ailgnment:2];
@@ -150,18 +150,18 @@ JiafenLb = [FuncPublic InstanceLabel:nil RECT:CGRectMake(0, 80, 300, 39) FontNam
     [FuncPublic InstanceLabel:@"考生成绩及排名以江西省教育考试院正式通知为准，本软件数据仅供参考" RECT:CGRectMake(10,685,300,50) FontName:nil Red:255. green:0 blue:0 FontSize:15 Target:backscro Lines:2 TAG:1 Ailgnment:2];
     //录取情况UI
     //UIImageView *backiii = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, backscro1.frame.size.height)];
-   // backiii.image = [UIImage imageNamed:@"未标题-36.png"];
-   // [backscro1 addSubview:backiii];
+    // backiii.image = [UIImage imageNamed:@"未标题-36.png"];
+    // [backscro1 addSubview:backiii];
     [FuncPublic InstanceImageView:@"未标题-36" Ect:@"jpg" RECT:CGRectMake(0, 0, 320, scro.contentSize.height) Target:backscro1 TAG:1];
-   // [FuncPublic InstanceImageView:@"未标题-37" Ect:@"png" RECT:CGRectMake(0, 0, 320, scro.contentSize.height) Target:backscro1 TAG:1];
-
+    // [FuncPublic InstanceImageView:@"未标题-37" Ect:@"png" RECT:CGRectMake(0, 0, 320, scro.contentSize.height) Target:backscro1 TAG:1];
+    
     
     lqztLb = [FuncPublic InstanceLabel:nil RECT:CGRectMake(0, 20, 300, 30) FontName:nil Red:255. green:0 blue:0 FontSize:20 Target:backscro1 Lines:1 TAG:1 Ailgnment:1];
     nameLabel = [FuncPublic InstanceLabel:[NSString stringWithFormat:@"考生姓名：  %@",_name] RECT:CGRectMake(10, 50, 300, 30) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:backscro1 Lines:1 TAG:1 Ailgnment:2];
     kshLabel = [FuncPublic InstanceLabel:[NSString stringWithFormat:@"考  生  号：  %@",_Ksh] RECT:CGRectMake(10, 90, 300, 30) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:backscro1 Lines:1 TAG:1 Ailgnment:2];
-
-
-
+    
+    
+    
 }
 -(void)getscore
 {
@@ -175,7 +175,7 @@ JiafenLb = [FuncPublic InstanceLabel:nil RECT:CGRectMake(0, 80, 300, 39) FontNam
             parameters:dic
             completion:^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
                 [[FuncPublic SharedFuncPublic]StopActivityAnimation];
-                 NSLog(@"--------->>>>data is :%@",[response objectForKey:@"data"]);
+                NSLog(@"--------->>>>data is :%@",[response objectForKey:@"data"]);
                 if(error!=nil)
                 {
                     [WToast showWithText:kMessage];
@@ -255,14 +255,14 @@ JiafenLb = [FuncPublic InstanceLabel:nil RECT:CGRectMake(0, 80, 300, 39) FontNam
                             jiafensc.text = [NSString stringWithFormat:@"%@",[diction objectForKey:@"score"]];
                         }
                         {
-                        if([[diction objectForKey:@"detail"]isEqualToString:@"wj"])
-                            WeiJLB.text = [NSString stringWithFormat:@"%@",[diction objectForKey:@"name"]];
+                            if([[diction objectForKey:@"detail"]isEqualToString:@"wj"])
+                                WeiJLB.text = [NSString stringWithFormat:@"%@",[diction objectForKey:@"name"]];
                             weijsc.text = [NSString stringWithFormat:@"%@",[diction objectForKey:@"score"]];
                         }
                         
                     }
                 }
-            
+                
             }];
     
     
@@ -274,10 +274,10 @@ JiafenLb = [FuncPublic InstanceLabel:nil RECT:CGRectMake(0, 80, 300, 39) FontNam
     UILabel *yxmc = nil;
     UILabel *yxdh = nil;
     UILabel *zymc = nil;
-   // UILabel *luquzk = nil;
+    // UILabel *luquzk = nil;
     KeLeiMc = [FuncPublic InstanceLabel:nil RECT:CGRectMake(10, 130, 300, 30) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:backscro1 Lines:1 TAG:1 Ailgnment:2];
     PiCiMc = [FuncPublic InstanceLabel:nil RECT:CGRectMake(10, 170, 300, 30) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:backscro1 Lines:1 TAG:1 Ailgnment:2];
-
+    
     yxdh = [FuncPublic InstanceLabel:nil RECT:CGRectMake(10, 210, 300, 30) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:backscro1 Lines:1 TAG:1 Ailgnment:2];
     yxmc = [FuncPublic InstanceLabel:nil RECT:CGRectMake(10, 250, 300, 30) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:backscro1 Lines:1 TAG:1 Ailgnment:2];
     zymc = [FuncPublic InstanceLabel:nil RECT:CGRectMake(10, 290, 300, 30) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:backscro1 Lines:1 TAG:1 Ailgnment:2];
@@ -299,7 +299,7 @@ JiafenLb = [FuncPublic InstanceLabel:nil RECT:CGRectMake(0, 80, 300, 39) FontNam
                 else if ([[response objectForKey:@"status"]isEqualToString:@"true"])
                 {
                     //title.text = [[response objectForKey:@"data"]objectForKey:@"title"];
-                   // info.text = [[response objectForKey:@"data"]objectForKey:@"info"];
+                    // info.text = [[response objectForKey:@"data"]objectForKey:@"info"];
                     ksh.text = [NSString stringWithFormat:@"考生号：  %@",[[response objectForKey:@"data"]objectForKey:@"ksh"]];
                     xm.text = [NSString stringWithFormat:@"姓名：   %@", [[response objectForKey:@"data"]objectForKey:@"xm"]];
                     yxmc.text = [NSString stringWithFormat:@"院校名称：  %@",[[response objectForKey:@"data"]objectForKey:@"yxmc"]];
@@ -314,13 +314,13 @@ JiafenLb = [FuncPublic InstanceLabel:nil RECT:CGRectMake(0, 80, 300, 39) FontNam
                 }
                 
             }];
-
+    
     
     
 }
 -(void)btnclick:(UIButton *)sender
 {
-    NSLog(@"点击的tag= %ld",sender.tag);
+   
     sender.titleLabel.textColor = [UIColor redColor];
     UIImageView *iamge = (UIImageView *)[self.view viewWithTag:101];
     iamge.frame = sender.frame;

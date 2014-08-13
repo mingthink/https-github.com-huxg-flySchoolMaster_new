@@ -14,8 +14,8 @@
 #import <AVFoundation/AVFoundation.h>
 
 @interface FeedbackViewController ()<AVAudioRecorderDelegate,AVAudioPlayerDelegate>{
-
-    AVAudioRecorder *recorder; 
+    
+    AVAudioRecorder *recorder;
     NSURL *urlPlay;
     int luyin;
     int bofang;
@@ -142,9 +142,9 @@
 //反馈
 -(void)feedback:(int)flg{
     
-        
-   // NSLog(@"校长信息是:---%@",[FuncPublic GetDefaultInfo :@"authCode"]);
-   // NSMutableDictionary *dic = [FuncPublic GetDefaultInfo:@"UserInfo"];
+    
+    // NSLog(@"校长信息是:---%@",[FuncPublic GetDefaultInfo :@"authCode"]);
+    // NSMutableDictionary *dic = [FuncPublic GetDefaultInfo:@"UserInfo"];
     [[FuncPublic SharedFuncPublic] StartActivityAnimation:self];
     NSMutableDictionary *param = [[NSMutableDictionary alloc] init];
     if([FuncPublic GetDefaultInfo:@"authCode"]==NULL)
@@ -152,7 +152,7 @@
         [param setObject:@"" forKey:@"authCode"];
     }
     else{
-    [param setObject:[FuncPublic GetDefaultInfo :@"authCode"] forKey:@"authCode"];
+        [param setObject:[FuncPublic GetDefaultInfo :@"authCode"] forKey:@"authCode"];
     }
     if (flg == 1) {
         if(self.avPlay != nil){
@@ -167,27 +167,27 @@
     [param setObject:[FuncPublic GetDefaultInfo:@"mobilenumber"] forKey:@"mobilenumber"];
     [param setObject:@"writerFeedback" forKey:@"action"];
     
-   // NSString *url =[NSString stringWithFormat:@"/action/common.ashx?action=writerFeedback&r=%@&dvid=%@&ksh=%@",[FuncPublic createUUID],[FuncPublic GetDefaultInfo:@"DeviceToken"],[dic objectForKey:@"ksh"]];
-
+    // NSString *url =[NSString stringWithFormat:@"/action/common.ashx?action=writerFeedback&r=%@&dvid=%@&ksh=%@",[FuncPublic createUUID],[FuncPublic GetDefaultInfo:@"DeviceToken"],[dic objectForKey:@"ksh"]];
+    
     [SVHTTPRequest POST:@"/action/common.ashx"
              parameters:param
              completion:^(id response, NSHTTPURLResponse *urlResponse, NSError *error) {
-         [[FuncPublic SharedFuncPublic] StopActivityAnimation];
-        if (error != nil) {
-            [WToast showWithText:kMessage];
-            return;
-        }
-        
-        NSString *status = [FuncPublic tryObject:response Key:@"status" Kind:1];
-        if ([status isEqualToString:@"true"]) {
-            [FuncPublic ShowAlert:@"提交成功，感谢您的宝贵建议"];
-            if (flg == 1) {
-                [self clickSoundDelete:nil];//删除录音
-            }else{
-                feedView.text = @"";
-            }
-        }
-    }];
+                 [[FuncPublic SharedFuncPublic] StopActivityAnimation];
+                 if (error != nil) {
+                     [WToast showWithText:kMessage];
+                     return;
+                 }
+                 
+                 NSString *status = [FuncPublic tryObject:response Key:@"status" Kind:1];
+                 if ([status isEqualToString:@"true"]) {
+                     [FuncPublic ShowAlert:@"提交成功，感谢您的宝贵建议"];
+                     if (flg == 1) {
+                         [self clickSoundDelete:nil];//删除录音
+                     }else{
+                         feedView.text = @"";
+                     }
+                 }
+             }];
 }
 //激活SIM卡
 -(void)submitSIM{
@@ -223,7 +223,7 @@
                     [FuncPublic ShowAlert:@"激活成功"];
                 }
             }];
-
+    
 }
 #pragma mark- UIbutton IBAction
 //返回
@@ -234,8 +234,8 @@
 -(IBAction)clickSelectItem:(UIButton *)sender{
     NSDictionary *dic = [FuncPublic GetDefaultInfo:@"OpenInfo"];
     
- 
- 
+    
+    
     
     switch (sender.tag) {
         case 201:
@@ -265,7 +265,7 @@
             view2.hidden = NO;
             view3.hidden = YES;
             view4.hidden = YES;
-
+            
         }
             break;
         case 203:
@@ -280,7 +280,7 @@
             view2.hidden = YES;
             view3.hidden = NO;
             view4.hidden = YES;
-           // NSString *str = [NSString stringWithFormat:@"%@/api/help/",SERVER];
+            // NSString *str = [NSString stringWithFormat:@"%@/api/help/",SERVER];
             //[view3 loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:str]]];
         }
             break;
@@ -298,7 +298,7 @@
                 view2.hidden = YES;
                 view3.hidden = YES;
                 view4.hidden = NO;
-            }           
+            }
         }
             break;
         default:
@@ -327,7 +327,7 @@
         speakLabel.text = @"正在录音，点击结束录音";
     }else{
         luyin = 0;
-         speakLabel.text = @"点击预览录音";
+        speakLabel.text = @"点击预览录音";
         [sender setImage:[UIImage imageNamed:@"sound_a.png"] forState:UIControlStateNormal];
         animatImage.hidden = YES;
         //时长判断
@@ -395,16 +395,16 @@
 }
 //播放结束
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
-  {
-       UIButton *playbtn = (UIButton *)[view1 viewWithTag:888];
-      [playbtn setImage:[UIImage imageNamed:@"play_a.png"] forState:UIControlStateNormal];
-      bofang = 0;
-       speakLabel.text = @"点击预览录音";
-   }
+{
+    UIButton *playbtn = (UIButton *)[view1 viewWithTag:888];
+    [playbtn setImage:[UIImage imageNamed:@"play_a.png"] forState:UIControlStateNormal];
+    bofang = 0;
+    speakLabel.text = @"点击预览录音";
+}
 
 //提交语音反馈
 -(IBAction)clickSubmitSound:(UIButton *)sender{
-//    [self clickSoundStart:nil];
+    //    [self clickSoundStart:nil];
     [self feedback:1];
 }
 //文字反馈
@@ -437,5 +437,5 @@
         return;
     }
     [self submitSIM];
- }
+}
 @end

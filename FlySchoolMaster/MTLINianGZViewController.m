@@ -64,7 +64,7 @@
     {
        
     
-    [dic setObject:[FuncPublic GetDefaultInfo:@"zxdm"] forKey:@"zxdm"];
+    [dic setObject:[[FuncPublic GetDefaultInfo:@"Newuser"]objectForKey:@"zxdm"] forKey:@"zxdm"];
     [dic setObject:[NSString stringWithFormat:@"%d",pagnum] forKey:@"page_number"];
     [dic setObject:@"1" forKey:@"isDoPaging"];
     [dic setObject:@"10" forKey:@"txbPageSize"];
@@ -77,7 +77,7 @@
     if(ismore)
     {
        
-        [dic setObject:[FuncPublic GetDefaultInfo:@"zxdm"] forKey:@"zxdm"];
+        [dic setObject:[[FuncPublic GetDefaultInfo:@"Newuser"]objectForKey:@"zxdm"] forKey:@"zxdm"];
         [dic setObject:[NSString stringWithFormat:@"%d",pagnum] forKey:@"page_number"];
         [dic setObject:@"1" forKey:@"isDoPaging"];
         [dic setObject:@"10" forKey:@"txbPageSize"];

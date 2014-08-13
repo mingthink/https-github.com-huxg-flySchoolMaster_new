@@ -13,6 +13,9 @@
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
+    #import "FuncPublic.h"
+    #import "MTAlertView.h"
+    
 #endif
 #define SERVER @"http://172.16.1.1:91"
 //#define SERVER @"http://220.175.104.19:81"
@@ -42,6 +45,10 @@
 
 #define kMessage @"请检查网络连接"
 #define EMessage @"数据已完全加载"
-#define NAME @"NEWUSER8"
+#define NAME @"NEWUSERINFOR"
 #define DBName @"NewUser.sqlite"
+#define CachePath @"UserinfoCaCh.txt"
+#define PaGeCtrlCache @"UserPagecache.txt"
+#define UserAletInfo @"UserAlertInfo.txt"
+#define SharedData @"shareddata"
 

@@ -48,6 +48,7 @@
 }
 -(void)setUI
 {
+    [FuncPublic InstanceNavgationBar:@"考生情况" action:@selector(back:) superclass:self isroot:NO];
     UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 64, 320, 40)];
     view.backgroundColor = [UIColor colorWithRed:0 green:171./255 blue:171./255 alpha:1];
     [self.view addSubview:view];
@@ -218,9 +219,9 @@
 }
 -(void)getstudata:(int )indexx andpagenum:(int )pagnum
 {
-    
+    NSString *zxdm = [[FuncPublic GetDefaultInfo:@"Newuser"]objectForKey:@"zxdm"];
     NSMutableDictionary *dic = [[NSMutableDictionary alloc]initWithCapacity:0];
-    [dic setObject:[FuncPublic GetDefaultInfo:@"zxdm"] forKey:@"zxdm"];
+    [dic setObject:zxdm forKey:@"zxdm"];
     [dic setObject:[[listdata objectAtIndex:indexx]objectForKey:@"kldm"] forKey:@"kldm"];
     [dic setObject:[NSString stringWithFormat:@"%d",pagnum] forKey:@"page_number"];
     [dic setObject:@"1" forKey:@"isDoPaging"];

@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface MTSetViewController : UIViewController
+@property (strong, nonatomic) IBOutlet UIButton *caheBnt;
+@property (strong, nonatomic) IBOutlet UIImageView *backimagee;
 - (IBAction)select:(UIButton *)sender;
+- (IBAction)clearcache:(id)sender;
 
 @end

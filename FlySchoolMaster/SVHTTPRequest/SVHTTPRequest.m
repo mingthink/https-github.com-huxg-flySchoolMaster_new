@@ -9,6 +9,9 @@
 
 #import "SVHTTPRequest.h"
 #import "JSON.h"
+#import "MTAlertView.h"
+#import "MTAppDelegate.h"
+
 
 @interface NSData (Base64)
 - (NSString*)base64EncodingWithLineLength:(unsigned int)lineLength;
@@ -117,6 +120,7 @@ static NSString *defaultUserAgent;
 + (SVHTTPRequest*)GET:(NSString *)address parameters:(NSDictionary *)parameters completion:(SVHTTPRequestCompletionHandler)block {
     SVHTTPRequest *requestObject = [[self alloc] initWithAddress:address method:SVHTTPRequestMethodGET parameters:parameters saveToPath:nil progress:nil completion:block];
     [requestObject start];
+    
     
     return requestObject;
 }
@@ -416,6 +420,19 @@ static NSString *defaultUserAgent;
     self.state = SVHTTPRequestStateFinished;
     [self didChangeValueForKey:@"isExecuting"];
     [self didChangeValueForKey:@"isFinished"];
+//    MTAppDelegate *app = [[UIApplication sharedApplication]delegate];
+//    if([_operationURLResponse statusCode]!=200&&[_operationURLResponse statusCode]!=400)
+//    {
+//        if(app.isreachable)
+//        {
+//        [MTAlertView Aletwithstring:@"networkDataFailure"];
+//        }
+//        else
+//        {
+//            MTAlertView Aletwithstring:<#(NSString *)#>
+//        }
+   
+   
 }
 
 - (void)cancel {
@@ -432,6 +449,7 @@ static NSString *defaultUserAgent;
 }
 
 - (BOOL)isFinished {
+    
     return self.state == SVHTTPRequestStateFinished;
 }
 
@@ -457,6 +475,7 @@ static NSString *defaultUserAgent;
 #pragma mark Delegate Methods
 
 - (void)requestTimeout {
+   
     
     NSURL *failingURL = self.operationRequest.URL;
     
@@ -510,6 +529,7 @@ static NSString *defaultUserAgent;
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    
     dispatch_group_notify(self.saveDataDispatchGroup, self.saveDataDispatchQueue, ^{
          NSError *error = nil;
         NSString *str = [[NSString alloc] initWithData:self.operationData encoding:NSUTF8StringEncoding];
@@ -521,6 +541,17 @@ static NSString *defaultUserAgent;
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    int code = [error code];
+    switch (code) {
+        case -1004:
+            [MTAlertView Aletwithstring:@"networkDisabled"];
+            break;
+          case -1001:
+            [MTAlertView Aletwithstring:@"networkDataFailure"];
+        default:
+            break;
+    }
+     NSLog(@"请求错误的返回信息:-------%@",error);
     [self callCompletionBlockWithResponse:nil error:error];
 }
 
@@ -533,6 +564,8 @@ static NSString *defaultUserAgent;
     dispatch_async(dispatch_get_main_queue(), ^{
         NSError *serverError = error;
         
+        
+
         if(!serverError && self.operationURLResponse.statusCode == 500) {
             serverError = [NSError errorWithDomain:NSURLErrorDomain
                                               code:NSURLErrorBadServerResponse
@@ -540,11 +573,12 @@ static NSString *defaultUserAgent;
                                                     @"Bad Server Response.", NSLocalizedDescriptionKey,
                                                     self.operationRequest.URL, NSURLErrorFailingURLErrorKey,
                                                     self.operationRequest.URL.absoluteString, NSURLErrorFailingURLStringErrorKey, nil]];
+           
         }
         
         if(self.operationCompletionBlock && !self.isCancelled)
             self.operationCompletionBlock(response, self.operationURLResponse, serverError);
-        
+        //
         [self finish];
     });
 }

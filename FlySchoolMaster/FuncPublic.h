@@ -216,4 +216,5 @@
 +(NSString *)emptyStr:(id)str;
 
 +(void)showMessage:(UIViewController *)viewController Msg:(NSString *)msg BtnTitle:(NSString *)title action:(SEL)action close:(SEL)action;
++(void)InstanceNavgationBar:(NSString *)title action:(SEL)action superclass:(UIViewController *)controll isroot:(BOOL)isroot;
 @end

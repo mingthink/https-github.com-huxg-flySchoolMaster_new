@@ -26,12 +26,19 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    //自定义导航栏
+    [FuncPublic InstanceNavgationBar:@"详细" action:@selector(back:) superclass:self isroot:NO];
     
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",SERVER,_urlstr]];
+    
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
     UIWebView *web = [[UIWebView alloc]initWithFrame:CGRectMake(0, 64, 320, DEVH-64-50)];
+    
     web.delegate = self;
+    
     [web loadRequest:request];
+    
     [self.view addSubview:web];
     // Do any additional setup after loading the view from its nib.
 }
@@ -55,6 +62,6 @@
 }
 
 - (IBAction)back:(UIButton *)sender {
-    [self.navigationController popViewControllerAnimated:NO];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 @end

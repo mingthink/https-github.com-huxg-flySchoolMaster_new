@@ -36,17 +36,18 @@
     [self getvision];
      image = [[UIImageView alloc]initWithFrame:self.view.frame];
     [self.view addSubview:image];
-    [self loaddata];
+  //  [self loaddata];
     if([FuncPublic GetDefaultInfo:@"startimage"]==nil)
     {
-         [self loaddata];
+        NSLog(@"图片数据。。。。.");
+        // [self loaddata];
     }
    else
    {
        NSDictionary *dic = [FuncPublic GetDefaultInfo:@"startimage"];
        NSString *url = [dic objectForKey:@"url"];
-        [image setLoadingImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://172.16.1.1:91%@",url]] placeholderImage:nil];
-       
+   // [image setLoadingImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://172.16.1.1:91%@",url]] placeholderImage:@"start.jpg"];
+       [image setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://172.16.1.1:91%@",url]]];
        
    }
     [self performSelector:@selector(pushnext) withObject:nil afterDelay:2];
@@ -72,8 +73,8 @@
             [FuncPublic SaveDefaultInfo:[response objectForKey:@"data"] Key:@"startimage"];
             NSString *url = [[response objectForKey:@"data"]objectForKey:@"url"];
            
-            [image setLoadingImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://172.16.1.1:91%@",url]] placeholderImage:nil];
-           
+          //  [image setLoadingImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://172.16.1.1:91%@",url]] placeholderImage:nil];
+            [image setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://172.16.1.1:91%@",url]]];
 
             
         }
@@ -84,8 +85,10 @@
 }
 -(void)pushnext
 {
-    if([FuncPublic GetDefaultInfo:@"Newuser"]==NULL)
+    
+    if([[FuncPublic GetDefaultInfo:@"Newuser"]count]==0)
     {
+        NSLog(@"进入登录界面");
         MTLoginViewController *login = [[MTLoginViewController alloc]init];
         [self presentViewController:login animated:YES completion:nil];
     }

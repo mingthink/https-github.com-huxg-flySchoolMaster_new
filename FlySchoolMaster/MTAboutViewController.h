@@ -11,6 +11,7 @@
 @interface MTAboutViewController : UIViewController
 {
     IBOutlet UILabel *Phonenum;
+    IBOutlet UIImageView *backimage;
     
 }
 - (IBAction)makecall:(UIButton *)sender;

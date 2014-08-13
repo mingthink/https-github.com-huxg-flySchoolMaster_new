@@ -13,6 +13,8 @@
 #import "SVHTTPRequest.h"
 #import "WToast.h"
 #import "MTWebView.h"
+#import "MTPageModel.h"
+#import "UIImageView+webimage.h"
 @interface MTZiYuanViewController ()
 {
     CGPoint startPoint;
@@ -24,7 +26,8 @@
     UIView *backview;
     UIView *doneview;
     UILabel *labels;
-
+    MTPageModel *model;
+    
 }
 @end
 
@@ -42,19 +45,20 @@
 - (void)viewDidLoad
 {
     //此界面为功能列表模式
-
+    
     [super viewDidLoad];
     
     //当模块改变时监听通知
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(notihandel:) name:@"chageindex" object:nil];
     
     //自定义导航条视图
-    UIView *vi = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVW, 60)];
-    vi.backgroundColor = [UIColor darkGrayColor];
-    labels = [[UILabel alloc]initWithFrame:CGRectMake(120, 10, 100, 40)];
-   
-    [vi addSubview:labels];
-    [self.view addSubview:vi];
+    
+    //    UIView *vi = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVW, 60)];
+    //    vi.backgroundColor = [UIColor darkGrayColor];
+    //    labels = [[UILabel alloc]initWithFrame:CGRectMake(120, 10, 100, 40)];
+    //
+    //    [vi addSubview:labels];
+    //    [self.view addSubview:vi];
     
     
     
@@ -66,17 +70,23 @@
 -(void)notihandel:(NSNotification *)no
 {
     NSLog(@"收到通知......");
+    NSDictionary *dicc = no.object;
+    
+    NSString *mode = [dicc objectForKey:@"mode"];
+    
+    if(![mode isEqualToString:@"functionList"])
+        return;
     self.MouDic = no.object;
-    //  NSLog(@"收到的字典长度:%d")
+    
     [self handeldata];
 }
 -(void)handeldata
 {
     [[MyDbHandel defaultDBManager]openDb:DBName];
     NSArray *arr = [_MouDic objectForKey:@"functions"];
-   
+    
     NSString *mouname = [_MouDic objectForKey:@"name"];
-   
+    
     NSMutableArray *insarr = [NSMutableArray array];
     for(int i =0;i<arr.count;i++)
     {
@@ -90,11 +100,11 @@
         [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"status"]];
         [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"ver"]];
         [insarr addObject:mouname];
-       // [insarr addObject:[NSNumber numberWithInt:2]];
+        // [insarr addObject:[NSNumber numberWithInt:2]];
         /*
          //                         NSArray *insarr = [NSArray arrayWithObjects:[[arr objectAtIndex:i]objectForKey:@"createDatetime"],[[arr objectAtIndex:i]objectForKey:@"id"],[[arr objectAtIndex:i]objectForKey:@"moduleFlag"],[[arr objectAtIndex:i]objectForKey:@"moduleImage"], [[arr objectAtIndex:i]objectForKey:@"moduleName"], [[arr objectAtIndex:i]objectForKey:@"moduleUrl"], [[[arr objectAtIndex:i]objectForKey:@"sortNumber"]integerValue], [[arr objectAtIndex:i]objectForKey:@"status"],nil];
          //                         */
-     //   NSLog(@"插入的数组:%@",insarr);
+        //   NSLog(@"插入的数组:%@",insarr);
         [self insert:insarr];
         [insarr removeAllObjects];
     }
@@ -106,18 +116,28 @@
     
     if( [[MyDbHandel defaultDBManager]insertdata:arr])
     {
-      //  NSLog(@"插入成功数据");
+        //  NSLog(@"插入成功数据");
     };
 }
 -(void)DrawUI
 {
-     NSString *mouname = [_MouDic objectForKey:@"name"];
-     labels.text = [_MouDic objectForKey:@"name"];
+    NSString *mouname = [_MouDic objectForKey:@"name"];
+    
+    //自定义导航条
+    [FuncPublic InstanceNavgationBar:mouname action:nil superclass:self isroot:YES];
+    
+    model = [MTPageModel getPageModel];
+    
     itemarr = [NSMutableArray array];
     delebutarr = [NSMutableArray array];
     
     backview = [[UIView alloc]initWithFrame:CGRectMake(0, 60, DEVW, DEVH-60-50)];
-    backview.backgroundColor = [UIColor orangeColor];
+    UIImageView *backimag = [[UIImageView alloc]initWithFrame:backview.bounds];
+    NSString *backimastr = [model.backgroud objectForKey:@"otherBg"];
+    backimag.image = [UIImage imageNamed:backimastr];
+    
+    //  self.view.backgroundColor = [UIColor colorWithRed:60.0/255.0 green:105.0/255 blue:210.0/255 alpha:1.0];
+   // backview.backgroundColor = [UIColor colorWithRed:60.0/255.0 green:105.0/255 blue:210.0/255 alpha:1.0];
     [self.view addSubview:backview];
     for(UIView *v in [backview subviews])
     {
@@ -125,7 +145,7 @@
     }
     
     
-    
+    [backview addSubview:backimag];
     NSString *sql = [NSString stringWithFormat:@"select * from %@ where mouname = '%@' order by num asc ",NAME,mouname];
     NSArray *arrr = [[MyDbHandel defaultDBManager]select:sql];
     
@@ -157,8 +177,11 @@
         btn.frame = CGRectMake(0, 10, 60, 60);
         if([data.icon hasSuffix:@".png"])
         {
-            UIImage *imagee = [self getImageFromURL:[NSString stringWithFormat:@"%@%@",SERVER,data.icon]];
-            [btn setBackgroundImage:imagee forState:UIControlStateNormal];
+            UIImageView *imageview = [[UIImageView alloc]init];
+            NSString *urlstr = [NSString stringWithFormat:@"%@%@",SERVER,data.icon];
+            [imageview setImageWithURL:[NSURL URLWithString:urlstr]];
+           // UIImage *imagee = [self getImageFromURL:[NSString stringWithFormat:@"%@%@",SERVER,data.icon]];
+            [btn setBackgroundImage:imageview.image forState:UIControlStateNormal];
         }
         else
         {
@@ -249,7 +272,7 @@
         
         CGPoint newPoint = [sender locationInView:sender.view];
         //   CGPoint newPoint = [sender locationInView:sender.view];
-        int index = [self indexOfPoint:btn.center withButton:btn];
+       long int index = [self indexOfPoint:btn.center withButton:btn];
         CGFloat deltaX = newPoint.x-startPoint.x;
         CGFloat deltaY = newPoint.y-startPoint.y;
         btn.center = CGPointMake(btn.center.x+deltaX,btn.center.y+deltaY);
@@ -284,16 +307,16 @@
                 button.center = originPoint;
                 doneview.hidden = NO;
                 [[MyDbHandel defaultDBManager]openDb:DBName];
-               // [self creatdatabase];
+                // [self creatdatabase];
                 NSString *sql = [NSString stringWithFormat:@"update %@ set num=%d where num = %d and  mouname = '%@'",NAME,0,btn.tag,mouname];
                 [[MyDbHandel defaultDBManager]updata:sql];
-              //  [self creatdatabase];
-                 [[MyDbHandel defaultDBManager]openDb:DBName];
-                NSString *sql1 = [NSString stringWithFormat:@"update %@ set num =%d where num = %d and  mouname = '%@'",NAME,btn.tag,index+1,mouname];
+                //  [self creatdatabase];
+                [[MyDbHandel defaultDBManager]openDb:DBName];
+                NSString *sql1 = [NSString stringWithFormat:@"update %@ set num =%d where num = %ld and  mouname = '%@'",NAME,btn.tag,index+1,mouname];
                 [[MyDbHandel defaultDBManager]updata:sql1];
-              //  [self creatdatabase];
-                 [[MyDbHandel defaultDBManager]openDb:DBName];
-                NSString *sql2 = [NSString stringWithFormat:@"update %@ set num =%d where num = %d and  mouname = '%@'",NAME,index+1,0,mouname];
+                //  [self creatdatabase];
+                [[MyDbHandel defaultDBManager]openDb:DBName];
+                NSString *sql2 = [NSString stringWithFormat:@"update %@ set num =%ld where num = %d and  mouname = '%@'",NAME,index+1,0,mouname];
                 [[MyDbHandel defaultDBManager]updata:sql2];
                 [self performSelector:@selector(DrawUI) withObject:nil afterDelay:.7];
                 [self performSelector:@selector(missview:) withObject:doneview afterDelay:2.4];
@@ -353,7 +376,7 @@
     NSString *mouname = [_MouDic objectForKey:@"name"];
     // NSLog(@"删除的编号:%d",btn.tag-1001);
     //  [self EndWobble];
-   // [self creatdatabase];
+    // [self creatdatabase];
     [[MyDbHandel defaultDBManager]openDb:DBName];
     NSString *sql = [NSString stringWithFormat:@"update %@ set status = '0' where num=%d and  mouname ='%@'",NAME,btn.tag-1001,mouname];
     [[MyDbHandel defaultDBManager]updata:sql];
@@ -376,8 +399,9 @@
     [dic setObject:[[FuncPublic GetDefaultInfo:@"Newuser"]objectForKey:@"authCode"] forKey:@"authUser"];
     [dic setObject:[FuncPublic emptyStr:upstr] forKey:@"data"];
     [dic setObject:@"saveModule" forKey:@"action"];
-    [SVHTTPRequest POST:@"/action/test.ashx" parameters:dic completion:^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
-       
+    [SVHTTPRequest POST:@"/action/test.ashx" parameters:dic completion:
+     ^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
+        
         if(error!=nil)
         {
             [WToast showWithText:kMessage];
@@ -407,7 +431,8 @@
              viewe.transform=CGAffineTransformMakeRotation(-0.05);
          } completion:^(BOOL finished)
          {
-             [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionRepeat|UIViewAnimationOptionAutoreverse|UIViewAnimationOptionAllowUserInteraction  animations:^
+             [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionRepeat|
+              UIViewAnimationOptionAutoreverse|UIViewAnimationOptionAllowUserInteraction  animations:^
               {
                   
                   

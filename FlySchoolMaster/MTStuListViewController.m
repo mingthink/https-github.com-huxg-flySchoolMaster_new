@@ -59,7 +59,7 @@
     headview = [[MJRefreshHeaderView alloc]init];
     headview.delegate = self;
     headview.scrollView = mytab;
-
+    
     
     [self getlist:page];
     // Do any additional setup after loading the view from its nib.
@@ -83,81 +83,81 @@
     [dic setObject:@"10" forKey:@"txbPageSize"];
     [dic setObject:[FuncPublic createUUID] forKey:@"r"];
     [SVHTTPRequest GET:@"/api/examinee/"
-                  parameters:dic
-                  completion:^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
-//                      mytab.hidden = NO;
-                     
-                      if(error!=nil)
-                      {
-                          [WToast showWithText:kMessage];
-                          return ;
-                      }
-                      
-                      
-                      if(isRefreshing==YES)
-                      {
-                          NSMutableArray *datamore = [[NSMutableArray alloc]initWithCapacity:0];
-                         // [moredatasouce removeAllObjects];
-                          
-                          if([[response objectForKey:@"status"]isEqualToString:@"false"])
-                          {
-                              
-                            //  return;
-                          }
-                          
-                          
-                          for(NSDictionary *dic in [response objectForKey:@"data"])
-                          {
-                              [datamore addObject:dic];
-                          
-                              
-                          }
-                          [datalist removeAllObjects];
-                          datalist = datamore;
-                          [mytab reloadData];
-                          
-                          
-                      }
-
-                      
-                      
-                      
-                      else if(isRefreshing==NO){
-                          
-                          
-                          //  NSLog(@"返回信息是:%@",response);
-                          if([[response objectForKey:@"status"]isEqualToString:@"false"])
-                          {
-                              [WToast showWithText:EMessage];
-                             // mytab.hidden = YES;
-                              //[footview free];
-                              //footview.hidden = YES;
-                             // [footview removeFromSuperview];
-                              return;
-                          }
-//                          if([[response objectForKey:@"data"]count]==0)
-//                          {
-//                              mytab.hidden = YES;
-//                              [WToast showWithText:@"查无数据"];
-//                              return;
-//                          }
-                          
-                          for(NSDictionary *dic in [response objectForKey:@"data"])
-                          {
-                              [datalist addObject:dic];
-                          }
-//                          if(datalist.count==0)
-//                          {
-//                              mytab.hidden = YES;
-//                             [WToast showWithText:@"查无数据"];
-//                                return;
-//                          }
-                          [mytab reloadData];
-                      }
-                      mytab.hidden = NO;
-                      
-
-                  }];
+            parameters:dic
+            completion:^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
+                //                      mytab.hidden = NO;
+                
+                if(error!=nil)
+                {
+                    [WToast showWithText:kMessage];
+                    return ;
+                }
+                
+                
+                if(isRefreshing==YES)
+                {
+                    NSMutableArray *datamore = [[NSMutableArray alloc]initWithCapacity:0];
+                    // [moredatasouce removeAllObjects];
+                    
+                    if([[response objectForKey:@"status"]isEqualToString:@"false"])
+                    {
+                        
+                        //  return;
+                    }
+                    
+                    
+                    for(NSDictionary *dic in [response objectForKey:@"data"])
+                    {
+                        [datamore addObject:dic];
+                        
+                        
+                    }
+                    [datalist removeAllObjects];
+                    datalist = datamore;
+                    [mytab reloadData];
+                    
+                    
+                }
+                
+                
+                
+                
+                else if(isRefreshing==NO){
+                    
+                    
+                    //  NSLog(@"返回信息是:%@",response);
+                    if([[response objectForKey:@"status"]isEqualToString:@"false"])
+                    {
+                        [WToast showWithText:EMessage];
+                        // mytab.hidden = YES;
+                        //[footview free];
+                        //footview.hidden = YES;
+                        // [footview removeFromSuperview];
+                        return;
+                    }
+                    //                          if([[response objectForKey:@"data"]count]==0)
+                    //                          {
+                    //                              mytab.hidden = YES;
+                    //                              [WToast showWithText:@"查无数据"];
+                    //                              return;
+                    //                          }
+                    
+                    for(NSDictionary *dic in [response objectForKey:@"data"])
+                    {
+                        [datalist addObject:dic];
+                    }
+                    //                          if(datalist.count==0)
+                    //                          {
+                    //                              mytab.hidden = YES;
+                    //                             [WToast showWithText:@"查无数据"];
+                    //                                return;
+                    //                          }
+                    [mytab reloadData];
+                }
+                mytab.hidden = NO;
+                
+                
+            }];
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -196,7 +196,7 @@
     }
     else
     {
-       // image.image = [UIImage imageNamed:@"newsitem_bg2.9.png"];
+        // image.image = [UIImage imageNamed:@"newsitem_bg2.9.png"];
     }
     image.contentMode = UIViewContentModeScaleAspectFit;
     image.image = [UIImage imageNamed:@"right.png"];
@@ -215,12 +215,12 @@
     if(refreshView ==headview)
     {
         isRefreshing = YES;
-       // NSLog(@"刷新");
+        // NSLog(@"刷新");
     }
     else if(refreshView==footview)
     {
         isRefreshing = NO;
-      //  NSLog(@"加载");
+        //  NSLog(@"加载");
     }
     [self performSelector:@selector(refesshview:) withObject:refreshView afterDelay:2.0];
 }
@@ -247,7 +247,7 @@
         page++;
     }
     // NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/api/news/?page_number=%d&isDoPaging=1&txbPageSize=5",SERVER3,page]];
-   // NSLog(@"刷新次数是：---------%d",page);
+    // NSLog(@"刷新次数是：---------%d",page);
     //[self loaddata:url];
     //[self loaddataa:page];
     [self getlist:page];
@@ -257,11 +257,11 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     MTStuDetailViewController *detail = [[MTStuDetailViewController alloc]init];
-     detail.Ksh = [[datalist objectAtIndex:indexPath.row]objectForKey:@"ksh"];
+    detail.Ksh = [[datalist objectAtIndex:indexPath.row]objectForKey:@"ksh"];
     detail.name = [[datalist objectAtIndex:indexPath.row]objectForKey:@"xm"];
     detail.zkzh = [[datalist objectAtIndex:indexPath.row]objectForKey:@"zkzh"];
     [self.navigationController pushViewController:detail animated:NO];
-   
+    
 }
 - (void)didReceiveMemoryWarning
 {

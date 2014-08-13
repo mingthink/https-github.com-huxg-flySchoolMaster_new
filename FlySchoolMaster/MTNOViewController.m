@@ -26,23 +26,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [button setTitle:@"返回" forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(btnlcik:) forControlEvents:UIControlEventTouchUpInside];
-    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [button setBackgroundImage:[UIImage imageNamed:@"未标题-29.png"] forState:UIControlStateNormal];
-    button.titleLabel.font = [UIFont fontWithName:nil size:18];
-    button.frame = CGRectMake(10, 21, 66, 32);
-    [self.view addSubview:button];
-    if([_timr isEqualToString:@"tabar"])
-    {
-        button.hidden = YES;
-    }
-    else
-    {
-        button.hidden = NO;
-    }
-
+    [FuncPublic InstanceNavgationBar:@"" action:@selector(btnlcik:) superclass:self isroot:YES];
     // Do any additional setup after loading the view from its nib.
 }
 -(void)btnlcik:(UIButton *)sender

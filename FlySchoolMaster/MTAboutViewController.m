@@ -8,6 +8,7 @@
 
 #import "MTAboutViewController.h"
 #import "FuncPublic.h"
+#import "MTPageModel.h"
 @interface MTAboutViewController ()
 {
     NSString *phone;
@@ -28,8 +29,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [FuncPublic InstanceNavgationBar:@"关于我们" action:@selector(back:) superclass:self isroot:NO];
+    MTPageModel *model = [MTPageModel getPageModel];
+    NSString *backimastr = [model.backgroud objectForKey:@"otherBg"];
+    backimage.image = [UIImage imageNamed:backimastr];
     
-    NSString *str = [FuncPublic GetDefaultInfo:@"appvision"];
+    NSString *str = [[FuncPublic GetDefaultInfo:@"APPVersion"]objectForKey:@"versionCode"];
    // CGRectMake(<#CGFloat x#>, <#CGFloat y#>, CGFloat width, <#CGFloat height#>)
     //[ FuncPublic InstanceLabel:@"应用名称：高考小秘书校长端" RECT: CGRectMake(0, 70, 300, 40) FontName:nil Red:0 green:0 blue:0 FontSize:14 Target:self.view Lines:1 TAG:1 Ailgnment:1];
     [FuncPublic InstanceLabel:[NSString stringWithFormat: @"当前版本号：%@",str] RECT: CGRectMake(18, 250, 300, 40) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:self.view Lines:1 TAG:1 Ailgnment:1];

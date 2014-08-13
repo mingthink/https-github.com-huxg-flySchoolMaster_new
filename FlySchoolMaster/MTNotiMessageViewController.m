@@ -28,11 +28,12 @@
 }
 -(void)viewWillAppear:(BOOL)animated
 {
-   
+    
 }
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [FuncPublic InstanceNavgationBar:@"消息通知" action:@selector(back:) superclass:self isroot:NO];
     if(DEVH==480)
     {
         NSLog(@"comr in    ....");
@@ -41,7 +42,7 @@
     NSLog(@"数据源。。。。。%@",[FuncPublic GetDefaultInfo:@"MessageListData"]);
     NSString *Path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString *filename = [Path stringByAppendingPathComponent:@"savemesstest"];
-   // dataarr = [FuncPublic GetDefaultInfo:@"MessageListData"];
+    // dataarr = [FuncPublic GetDefaultInfo:@"MessageListData"];
     dataarr = [NSKeyedUnarchiver unarchiveObjectWithFile: filename];
     if(dataarr==NULL)
         dataarr = [[NSMutableArray alloc]init];
@@ -51,9 +52,6 @@
     [self.view addSubview:mytab];
     
     
-    NSLog(@"消息通知新消息是:%d",dataarr.count);
-    NSLog(@"消息通知新消息是:%@",dataarr);
-    // Do any additional setup after loading the view from its nib.
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -87,7 +85,7 @@
     
     [FuncPublic InstanceLabel:[dict objectForKey:@"param"] RECT:CGRectMake(40, 10, 200, 21) FontName:@"" Red:0 green:0 blue:0 FontSize:16 Target:cell.contentView Lines:0 TAG:0 Ailgnment:2];
     return cell;
-  
+    
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];//取消选中
@@ -97,17 +95,6 @@
         newsdetail.urlstr = [[dataarr objectAtIndex:indexPath.row]objectForKey:@"param"];
         [self.navigationController pushViewController:newsdetail animated:NO];
     }
-    //NSMutableDictionary *dic = [dataarr objectAtIndex:indexPath.row];
-   // [dic setObject:@"1" forKey:@"isreader"];
-//    for (int i=0; i<dataarr.count; i++) {
-//        NSMutableDictionary *savaDic = [dataarr objectAtIndex:i];
-//        if (i == indexPath.row) {
-//            [savaDic setObject:@"1" forKey:@"isreader"];
-//        }
-//    }
-//    [FuncPublic SaveDefaultInfo:dataarr Key:@"MessageListData"];
-//    [FuncPublic ShowAlert:[dic objectForKey:@"param"]];
-//    [tableView reloadData];
 }
 
 
@@ -124,33 +111,17 @@
 - (IBAction)clear:(id)sender {
 }
 
-//- (IBAction)delete:(id)sender {
-//
-//    [dataarr removeAllObjects];
-//    [mytab reloadData];
-////    NSMutableArray *temparr = [FuncPublic GetDefaultInfo:@"MessageListData"];
-////    [temparr removeAllObjects];
-////   temparr = nil;
-////    [FuncPublic SaveDefaultInfo:temparr Key:@"MessageListData"];
-//    [FuncPublic SaveDefaultInfo:nil Key:@"MessageListData"];
-//    
-//    
-//}
+
 - (IBAction)cle:(id)sender {
     NSLog(@"clear....");
     [dataarr removeAllObjects];
     [mytab reloadData];
-//        NSMutableArray *temparr = [[NSMutableArray alloc]initWithArray:[FuncPublic GetDefaultInfo:@"MessageListData"]];
-//        [temparr removeAllObjects];
-//       temparr = nil;
-
- //   [FuncPublic SaveDefaultInfo:nil Key:@"MessageListData"];
     NSString *Path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString *filename = [Path stringByAppendingPathComponent:@"savemesstest"];
     NSFileManager *file = [NSFileManager defaultManager];
     [file removeItemAtPath:filename error:nil];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"clearcache" object:nil userInfo:nil];
-
+    
     
 }
 @end

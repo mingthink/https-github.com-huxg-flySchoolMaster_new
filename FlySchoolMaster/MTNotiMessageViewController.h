@@ -13,7 +13,7 @@
 - (IBAction)clear:(id)sender;
 @property (strong, nonatomic) IBOutlet UIButton *clearaa;
 - (IBAction)cle:(id)sender;
-- (IBAction)delete:(id)sender;
+
 @property (strong, nonatomic) IBOutlet UIButton *mybutton;
 
 @end

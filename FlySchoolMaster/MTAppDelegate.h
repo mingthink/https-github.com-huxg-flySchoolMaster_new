@@ -13,6 +13,7 @@
 
 @property (strong, nonatomic) UIWindow *window;
 @property(nonatomic,retain)MTTabrViewController *tab;
+@property()BOOL isreachable;
 -(void)changeroot;
 
 @end

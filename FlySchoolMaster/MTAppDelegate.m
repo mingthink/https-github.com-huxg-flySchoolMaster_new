@@ -5,7 +5,6 @@
 //  Created by caiyc on 14-6-10.
 //  Copyright (c) 2014年 MingThink. All rights reserved.
 //
-
 #import "MTAppDelegate.h"
 #import "MTStartViewController.h"
 #import "MTMainViewController.h"
@@ -25,34 +24,31 @@
 @implementation MTAppDelegate
 {
     NSMutableArray *msgList;
-     Reachability *hostReach;
+    Reachability *hostReach;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearcahce) name:@"clearcache" object:nil];
-   // [FuncPublic SaveDefaultInfo:nil Key:@"MessageListData"];
-  //  msgList = [[NSMutableArray alloc]init];
-    // 设置网络检测的站点
-   // [[Reachability sharedReachability] setHostName:@"www.apple.com"];
-   // [[Reachability sharedReachability] setNetworkStatusNotificationsEnabled:YES];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearcahce) name:@"clearcache" object:nil];
+    
+    
     // 设置网络状态变化时的通知函数
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:)
                                                  name:@"kNetworkReachabilityChangedNotification" object:nil];
     hostReach = [Reachability reachabilityWithHostName:@"www.baidu.com"];
     [hostReach startNotifier];
     [[NSNotificationCenter defaultCenter]postNotificationName:UIApplicationDidReceiveMemoryWarningNotification object:nil userInfo:nil];
-    [[SDImageCache sharedImageCache]clearDisk];
-   // [FuncPublic saveDataToLocal:nil toFileName:@"message.plist"];
-    [FuncPublic SaveDefaultInfo:nil Key:@"advimage1"];
-   
+   // [[SDImageCache sharedImageCache]clearDisk];
+    // [FuncPublic saveDataToLocal:nil toFileName:@"message.plist"];
     
-     NSLog(@"DIC IS ;%@",[FuncPublic GetDefaultInfo:@"MessageListData"]);
+    
+    
+    //NSLog(@"DIC IS ;%@",[FuncPublic GetDefaultInfo:@"MessageListData"]);
     NSString *Path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString *filename = [Path stringByAppendingPathComponent:@"savemesstest"];
-     NSLog(@"文件路径:%@",filename);
+    NSLog(@"文件路径:%@",filename);
     msgList = [NSKeyedUnarchiver unarchiveObjectWithFile: filename];
-  //  msgList = [FuncPublic GetDefaultInfo:@"MessageListData"];
+    //  msgList = [FuncPublic GetDefaultInfo:@"MessageListData"];
     if (msgList==NULL)msgList = [NSMutableArray array];
     // 注册推送通知
 	[application registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
@@ -73,35 +69,37 @@
 {
     msgList = [FuncPublic GetDefaultInfo:@"MessageListData"];
     if (msgList==NULL)msgList = [NSMutableArray array];
-
+    
 }
 -(void)reachabilityChanged:(NSNotification *)note
 {
+    
+   
     Reachability *currReach = [note object];
     NSParameterAssert([currReach isKindOfClass:[Reachability class]]);
     
     //对连接改变做出响应处理动作
     NetworkStatus status = [currReach currentReachabilityStatus];
     //如果没有连接到网络就弹出提醒实况
-  //  self.isReachable = YES;
+    //  self.isReachable = YES;
     if(status == NotReachable)
     {
-        [WToast showWithText:kMessage];
-       // [FuncPublic SharedFuncPublic]
-       // UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"网络连接异常" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
-       // [alert show];
-      //  [alert release];
-      //  self.isReachable = NO;
+       // [MTAlertView Aletwithstring:@"networkDisabled"];
+        self.isreachable = NO;
+        
+       
         return;
     }
-    if (status==ReachableViaWiFi||status==ReachableViaWWAN) {
+    if (status==ReachableViaWiFi) {
         
-       // UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"网络连接信息" message:@"网络连接正常" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
-            //    [alert show];
-     //   [WToast showWithText:@"网络连接正常"];
+        self.isreachable = YES;
         [[NSNotificationCenter defaultCenter]postNotificationName:@"KCFNetChange" object:nil userInfo:nil];
-      //  [alert release];
-       // self.isReachable = YES;
+        
+    }
+    if(status==ReachableViaWWAN)
+    {
+        self.isreachable = YES;
+        [MTAlertView Aletwithstring:@"networkSwitch3G"];
     }
 }
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -149,29 +147,27 @@
 
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
-    NSLog(@"推送信息是：%@",userInfo);
-    NSMutableDictionary *pushShowMessage = [userInfo objectForKey:@"aps"];//提示消息
    
-   // int mode = [userInfo objectForKey:@"module"]objectForKey:@"<#string#>"
-    //self MessageAction:<#(int)#> param:<#(NSMutableDictionary *)#>
+    NSMutableDictionary *pushShowMessage = [userInfo objectForKey:@"aps"];//提示消息
+    
     //保存推送消息
     if (userInfo != nil) {
-        NSLog(@"come 1111111....");
-       // NSMutableDictionary *dic = [FuncPublic tryObject:pushShowMessage Key:@"extras" Kind:3];
+       
+       
         
         // 收到推送时 播放声音
         if ([pushShowMessage objectForKey:@"sound"] != nil) {
-             NSLog(@"come 1111111....");
+           
             NSString *filePath = [[NSBundle mainBundle] pathForResource:[pushShowMessage objectForKey:@"sound"] ofType:nil];
             AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL URLWithString:filePath] error:nil];
             player.delegate = self;
             [player play];
         }
         NSMutableDictionary *diction = [[userInfo objectForKey:@"custom"]JSONValue];
-       
+        
         
         int mod = [[diction objectForKey:@"module"]integerValue];
-
+        
         [self MessageAction:mod param:diction];
         [self saveMessage:diction];
     }
@@ -179,7 +175,7 @@
     
     
     [FuncPublic ShowAlert:[pushShowMessage objectForKey:@"alert"]];
-   
+    
     
     
 }
@@ -190,8 +186,8 @@
     if(module==1)
         
     {
-     
-       MTNEwsDetailViewController *detail = [[MTNEwsDetailViewController alloc]init];
+        
+        MTNEwsDetailViewController *detail = [[MTNEwsDetailViewController alloc]init];
         detail.urlstr = urlstr;
         [self.tab.navigationController pushViewController:detail animated:NO];
         
@@ -200,41 +196,35 @@
 -(void)saveMessage:(NSMutableDictionary*)dic{
     NSString *Path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString *filename = [Path stringByAppendingPathComponent:@"savemesstest"];
-  //  NSData *data = [NSData da]
-//    NSLog(@"DIC IS ;%@",[FuncPublic GetDefaultInfo:@"MessageListData"]);
-//   // msgList = [[NSMutableArray alloc]initWithCapacity:0];
-//   // for(NSDictionary *dic in )
-//   // msgList = [[FuncPublic GetDefaultInfo:@"MessageListData"]mutableCopy] ;
-//    [msgList addObject:dic];
-//            [FuncPublic SaveDefaultInfo:msgList Key:@"MessageListData"];
+   
     int i=0;
     if(msgList!=NULL)
     {
-    for (NSMutableDictionary *msgdic in msgList) {
-        if ([[msgdic objectForKey:@"id"] isEqualToString:[dic objectForKey:@"id"]]) {
-            i = 1;
+        for (NSMutableDictionary *msgdic in msgList) {
+            if ([[msgdic objectForKey:@"id"] isEqualToString:[dic objectForKey:@"id"]]) {
+                i = 1;
+            }
         }
-    }
-    if (i == 0) {
-        [dic setObject:@"1" forKey:@"isreader"];
-        [msgList addObject:dic];
-       
-        [NSKeyedArchiver archiveRootObject:msgList toFile:filename];
-        
-       // [FuncPublic SaveDefaultInfo:msgList Key:@"MessageListData"];
-    }
+        if (i == 0) {
+            [dic setObject:@"1" forKey:@"isreader"];
+            [msgList addObject:dic];
+            
+            [NSKeyedArchiver archiveRootObject:msgList toFile:filename];
+            
+            // [FuncPublic SaveDefaultInfo:msgList Key:@"MessageListData"];
+        }
     }
     else
     {
         [msgList addObject:dic];
-       [NSKeyedArchiver archiveRootObject:msgList toFile:filename];
-
+        [NSKeyedArchiver archiveRootObject:msgList toFile:filename];
+        
     }
 }
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-  // [self receiveRemoteNotificationForApp:application launchingOptionS:launchOptions];
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
+    // [self receiveRemoteNotificationForApp:application launchingOptionS:launchOptions];
+    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
@@ -254,16 +244,8 @@
 }
 -(void)changeroot
 {
-//    MTMainViewController *mainview = [[MTMainViewController alloc]init];
-//    UINavigationController *nav = [[UINavigationController alloc]initWithRootViewController:mainview];
-//    MTZiYuanViewController *ziyuanview = [[MTZiYuanViewController alloc]init];
-//    MTSearchViewController *searchview = [[MTSearchViewController alloc]init];
-//    MTSetViewController *setview = [[MTSetViewController alloc]init];
-//    UITabBarController *tab = [[UITabBarController alloc]init];
-//    tab.viewControllers = [NSArray arrayWithObjects:nav,ziyuanview,searchview,setview, nil];
-//    tab.tabBar.hidden = YES;
     self.tab = [[MTTabrViewController alloc]init];
-   // MTTabrViewController *tab = [[MTTabrViewController alloc]init];
+    // MTTabrViewController *tab = [[MTTabrViewController alloc]init];
     UINavigationController *nav = [[UINavigationController alloc]initWithRootViewController:self.tab];
     self.tab.navigationController.navigationBarHidden = YES;
     self.window.rootViewController = nav;

@@ -22,6 +22,10 @@
 #import "MTMudelDaTa.h"
 #import "MTOTerViewController.h"
 #import "MTWebView.h"
+#import "SBJSON.h"
+#import "NSString+SBJSON.h"
+#import "MTStrToColor.h"
+#import "MTPageModel.h"
 #define Duration 0.2
 #define WIDTH  60
 #define HIGHT  60
@@ -52,6 +56,8 @@
     NSMutableArray *delebutarr;
     UIView *backview;
     UIView *doneview;
+    NSMutableArray *pageimagearr;
+    NSTimer *times;
     
     
     
@@ -79,26 +85,27 @@
     //当模块改变时监听通知
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(notihandel:) name:@"chageindex" object:nil];
     //导航栏上的配置
-    NSString *zxmc = [[FuncPublic GetDefaultInfo:@"Newuser"]objectForKey:@"zxmc"];
-    NSString *usernam = [[FuncPublic GetDefaultInfo:@"Newuser"]objectForKey:@"djxm"];
-    scolllabel.text = [NSString stringWithFormat:@"%@ %@校长",zxmc,usernam];
-    
-    //广告视图
-    // if([[_MudelArr objectAtIndex:0]objectForKey:@"ads"])
-    scro = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 74, 320, 200)];
-    scro.pagingEnabled = YES;
-    scro.backgroundColor = [UIColor colorWithRed:86./255 green:255./255 blue:255./255 alpha:1];
-    scro.delegate = self;
-    scro.showsHorizontalScrollIndicator = NO;
-    scro.showsVerticalScrollIndicator = NO;
-    [self.view addSubview:scro];
     
     
     
-    //提示用户信息的视图
+   
+    
+    
+    
+    mypage = [[UIPageControl alloc]init];
+    mypage.currentPageIndicatorTintColor = [UIColor yellowColor];
+   // mypage.numberOfPages = 3;
+    
+    
+   // [self.view addSubview:mypage];
+   
+    
+    
+    //提示用户保存设置的视图
     doneview = [[UIView alloc]initWithFrame:CGRectMake(0, DEVH-80, DEVW, 30)];
     doneview.backgroundColor = [UIColor blackColor];
-    [self.view addSubview:doneview];
+    doneview.alpha = .6;
+    
     UIButton *savebtn = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
     savebtn.frame = CGRectMake(0, 0, 320, 30);
     [savebtn setTitle:@"点击保存设置" forState:UIControlStateNormal];
@@ -107,18 +114,11 @@
     doneview.hidden = YES;
     [doneview addSubview:savebtn];
     
-    //背景图片
-    UIImageView *backimage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, DEVH-274-50)];
-    backimage.image = [UIImage imageNamed:@"未标题-1(1).png"];
-    mypage = [[UIPageControl alloc]initWithFrame:CGRectMake(100, 0, 100, 20)];
-    mypage.currentPageIndicatorTintColor = [UIColor yellowColor];
-    [backimage addSubview:mypage];
     
     //布局完成后才请求数据，防止白屏
     if([_Mudic count]!=0)
     {
-        NSDictionary *AdvDic = [_Mudic objectForKey:@"ads"];
-        [self handelAdvData:AdvDic];
+        
         // [self AddImage:AdvDic];
         [self handeldata];
     }
@@ -131,17 +131,97 @@
 -(void)notihandel:(NSNotification *)no
 {
     NSLog(@"收到通知......");
+    NSDictionary *dicc = no.object;
+    NSString *mode = [dicc objectForKey:@"mode"];
+    if(![mode isEqualToString:@"adAndFunctionList"])
+        return;
     self.Mudic = no.object;
     //  NSLog(@"收到的字典长度:%d")
     [self handeldata];
+    
 }
 //处理主功能数据
 -(void)handeldata
 {
     NSArray *arr = [_Mudic objectForKey:@"functions"];
     NSString *moudname = [_Mudic objectForKey:@"name"];
+    NSString *ids = [_Mudic objectForKey:@"id"];
+    //导航栏配置
+    UIView *bakview = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 74)];
+    MTPageModel *model = [MTPageModel getPageModel];
+    NSString *colostr = [model.backgroud objectForKey:@"titleBg"];
+    UIColor *colr = [MTStrToColor hexStringToColor:colostr];
+    bakview.backgroundColor = colr;
+    //主页的配置和普通页面不同
+    if([ids isEqualToString:model.mainid])
+    {
+        //logo
+        UIImageView *logoimage = [[UIImageView alloc]initWithFrame:CGRectMake(10, 30, 55, 35)];
+        logoimage.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@_110",model.logo]];
+        [bakview addSubview:logoimage];
+        UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(85, 20, 180, 35)];
+        UIColor *comcolor = [UIColor whiteColor];
+        label.text = @"移动校园校长端";
+        label.textAlignment = 0;
+        label.font = [UIFont systemFontOfSize:17];
+        label.textColor = comcolor;
+        [bakview addSubview:label];
+        UILabel *label1 = [[UILabel alloc]initWithFrame:CGRectMake(85, 55, 180, 17)];
+        NSString *autoname = [[FuncPublic GetDefaultInfo:@"Newuser"]objectForKey:@"djxm"];
+        NSString *substr = [autoname substringWithRange:NSMakeRange(0, 1)];
+        NSString *authcode = [[FuncPublic GetDefaultInfo:@"Newuser"]objectForKey:@"notice"];
+        NSString *schoolname = [[FuncPublic GetDefaultInfo:@"Newuser"]objectForKey:@"zxmc"];
+        label1.text = [NSString stringWithFormat:@"%@ %@%@",schoolname, substr,authcode];
+        [bakview addSubview:label1];
+        label1.font = [UIFont systemFontOfSize:14];
+        label1.textColor = comcolor;
+        
+        
+        
+        //右边反馈按钮
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake(270, 27, 45, 30);
+        btn.layer.cornerRadius = 5;
+        NSString *coclostr = [model.button objectForKey:@"background"];
+        UIColor *colrr = [MTStrToColor hexStringToColor:coclostr];
+        NSString *btntile = [model.button objectForKey:@"name"];
+        [btn setTitle:btntile forState:UIControlStateNormal];
+        [btn setBackgroundColor:colrr];
+        
+        [btn addTarget:self action:@selector(feedback:) forControlEvents:UIControlEventTouchUpInside];
+        [bakview addSubview:btn];
+    }
+    else
+    {
+        UILabel *label2 = [[UILabel alloc]initWithFrame:bakview.bounds];
+        label2.text = moudname;
+        label2.textAlignment = 1;
+        [bakview addSubview:label2];
+    }
     
+    [self.view addSubview:bakview];
+
+    //广告视图
+    // if([[_MudelArr objectAtIndex:0]objectForKey:@"ads"])
+    scro = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 74, 320, 200)];
+    scro.pagingEnabled = YES;
+    scro.backgroundColor = [UIColor colorWithRed:86./255 green:255./255 blue:255./255 alpha:1];
+    scro.delegate = self;
+    scro.showsHorizontalScrollIndicator = NO;
+    scro.showsVerticalScrollIndicator = NO;
+    scro.contentOffset = CGPointMake(0, 0);
+    [self.view addSubview:scro];
+    NSDictionary *AdvDic = [[_Mudic objectForKey:@"ads"]JSONValue];
     
+    [self handelAdvData:AdvDic];
+    
+    //主功能区域背景图片
+    UIImageView *backimage = [[UIImageView alloc]initWithFrame:CGRectMake(0, scro.frame.size.height+74, 320, DEVH-50-scro.frame.size.height-74)];
+    NSString *strimge = [model.backgroud objectForKey:@"mainBg"];
+    backimage.image = [UIImage imageNamed:strimge];
+    //  [backimage addSubview:mypage];
+    [self.view addSubview:backimage];
+
     if(arr.count==0)
     {
         for(UIView *v in backview.subviews)
@@ -175,12 +255,6 @@
     
     
 }
-//处理广告数据
--(void)handelAdvData:(NSDictionary *)AdvDiction
-{
-    NSArray *arr = [NSArray array];
-    [self AddImage:arr];
-}
 //创建表
 -(void)creatdatabase
 {
@@ -190,59 +264,7 @@
     
     
 }
-//功能模块的数据
--(void)getdata
-{
-    
-    //    if([[FuncPublic GetDefaultInfo:@"appvision"]isEqualToString:@"1"])
-    //    {
-    //       // NSLog(@"本地数据库去除数据");
-    //        [self drawUI];
-    //        return;
-    //    }
-    //   // NSLog(@"网络请求.....");
-    //    [self creatdatabase];
-    //    NSString *sql = [NSString stringWithFormat:@"drop table %@",NAME];
-    //    [[MyDbHandel defaultDBManager]creatTab:sql];
-    //    NSMutableDictionary *dic = [[NSMutableDictionary alloc]init];
-    //    [dic setObject:[FuncPublic createUUID] forKey:@"r"];
-    //    [dic setObject:[[FuncPublic GetDefaultInfo:@"Newuser"]objectForKey:@"authCode"] forKey:@"authCode"];
-    //    [SVHTTPRequest GET:@"/api/module/"
-    //            parameters:dic
-    //            completion:^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
-    //                NSLog(@"%@",[response objectForKey:@"data"]);
-    //                if(error!=nil)
-    //                {
-    //
-    //                }
-    //                else if ([[response objectForKey:@"status"]isEqualToString:@"true"])
-    //                {
-    //                    NSArray *arr = [response objectForKey:@"data"];
-    //                    NSMutableArray *insarr = [NSMutableArray array];
-    //                    for(int i =0;i<arr.count;i++)
-    //                    {
-    //                        [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"createDatetime"]];
-    //                        [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"id"]];
-    //                        [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"moduleFlag"]];
-    //                        [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"moduleImage"]];
-    //                        [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"moduleName"]];
-    //                        [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"moduleUrl"]];
-    //                        [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"sortNumber"]];
-    //                        [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"status"]];
-    //                        /*
-    //                         NSArray *insarr = [NSArray arrayWithObjects:[[arr objectAtIndex:i]objectForKey:@"createDatetime"],[[arr objectAtIndex:i]objectForKey:@"id"],[[arr objectAtIndex:i]objectForKey:@"moduleFlag"],[[arr objectAtIndex:i]objectForKey:@"moduleImage"], [[arr objectAtIndex:i]objectForKey:@"moduleName"], [[arr objectAtIndex:i]objectForKey:@"moduleUrl"], [[[arr objectAtIndex:i]objectForKey:@"sortNumber"]integerValue], [[arr objectAtIndex:i]objectForKey:@"status"],nil];
-    //                         */
-    //                     //   NSLog(@"插入的数组:%@",insarr);
-    //                        [self insert:insarr];
-    //                        [insarr removeAllObjects];
-    //                    }
-    //                    [self drawUI];
-    //
-    //
-    //                }
-    //            }];
-    
-}
+//插入数据到数据库
 -(BOOL)insert:(NSArray *)arr
 {
     [[MyDbHandel defaultDBManager]openDb:DBName];
@@ -261,16 +283,18 @@
     NSString *moudname = [_Mudic objectForKey:@"name"];
     
     [self creatdatabase];
+    [itemarr removeAllObjects];
+    [delebutarr removeAllObjects];
     itemarr = [NSMutableArray array];
     delebutarr = [NSMutableArray array];
-    
-    backview = [[UIView alloc]initWithFrame:CGRectMake(0, 274, DEVW, DEVH-274-50)];
-    backview.backgroundColor = [UIColor orangeColor];
+    [backview removeFromSuperview];
+    backview = nil;
+    backview = [[UIView alloc]initWithFrame:CGRectMake(0, scro.frame.size.height+74, 320, DEVH-50-scro.frame.size.height-74)];
+    backview.backgroundColor = [UIColor clearColor];
     [self.view addSubview:backview];
-    for(UIView *v in [backview subviews])
-    {
-        [v removeFromSuperview];
-    }
+    [self.view addSubview:doneview];
+    
+    
     
     
     
@@ -280,12 +304,14 @@
     NSMutableArray *mutaarr = [NSMutableArray array];
     for(MTMudelDaTa *datas in arrr)
     {
-        if([datas.status isEqualToString:@"1" ])
+        if(![datas.status isEqualToString:@"0" ])
         {
             [mutaarr addObject:datas];
         }
     }
-    
+    int widd = DEVW/4;
+    int hei = backview.frame.size.height/2;
+    // int hhei = hei-30>widd
     for(int i =0;i<mutaarr.count;i++)
     {
         
@@ -296,45 +322,61 @@
         MTMudelDaTa *data = [mutaarr objectAtIndex:i];
         UIView *vi = [[UIView alloc]init];
         
-        vi.frame = CGRectMake(10+dow*75, 10+row *80, 60, 90);
+        vi.frame = CGRectMake(dow*widd, row *hei, widd, hei);
         vi.tag = data.num;
         
-        //vi.hidden = NO;
         
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        btn.frame = CGRectMake(0, 10, 60, 60);
+        if(DEVH>480)
+            
+            btn.frame = CGRectMake(10, 10, 60, 60);
+        
+        else
+            btn.frame = CGRectMake(10, 10, 50, 50);
         if([data.icon hasSuffix:@".png"])
         {
-            UIImage *imagee = [self getImageFromURL:[NSString stringWithFormat:@"%@%@",SERVER,data.icon]];
-            [btn setBackgroundImage:imagee forState:UIControlStateNormal];
+            UIImageView *imageview = [[UIImageView alloc]init];
+            NSString *urlstr = [NSString stringWithFormat:@"%@%@",SERVER,data.icon];
+            [imageview setImageWithURL:[NSURL URLWithString:urlstr]];
+            // UIImage *imagee = [self getImageFromURL:[NSString stringWithFormat:@"%@%@",SERVER,data.icon]];
+            [btn setBackgroundImage:imageview.image forState:UIControlStateNormal];
         }
         else
         {
-            [btn setBackgroundImage:[UIImage imageNamed:data.icon] forState:UIControlStateNormal];
+            [btn setBackgroundImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@_118",data.icon]] forState:UIControlStateNormal];
         }
         btn.tag = data.num;
         [btn addTarget:self action:@selector(selectitem:) forControlEvents:UIControlEventTouchUpInside];
         [vi addSubview:btn];
         [backview addSubview:vi];
-       
         
         
-        UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(0, 70, 60, 20)];
+        
+        UILabel *label = [[UILabel alloc]init];
+        if(DEVH>480)
+            label.frame = CGRectMake(10, 75, 60, 20);
+        else
+            label.frame = CGRectMake(10, 60, 50, 20);
         label.text = data.name;
         label.font = [UIFont systemFontOfSize:12];
         label.textAlignment = 1;
         [vi addSubview:label];
-        UIButton *btn1 = [UIButton buttonWithType:UIButtonTypeCustom];
-        btn1.frame = CGRectMake(0, 0, 25, 25);
         
-        [btn1 setBackgroundImage:[UIImage imageNamed:@"deleteTag.png"] forState:UIControlStateNormal];
         
-        btn1.hidden = YES;
-        [btn1 addTarget:self action:@selector(deletebtn:) forControlEvents:UIControlEventTouchUpInside];
-        btn1.tag  = data.num+1001;
+        UIButton *delebtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        delebtn.frame = CGRectMake(0, 0, 25, 25);
+        
+        [delebtn setBackgroundImage:[UIImage imageNamed:@"album_delete@2x.png"] forState:UIControlStateNormal];
+        
+        delebtn.hidden = YES;
+        [delebtn addTarget:self action:@selector(deletebtn:) forControlEvents:UIControlEventTouchUpInside];
+        delebtn.tag  = data.num+1001;
         // [btn1 addTarget:self action:@selector(deleteaction:) forControlEvents:UIControlEventTouchUpInside];
-        [delebutarr addObject:btn1];
-        [vi addSubview:btn1];
+        [delebutarr addObject:delebtn];
+        if([data.status isEqualToString:@"1"])
+        {
+        [vi addSubview:delebtn];
+        }
         
         
         
@@ -345,18 +387,11 @@
     }
     
 }
-//网络图片下载
--(UIImage *) getImageFromURL:(NSString *)fileURL {
-   // NSLog(@"执行图片下载函数");
-    UIImage * result;
-    NSData * data = [NSData dataWithContentsOfURL:[NSURL URLWithString:fileURL]];
-    result = [UIImage imageWithData:data];
-    return result;
-}
+
 //button点击动作
 -(void)selectitem:(UIButton *)btm
 {
-    NSLog(@"点击的tag = ---------------%d",btm.tag);
+    
     NSString *mouname = [_Mudic objectForKey:@"name"];
     if(shake)
     {
@@ -384,8 +419,7 @@
         [self.navigationController pushViewController:vii animated:NO];
     }
     if([data.name isEqualToString:@"历年高招"])
-    {
-        MTLINianGZViewController * vii = [[MTLINianGZViewController alloc]init];
+    {    MTLINianGZViewController * vii = [[MTLINianGZViewController alloc]init];
         [self.navigationController pushViewController:vii animated:NO];
     }
     if([data.mode isEqualToString:@"webview"])
@@ -407,6 +441,7 @@
     // [[MyDbHandel defaultDBManager]openDb:DBName];
     NSString *sql = [NSString stringWithFormat:@"update %@ set status = '0' where num=%d and mouname = '%@'",NAME,btn.tag-1001,mouname];
     [[MyDbHandel defaultDBManager]updata:sql];
+    
     doneview.hidden = NO;
     [self performSelector:@selector(missview:) withObject:doneview afterDelay:2.4];
     [self drawUI];
@@ -438,10 +473,10 @@
         {
             [WToast showWithText:@"上传成功！"];
         }
-        //  NSLog(@"上传返回消息:---%@",response);
+        
     }];
     
-    //  NSLog(@"json string is %@",  [[MyDbHandel defaultDBManager]jsonwrite:sql]);
+    
 }
 #pragma mark -longpress action
 - (void)buttonLongPressed:(UILongPressGestureRecognizer *)sender
@@ -456,9 +491,13 @@
         [self BeginWobble];
         for(UIButton *btn in delebutarr)
         {
+//            NSString *sql = [NSString stringWithFormat: @"select * from %@ where num = %d",NAME,btn.tag];
+//            [[MyDbHandel defaultDBManager]openDb:DBName];
+//            
             btn.hidden = NO;
         }
         startPoint = [sender locationInView:sender.view];
+        // NSLog(@"qishi坐标:-----%@", NSStringFromCGPoint(startPoint));
         originPoint = btn.center;
         [UIView animateWithDuration:.2 animations:^{
             
@@ -475,8 +514,10 @@
         //  NSLog(@".........");
         CGPoint newPoint = [sender locationInView:sender.view];
         
+        // NSLog(@"移动坐标:-----%@", NSStringFromCGPoint(newPoint));
         CGFloat deltaX = newPoint.x-startPoint.x;
         CGFloat deltaY = newPoint.y-startPoint.y;
+        // btn.center = CGPointMake(newPoint.x, newPoint.y);
         btn.center = CGPointMake(btn.center.x+deltaX,btn.center.y+deltaY);
     }
     if (sender.state == UIGestureRecognizerStateEnded)
@@ -484,9 +525,10 @@
         
         CGPoint newPoint = [sender locationInView:sender.view];
         //   CGPoint newPoint = [sender locationInView:sender.view];
-        int index = [self indexOfPoint:btn.center withButton:btn];
+       long int index = [self indexOfPoint:btn.center withButton:btn];
         CGFloat deltaX = newPoint.x-startPoint.x;
         CGFloat deltaY = newPoint.y-startPoint.y;
+        //
         btn.center = CGPointMake(btn.center.x+deltaX,btn.center.y+deltaY);
         if(index<0)
         {
@@ -525,11 +567,11 @@
                 [[MyDbHandel defaultDBManager]updata:sql];
                 [self creatdatabase];
                 //   [[MyDbHandel defaultDBManager]openDb:DBName];
-                NSString *sql1 = [NSString stringWithFormat:@"update %@ set num =%d where num = %d and mouname = '%@'",NAME,btn.tag,index+1,mouname];
+                NSString *sql1 = [NSString stringWithFormat:@"update %@ set num =%d where num = %ld and mouname = '%@'",NAME,btn.tag,index+1,mouname];
                 [[MyDbHandel defaultDBManager]updata:sql1];
                 [self creatdatabase];
                 // [[MyDbHandel defaultDBManager]openDb:DBName];
-                NSString *sql2 = [NSString stringWithFormat:@"update %@ set num =%d where num = %d and mouname = '%@'",NAME,index+1,0,mouname];
+                NSString *sql2 = [NSString stringWithFormat:@"update %@ set num =%ld where num = %d and mouname = '%@'",NAME,index+1,0,mouname];
                 [[MyDbHandel defaultDBManager]updata:sql2];
                 [self performSelector:@selector(drawUI) withObject:nil afterDelay:.7];
                 [self performSelector:@selector(missview:) withObject:doneview afterDelay:2.4];
@@ -570,7 +612,8 @@
              viewe.transform=CGAffineTransformMakeRotation(-0.05);
          } completion:^(BOOL finished)
          {
-             [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionRepeat|UIViewAnimationOptionAutoreverse|UIViewAnimationOptionAllowUserInteraction  animations:^
+             [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionRepeat
+              |UIViewAnimationOptionAutoreverse|UIViewAnimationOptionAllowUserInteraction  animations:^
               {
                   
                   
@@ -586,13 +629,10 @@
     shake = NO;
     for (UIView *viewe in backview.subviews)
     {
-        [UIView animateWithDuration:.1 delay:1 options:UIViewAnimationOptionAllowUserInteraction|UIViewAnimationOptionBeginFromCurrentState animations:^
+        [UIView animateWithDuration:.1 delay:1 options:UIViewAnimationOptionAllowUserInteraction
+         |UIViewAnimationOptionBeginFromCurrentState animations:^
          {
              viewe.transform=CGAffineTransformIdentity;
-             //             for(UIButton *btnnn in btnarr)
-             //             {
-             //                 btnnn.hidden = YES;
-             //             }
          } completion:^(BOOL finished) {}
          ];
     }
@@ -601,14 +641,6 @@
 -(void)missview:(UIView *)vi
 {
     doneview.hidden = YES;
-}
--(void)setmainmodele
-{
-    NSString *str = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)objectAtIndex:0];
-    NSLog(@"str is ；---%@",str);
-    NSString *filepath = [str stringByAppendingPathComponent:userinfor];
-    NSArray *arre = [NSArray arrayWithContentsOfFile:filepath];
-    NSLog(@"本地数据----%@",arre);
 }
 #pragma mark button action
 -(void)select:(UIButton *)send
@@ -635,104 +667,107 @@
     
     [self.navigationController pushViewController:action animated:NO];
 }
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // scro.delegate = self;
-    //page.numberOfPages = 3;
-    // page.backgroundColor =[UIColor redColor];
-    // Dispose of any resources that can be recreated.
-}
 #pragma mark- Advaction
-//广告数据请求
--(void)loaddata
+//处理广告数据
+-(void)handelAdvData:(NSDictionary *)AdvDiction
 {
-    dataarr = [[NSMutableArray alloc]initWithCapacity:0];
-    NSMutableDictionary *dic = [[NSMutableDictionary alloc]initWithCapacity:0];
-    [dic setObject:@"getADUrl" forKey:@"action"];
-    //[dic setObject:[FuncPublic GetDefaultInfo:@"mobilenumber"] forKey:@"mobilenumber"];
-    //[dic setObject:[FuncPublic GetDefaultInfo:@"authCode"] forKey:@"authCode"];
-    [dic setObject:[FuncPublic createUUID] forKey:@"r"];
-    [dic setObject:[FuncPublic GetDefaultInfo:@"dvid"] forKey:@"dvid"];
-    
-    [SVHTTPRequest GET:@"/action/common.ashx"
-            parameters:dic
-            completion:^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
-                
-                if(error!=nil)
-                {
-                    [WToast showWithText:kMessage];
-                    NSArray *arraa = [NSArray arrayWithObjects:@"start.jpg",@"start.jpg",@"start.jpg", nil];
-                    [self Addimage:arraa];
-                    return ;
-                }
-                else if([[response objectForKey:@"status"]isEqualToString:@"true"])
-                {
-                    for(NSDictionary *diction in [response objectForKey:@"data"])
-                    {
-                        [dataarr addObject:diction];
-                    }
-                    NSLog(@"网络数据是;%@",dataarr);
-                    [FuncPublic SaveDefaultInfo:dataarr Key:@"advimage1"];
-                    [self AddImage:dataarr];
-                    
-                }
-            }];
-    
-    
-}
--(void)Addimage:(NSArray *)arr
-{
-    scro.contentSize = CGSizeMake(320*arr.count, scro.frame.size.height);
-    mypage.numberOfPages = arr.count;
-    [self setCurrentPage:mypage.currentPage];
-    
-    for(int i = 0;i<arr.count;i++)
+    NSString *MName = [_Mudic objectForKey:@"id"];
+    NSLog(@"模块的id:%@",MName);
+   // [FuncPublic SaveDefaultInfo:nil Key:MName];
+    [FuncPublic SaveDefaultInfo:AdvDiction Key:MName];
+
+    NSLog(@"广告的数据:%@",AdvDiction);
+    NSString *mmname = [_Mudic objectForKey:@"name"];
+    if([FuncPublic GetDefaultInfo:mmname]!=nil)
     {
         
-        UIImageView *imagevie = [[UIImageView alloc]initWithFrame:CGRectMake(320*i, 0, 320, scro.frame.size.height)];
-        imagevie.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@",[arr objectAtIndex:i ]]];
         
-        [scro addSubview:imagevie];
+        NSArray *advarrr = [FuncPublic GetDefaultInfo:mmname];
         
+        [self AddImage:advarrr];
+        return;
     }
-    [NSTimer scheduledTimerWithTimeInterval:4 target:self selector:@selector(flashadr) userInfo:nil repeats:YES];
-    
+    NSString *str = [AdvDiction objectForKey:@"url"];
+    [SVHTTPRequest GET:str parameters:nil completion:^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
+        if(error!=nil)
+        {
+            [WToast showWithText:kMessage];
+        }
+        else if([[response objectForKey:@"status"]isEqualToString:@"true"])
+        {
+            NSArray *advarr = [response objectForKey:@"data"];
+            
+            [FuncPublic SaveDefaultInfo:advarr Key:mmname];
+            [self AddImage:advarr];
+        }
+    }];
     
 }
 
 //显示广告
 -(void)AddImage:(NSArray *)arr
 {
-    // NSLog(@"传入数组数据室；%@",arr);
-    //  float heigh = [arr objectAtIndex:<#(NSUInteger)#>]
-    scro.contentSize = CGSizeMake(320*arr.count, scro.frame.size.height);
     mypage.numberOfPages = arr.count;
-    //  [self setCurrentPage:mypage.currentPage];
+    pageimagearr = [NSMutableArray array];
+    // NSLog(@"广告的数据:%@",arr);
+    NSString *Mnam = [_Mudic objectForKey:@"id"];
+    NSDictionary *dcico = [FuncPublic GetDefaultInfo:Mnam];
+    float heighht = [[dcico objectForKey:@"height"]floatValue];
+    heighht = heighht>200?200:heighht;
+    int AdvTime = [[dcico objectForKey:@"stay"]integerValue];
     
-    //    for(int i = 0;i<arr.count;i++)
-    //    {
-    //        float height = [[[arr objectAtIndex:i]objectForKey:@"height"]floatValue];
-    //        [FuncPublic InstanceButton:nil Ect:nil RECT:CGRectMake(320*i, 0, 320, height) AddView:scro ViewController:self SEL_:@selector(advdetail:) Kind:1 TAG:i+10];
-    UIImageView *imagevie = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 320, scro.frame.size.height)];
-    NSString *url = [[_Mudic objectForKey:@"ads"]objectForKey:@"url"];
-    if([url isEqualToString:@""])
+    scro.contentSize = CGSizeMake(320*arr.count, heighht);
+    scro.frame = CGRectMake(scro.frame.origin.x, scro.frame.origin.y, scro.frame.size.width, heighht);
+    for(int i =0 ;i<arr.count;i++)
+    {
+        //自定义pagecontrol
+        UIImageView *image1 = [[UIImageView alloc]initWithFrame:CGRectMake(130+20*i, scro.frame.size.height+74-20, 10, 10)];
+        image1.image = [UIImage imageNamed:@"focus_a@2x"];
+        [self.view addSubview:image1];
+        UIImageView *image2 = [[UIImageView alloc]initWithFrame:CGRectMake(125+20*i, scro.frame.size.height+74-24, 17, 17)];
+        image2.image = [UIImage imageNamed:@"focus_b@2x"];
+        image2.tag = 12345+i;
+        [self.view addSubview:image2];
+        if(i>0)
+            image2.hidden = YES;
+        [pageimagearr addObject:image2];
+        
+        
+        //scrollview上面的button
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake(320*i, 0, 320, heighht);
+        [btn addTarget:self action:@selector(advdetail:) forControlEvents:UIControlEventTouchUpInside];
+        btn.tag = i;
+        
+        
+        //广告图片
+        UIImageView *imagevie = [[UIImageView alloc]initWithFrame:CGRectMake(320*i, 0, 320,heighht)];
+        NSString *url = [[arr objectAtIndex:i]objectForKey:@"url"];
+        if([url isEqualToString:@""])
         imagevie.image = [UIImage imageNamed:@"start.jpg"];
-    
-    [imagevie setLoadingImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",SERVER,url]] placeholderImage:@"start.jpg"];
-    //       // [imagevie setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",SERVER,url]]];
-    [scro addSubview:imagevie];
-    //
-    //    }
-    [NSTimer scheduledTimerWithTimeInterval:4 target:self selector:@selector(flashadr) userInfo:nil repeats:YES];
+        [imagevie setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",SERVER,url]]];
+        [scro addSubview:btn];
+        [scro addSubview:imagevie];
+    }
+    if(times)
+    {
+    [times invalidate];
+    }
+  times =  [NSTimer scheduledTimerWithTimeInterval:AdvTime target:self selector:@selector(flashadr) userInfo:nil repeats:YES];
     
 }
 //点击某张广告
 -(void)advdetail:(UIButton *)btn
 {
-    MTAdvDtViewController *detail = [[MTAdvDtViewController alloc]init];
-    detail.urlstr = [[dataarr objectAtIndex:btn.tag-10]objectForKey:@"detailUrl"];
-    [self.navigationController pushViewController:detail animated:NO];
+    NSString *nanna = [_Mudic objectForKey:@"name"];
+    NSArray *arr = [FuncPublic GetDefaultInfo:nanna];
+    NSString *urlstrr = [[arr objectAtIndex:btn.tag]objectForKey:@"detailUrl"];
+    
+    MTWebView *web = [[MTWebView alloc]init];
+    web.titlestr = @"广告详细";
+    web.urlstr = [NSString stringWithFormat:@"%@%@",SERVER,urlstrr];
+    
+    [self.navigationController pushViewController:web animated:NO];
 }
 //广告跳动
 -(void)flashadr
@@ -741,7 +776,7 @@
     float current = scro.contentOffset.x+320;
     if(current>scro.contentSize.width-320)
         current = 0;
-    [self setCurrentPage:current];
+    
     scro.contentOffset = CGPointMake(current, 0);
     
 }
@@ -753,12 +788,29 @@
 {
     if(scrollView.contentOffset.x>scrollView.contentSize.width-280)
         
-        scrollView.contentOffset = CGPointMake(0, 0);
+    scrollView.contentOffset = CGPointMake(0, 0);
     mypage.currentPage = scrollView.contentOffset.x/320;
+    for(UIImageView *ima in pageimagearr)
+    {
+        if(ima.tag==mypage.currentPage+12345)
+            ima.hidden = NO;
+        else
+            ima.hidden = YES;
+    }
 }
 //反馈
 - (IBAction)feedback:(UIButton *)sender {
     FeedbackViewController *feedback = [[FeedbackViewController alloc]init];
+    
     [self.navigationController pushViewController:feedback animated:NO];
+}
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    
+}
+-(void)dealloc
+{
+    
 }
 @end

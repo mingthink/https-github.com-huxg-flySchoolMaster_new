@@ -20,7 +20,7 @@
     MJRefreshFooterView *footview;
     MJRefreshHeaderView *headview;
     NSMutableArray *datalist;
-     NSMutableArray *moredatasouce;
+    NSMutableArray *moredatasouce;
     int page;
     BOOL isRefreshing;
     
@@ -43,12 +43,13 @@
 {
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(loaddata:) name:@"KCFNetChange" object:nil];
-   // [[NSNotificationCenter defaultCenter]addObserverForName:@"KCFNetChange" object:nil queue:nil usingBlock:nil];
+    [FuncPublic InstanceNavgationBar:@"高考资讯" action:@selector(back:) superclass:self isroot:NO];
+    // [[NSNotificationCenter defaultCenter]addObserverForName:@"KCFNetChange" object:nil queue:nil usingBlock:nil];
     page = 1;
     datalist = [[NSMutableArray alloc]initWithCapacity:0];
     moredatasouce = [[NSMutableArray alloc]initWithCapacity:0];
     
-    mytab = [[UITableView alloc]initWithFrame:CGRectMake(0, 64, 320, DEVH-64-50) style:UITableViewStylePlain];
+    mytab = [[UITableView alloc]initWithFrame:CGRectMake(0, 60, 320, DEVH-60-50) style:UITableViewStylePlain];
     mytab.delegate = self;
     mytab.dataSource =self;
     mytab.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -68,65 +69,68 @@
 }
 -(void)loaddata:(int)pag
 {
-    NSLog(@"come agin....");
+    
     NSMutableDictionary *dic = [[NSMutableDictionary alloc]initWithCapacity:0];
     [dic setObject:[NSString stringWithFormat:@"%d",pag] forKey:@"page_number"];
     [dic setObject:@"1" forKey:@"isDoPaging"];
     [dic setObject:@"5" forKey:@"txbPageSize"];
     [dic setObject:[FuncPublic createUUID] forKey:@"r"];
     [SVHTTPRequest GET:@"/api/news/"
-                  parameters:dic
-                  completion:^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
-                     if(error!=nil)
-                     {
-                         [WToast showWithText:kMessage];
-                         return ;
-                     }
-                      if(isRefreshing==YES)
-                      {
-                          NSMutableArray *datamore = [[NSMutableArray alloc]initWithCapacity:0];
-//                          [moredatasouce removeAllObjects];
-                          
-                          if([[response objectForKey:@"status"]isEqualToString:@"false"])
-                          {
-                              [ WToast showWithText:@"无最新数据"];
-                              return;
-                          }
-                          for(NSDictionary *dic in [response objectForKey:@"data"])
-                          {
-                              [datamore addObject:dic];
-                          }
-                          
-                          
-                              [datalist removeAllObjects];
-                              datalist = datamore;
-                              [mytab reloadData];
-                          
-                          
-                          
-                      }
-                      
-                      
-                      
-                      else if(isRefreshing==NO){
-                          
-                          //  NSLog(@"返回信息是:%@",dictt);
-                          if([[response objectForKey:@"status"]isEqualToString:@"false"])
-                          {
-                              [WToast showWithText:@"已经全部加载"];
-                              return;
-                          }
-                          page++;
-                          for(NSDictionary *dic in [response objectForKey:@"data"])
-                          {
-                              [datalist addObject:dic];
-                          }
-                          
-                          [mytab reloadData];
-                      }
-                      
-                      NSLog(@"返回信息是:%@",response);
-                  }];
+            parameters:dic
+            completion:^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
+               // NSLog(@"返回信息:%d",[urlResponse statusCode]);
+                if(error!=nil)
+                {
+                   // [MTAlertView Aletwithstring:@"networkDisabled"];
+                    
+                   
+                    return ;
+                }
+                if(isRefreshing==YES)
+                {
+                    NSMutableArray *datamore = [[NSMutableArray alloc]initWithCapacity:0];
+                    //                          [moredatasouce removeAllObjects];
+                    
+                    if([[response objectForKey:@"status"]isEqualToString:@"false"])
+                    {
+                        [WToast showWithText:@"无最新数据"];
+                        return;
+                    }
+                    for(NSDictionary *dic in [response objectForKey:@"data"])
+                    {
+                        [datamore addObject:dic];
+                    }
+                    
+                    
+                    [datalist removeAllObjects];
+                    datalist = datamore;
+                    [mytab reloadData];
+                    
+                    
+                    
+                }
+                
+                
+                
+                else if(isRefreshing==NO){
+                    
+                    //  NSLog(@"返回信息是:%@",dictt);
+                    if([[response objectForKey:@"status"]isEqualToString:@"false"])
+                    {
+                        [WToast showWithText:@"已经全部加载"];
+                        return;
+                    }
+                    page++;
+                    for(NSDictionary *dic in [response objectForKey:@"data"])
+                    {
+                        [datalist addObject:dic];
+                    }
+                    
+                    [mytab reloadData];
+                }
+                
+                NSLog(@"返回信息是:%@",response);
+            }];
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -152,12 +156,12 @@
     UIImageView *image = [[UIImageView alloc]initWithFrame:CGRectMake(280, 20, 20, 20)];
     
     
-   
-    
-   
     
     
-        if(!cell)
+    
+    
+    
+    if(!cell)
     {
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         time.text = [NSString stringWithFormat:@"%@", [[datalist objectAtIndex:indexPath.row]objectForKey:@"published"]];
@@ -169,7 +173,7 @@
         
         
         
-    
+        
     }
     
     if(indexPath.row%2==0)
@@ -178,7 +182,7 @@
     }
     else
     {
-       cell.backgroundColor = [UIColor colorWithRed:160./255 green:255./255 blue:255./255 alpha:1];
+        cell.backgroundColor = [UIColor colorWithRed:160./255 green:255./255 blue:255./255 alpha:1];
     }
     image.contentMode = UIViewContentModeScaleAspectFit;
     image.image = [UIImage imageNamed:@"right.png"];
@@ -191,7 +195,7 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *str = [[NSString alloc]initWithString:[NSString stringWithFormat:@"%@",[[datalist objectAtIndex:indexPath.row]objectForKey:@"title"]]];
-   // NSLog(@"掉出数据是：%@",str);
+    // NSLog(@"掉出数据是：%@",str);
     CGSize size = [str sizeWithFont:[UIFont systemFontOfSize:16.0f] constrainedToSize:CGSizeMake(250, MAXFLOAT) lineBreakMode:NSLineBreakByWordWrapping];
     NSLog(@"返回高度是：%f",size.height);
     return size.height+30;
@@ -235,14 +239,8 @@
     {
         page = 1;
     }
-//    else
-//    {
-//       // page++;
-//    }
-   // NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/api/news/?page_number=%d&isDoPaging=1&txbPageSize=5",SERVER3,page]];
-    NSLog(@"刷新次数是：---------%d",page);
-    //[self loaddata:url];
-    //[self loaddataa:page];
+    
+   
     [self loaddata:page];
     [refersh endRefreshing];
 }
@@ -258,6 +256,6 @@
     [headview free];
 }
 - (IBAction)back:(UIButton *)sender {
-    [self.navigationController popViewControllerAnimated:NO];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 @end
