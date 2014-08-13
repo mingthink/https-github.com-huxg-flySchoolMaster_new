@@ -14,7 +14,7 @@
     UITableView *applist;
     NSMutableArray *listarr;
     NSMutableArray *buttonarr;
-    NSString *str;
+    NSString *str;		
 }
 @end
 
