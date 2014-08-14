@@ -16,6 +16,7 @@
     NSMutableArray *listarr;
     NSMutableArray *buttonarr;
     NSMutableArray *dataDic;
+    NSMutableArray *searchArr;
     NSString *str;
 }
 @end
@@ -85,8 +86,10 @@
              NSMutableArray *arrary = [[NSMutableArray alloc]init];
              for (NSMutableDictionary *diction in [response objectForKey:@"data"]) {
                  [arrary addObject:diction];
+                 
                  dataDic = arrary;
              }
+             
              [FuncPublic SaveDefaultInfo:dataDic Key:@"AppList"];
              NSLog(@"dataDic is....%@",dataDic);
          }
@@ -104,7 +107,7 @@
     
     [FuncPublic InstanceImageView:backimastr Ect:@"png" RECT:CGRectMake(0, 60, DEVW, DEVH-110) Target:self.view TAG:2435];
     
-    applist = [[UITableView alloc]initWithFrame:CGRectMake(0, 60, DEVW, DEVH-110) style:UITableViewStyleGrouped];
+    applist = [[UITableView alloc]initWithFrame:CGRectMake(0, 60, DEVW, DEVH-110) style:UITableViewStylePlain];
     
     applist.dataSource = self;
     
@@ -130,14 +133,13 @@
         
     [FuncPublic InstanceLabel:[NSString stringWithFormat:@"%@",[[[[listarr objectAtIndex:indexPath.section]objectForKey:@"applications"] objectAtIndex:indexPath.row ] objectForKey:@"name"] ] RECT:CGRectMake(100, 30, 120, 20) FontName:nil Red:0 green:0 blue:0 FontSize:16 Target:cell Lines:0 TAG:0 Ailgnment:0];
     UIImageView *iconImage = [[UIImageView alloc]initWithFrame:CGRectMake(5, 2, 76, 76)];
-//        iconImage.image = [[[listarr objectAtIndex:indexPath.row]objectForKey:@"applications"]objectForKey:@"icon"];
-//                    NSData *imageData = [[NSData alloc]initWithContentsOfURL:[NSURL URLWithString:@"%@%@",SERVER,[listarr objectAtIndex:indexPath.row]objectForKey:@"applications"]objectForKey:@"icon"]]];
+
     NSURL *iconURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",SERVER,[[[[listarr objectAtIndex:indexPath.section]objectForKey:@"applications"] objectAtIndex:indexPath.row ] objectForKey:@"icon"]]];
     [iconImage setLoadingImageWithURL:iconURL placeholderImage:nil];
      
         UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [button setTitle:@"下载" forState:UIControlStateNormal];
-        button.frame = CGRectMake(270, 30, 40, 30);
+        button.frame = CGRectMake(220, 30, 40, 30);
         button.layer.cornerRadius = 5;
         button.layer.borderWidth = 0.8;
         [button addTarget:self action:@selector(downApp:) forControlEvents:UIControlEventTouchUpInside];
@@ -147,17 +149,23 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
-                           
+
+-(NSArray*)sectionIndexTitlesForTableView:(UITableView *)tableView
+{
+    searchArr = [[NSMutableArray alloc]initWithCapacity:0];
+    for (int i = 0; i < listarr.count; i++) {
+        [searchArr addObject:[[listarr objectAtIndex:i]objectForKey:@"name"]];
+    }
+    return searchArr;
+}
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return listarr.count;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-
-    NSString *sectionTitle ;
     
-    sectionTitle = [[listarr objectAtIndex:section]objectForKey:@"name"];
+    NSString *sectionTitle = [[listarr objectAtIndex:section]objectForKey:@"name"];
     
     return sectionTitle;
 }
@@ -168,7 +176,7 @@
     return arrary.count;
 }
 
--(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 80.0;
 }
