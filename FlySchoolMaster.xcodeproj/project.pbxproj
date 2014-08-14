@@ -100,7 +100,6 @@
 		652726201950207E0041F4A4 /* MTAdvDtViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6527261E1950207E0041F4A4 /* MTAdvDtViewController.m */; };
 		652726211950207E0041F4A4 /* MTAdvDtViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6527261F1950207E0041F4A4 /* MTAdvDtViewController.xib */; };
 		6532E7DE1953C195004A87B4 /* 校园标志.png in Resources */ = {isa = PBXBuildFile; fileRef = 6532E7DD1953C195004A87B4 /* 校园标志.png */; };
-		6532E7E01953C26F004A87B4 /* Images-2.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6532E7DF1953C26F004A87B4 /* Images-2.xcassets */; };
 		653DF363194A9BAA00B66B76 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 653DF362194A9BAA00B66B76 /* AVFoundation.framework */; };
 		653DF368194A9CE500B66B76 /* voice1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 653DF364194A9CE500B66B76 /* voice1.mp3 */; };
 		653DF369194A9CE500B66B76 /* voice2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 653DF365194A9CE500B66B76 /* voice2.mp3 */; };
@@ -546,7 +545,6 @@
 		6527261E1950207E0041F4A4 /* MTAdvDtViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTAdvDtViewController.m; sourceTree = "<group>"; };
 		6527261F1950207E0041F4A4 /* MTAdvDtViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MTAdvDtViewController.xib; sourceTree = "<group>"; };
 		6532E7DD1953C195004A87B4 /* 校园标志.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "校园标志.png"; sourceTree = "<group>"; };
-		6532E7DF1953C26F004A87B4 /* Images-2.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Images-2.xcassets"; sourceTree = "<group>"; };
 		653DF362194A9BAA00B66B76 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		653DF364194A9CE500B66B76 /* voice1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = voice1.mp3; sourceTree = "<group>"; };
 		653DF365194A9CE500B66B76 /* voice2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = voice2.mp3; sourceTree = "<group>"; };
@@ -959,7 +957,6 @@
 				650C02A31946A5E30006E624 /* MTViewController.h */,
 				650C02A41946A5E30006E624 /* MTViewController.m */,
 				650C02A61946A5E30006E624 /* Images.xcassets */,
-				6532E7DF1953C26F004A87B4 /* Images-2.xcassets */,
 				650C02951946A5E30006E624 /* Supporting Files */,
 			);
 			path = FlySchoolMaster;
@@ -1908,7 +1905,6 @@
 				65F9F141194737D000DF1442 /* lqqk_infobg.png in Resources */,
 				650C03921946B0540006E624 /* notice.png in Resources */,
 				65CA7466199312FE00283351 /* b_main.png in Resources */,
-				6532E7E01953C26F004A87B4 /* Images-2.xcassets in Resources */,
 				65F9F19B194737D000DF1442 /* key_close_bg@2x.png in Resources */,
 				65F9F105194737D000DF1442 /* right.png in Resources */,
 				65F9F11A194737D000DF1442 /* m_lqjd.png in Resources */,

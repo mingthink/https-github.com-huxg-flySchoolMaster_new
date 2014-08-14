@@ -9,11 +9,13 @@
 #import "MTAppCenter.h"
 #import "MTPageModel.h"
 #import "SVHTTPRequest.h"
+#import "UIImageView+webimage.h"
 @interface MTAppCenter ()<UITableViewDataSource,UITableViewDelegate>
 {
     UITableView *applist;
     NSMutableArray *listarr;
     NSMutableArray *buttonarr;
+    NSMutableArray *dataDic;
     NSString *str;
 }
 @end
@@ -39,9 +41,15 @@
 //    
 //    [thread start];
     
-   // [self loaddata];
+    //[self getdata];
+    if ([FuncPublic GetDefaultInfo:@"AppList"] == nil) {
+        [self getdata];
+    }
+    else
+        listarr = [[NSMutableArray alloc]initWithCapacity:0];
+        listarr = [FuncPublic GetDefaultInfo:@"AppList"];
     
-    [self getdata];
+    NSLog(@"listarr is ...%@",listarr);
     
     [self drawUI];
     
@@ -50,6 +58,7 @@
 }
 -(void)getdata
 {
+    
     NSDictionary *diss = [FuncPublic GetDefaultInfo:@"Newuser"];
     
     NSString *dvid = [FuncPublic GetDefaultInfo:@"dvid"];
@@ -73,7 +82,13 @@
              return;
          if([[response objectForKey:@"status"]isEqualToString:@"true"])
          {
-             
+             NSMutableArray *arrary = [[NSMutableArray alloc]init];
+             for (NSMutableDictionary *diction in [response objectForKey:@"data"]) {
+                 [arrary addObject:diction];
+                 dataDic = arrary;
+             }
+             [FuncPublic SaveDefaultInfo:dataDic Key:@"AppList"];
+             NSLog(@"dataDic is....%@",dataDic);
          }
        
     }];
@@ -89,7 +104,7 @@
     
     [FuncPublic InstanceImageView:backimastr Ect:@"png" RECT:CGRectMake(0, 60, DEVW, DEVH-110) Target:self.view TAG:2435];
     
-    applist = [[UITableView alloc]initWithFrame:CGRectMake(0, 60, DEVW, DEVH-110) style:UITableViewStylePlain];
+    applist = [[UITableView alloc]initWithFrame:CGRectMake(0, 60, DEVW, DEVH-110) style:UITableViewStyleGrouped];
     
     applist.dataSource = self;
     
@@ -101,10 +116,6 @@
 
 }
 #pragma mark-tableview
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return [listarr count];
-}
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -113,56 +124,76 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellid];
     
-    UIImageView *icon = [[UIImageView alloc]init];
-    
-    UILabel *appname = [[UILabel alloc]init];
-    
-    UIButton *downbtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    
-    downbtn.tag = indexPath.row;
-    
-    [downbtn addTarget:self action:@selector(downApp:) forControlEvents:UIControlEventTouchUpInside];
-    
-    BOOL canopern = [[UIApplication sharedApplication]canOpenURL:[NSURL URLWithString:@"SharedTest://"]];
-    
-    [downbtn setTitle:canopern?@"打开":@"下载" forState:UIControlStateNormal];
-    
-    [downbtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    
-    [buttonarr addObject:downbtn];
-    
-    if(!cell)
+       if(!cell)
     {
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellid];
         
-        NSString *iconstr = [[listarr objectAtIndex:indexPath.row]objectForKey:@"iconname"];
-        
-        NSString *appnamestr = [[listarr objectAtIndex:indexPath.row]objectForKey:@"appname"];
-        
-        icon.frame = CGRectMake(10, 5, 48, 48);
-        
-        icon.image = [UIImage imageNamed:iconstr];
-        
-        appname.frame = CGRectMake(65, 20, 100, 20);
-        
-        appname.font = [UIFont systemFontOfSize:14.0f];
-        
-        appname.text = appnamestr;
-        
-        downbtn.frame = CGRectMake(250, 20, 50, 30);
-        
-        [cell.contentView addSubview:icon];
-        
-        [cell.contentView addSubview:appname];
-        
-        [cell.contentView addSubview:downbtn];
+    [FuncPublic InstanceLabel:[NSString stringWithFormat:@"%@",[[[[listarr objectAtIndex:indexPath.section]objectForKey:@"applications"] objectAtIndex:indexPath.row ] objectForKey:@"name"] ] RECT:CGRectMake(100, 30, 120, 20) FontName:nil Red:0 green:0 blue:0 FontSize:16 Target:cell Lines:0 TAG:0 Ailgnment:0];
+    UIImageView *iconImage = [[UIImageView alloc]initWithFrame:CGRectMake(5, 2, 76, 76)];
+//        iconImage.image = [[[listarr objectAtIndex:indexPath.row]objectForKey:@"applications"]objectForKey:@"icon"];
+//                    NSData *imageData = [[NSData alloc]initWithContentsOfURL:[NSURL URLWithString:@"%@%@",SERVER,[listarr objectAtIndex:indexPath.row]objectForKey:@"applications"]objectForKey:@"icon"]]];
+    NSURL *iconURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",SERVER,[[[[listarr objectAtIndex:indexPath.section]objectForKey:@"applications"] objectAtIndex:indexPath.row ] objectForKey:@"icon"]]];
+    [iconImage setLoadingImageWithURL:iconURL placeholderImage:nil];
+     
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [button setTitle:@"下载" forState:UIControlStateNormal];
+        button.frame = CGRectMake(270, 30, 40, 30);
+        button.layer.cornerRadius = 5;
+        button.layer.borderWidth = 0.8;
+        [button addTarget:self action:@selector(downApp:) forControlEvents:UIControlEventTouchUpInside];
+        [cell addSubview:button];
+        [cell addSubview:iconImage];
     }
-    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
+                           
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return listarr.count;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+
+    NSString *sectionTitle ;
+    
+    sectionTitle = [[listarr objectAtIndex:section]objectForKey:@"name"];
+    
+    return sectionTitle;
+}
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    NSDictionary *dictionary = [listarr objectAtIndex:section];
+    NSArray *arrary = [dictionary objectForKey:@"applications"];
+    return arrary.count;
+}
+
 -(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 60;
+    return 80.0;
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    NSString *sectionTitle = [self tableView:applist titleForHeaderInSection:section];
+    if (sectionTitle == nil) {
+        return nil;
+    }
+    UILabel *label = [[UILabel alloc]init];
+    label.frame = CGRectMake(12, 0, 200, 22);
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [UIColor darkGrayColor];
+    label.font = [UIFont fontWithName:@"Helvetica-Bold" size:16];
+    label.text = sectionTitle;
+    
+    UIView *sectionView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, 30)];
+    //[sectionView setBackgroundColor:[UIColor blackColor]];
+    [sectionView addSubview:label];
+    return sectionView;
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 30.0;
 }
 -(void)downApp:(UIButton *)sender
 {
