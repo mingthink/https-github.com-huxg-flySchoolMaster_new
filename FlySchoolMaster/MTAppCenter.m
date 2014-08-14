@@ -38,11 +38,8 @@
 {
     [super viewDidLoad];
     
-//    NSThread * thread = [[NSThread alloc]initWithTarget:self selector:@selector(getdata) object:nil];
-//    
-//    [thread start];
+
     
-    //[self getdata];
     if ([FuncPublic GetDefaultInfo:@"AppList"] == nil) {
         [self getdata];
     }
@@ -131,9 +128,10 @@
     {
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellid];
         
-    [FuncPublic InstanceLabel:[NSString stringWithFormat:@"%@",[[[[listarr objectAtIndex:indexPath.section]objectForKey:@"applications"] objectAtIndex:indexPath.row ] objectForKey:@"name"] ] RECT:CGRectMake(100, 30, 120, 20) FontName:nil Red:0 green:0 blue:0 FontSize:16 Target:cell Lines:0 TAG:0 Ailgnment:0];
+    [FuncPublic InstanceLabel:[NSString stringWithFormat:@"%@",[[[[listarr objectAtIndex:indexPath.section]objectForKey:@"applications"] objectAtIndex:indexPath.row ] objectForKey:@"name"] ] RECT:CGRectMake(90, 30, 120, 20) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:cell Lines:0 TAG:0 Ailgnment:0];
     UIImageView *iconImage = [[UIImageView alloc]initWithFrame:CGRectMake(5, 2, 76, 76)];
 
+    [FuncPublic InstanceLabel:[NSString stringWithFormat:@"%@",[[[[listarr objectAtIndex:indexPath.section]objectForKey:@"applications"] objectAtIndex:indexPath.row ] objectForKey:@"describe"] ] RECT:CGRectMake(90, 60, 150, 15) FontName:nil Red:0 green:0 blue:0 FontSize:12 Target:cell Lines:0 TAG:1 Ailgnment:0];
     NSURL *iconURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",SERVER,[[[[listarr objectAtIndex:indexPath.section]objectForKey:@"applications"] objectAtIndex:indexPath.row ] objectForKey:@"icon"]]];
     [iconImage setLoadingImageWithURL:iconURL placeholderImage:nil];
      
@@ -142,6 +140,7 @@
         button.frame = CGRectMake(220, 30, 40, 30);
         button.layer.cornerRadius = 5;
         button.layer.borderWidth = 0.8;
+        button.tintColor = [UIColor blueColor];
         [button addTarget:self action:@selector(downApp:) forControlEvents:UIControlEventTouchUpInside];
         [cell addSubview:button];
         [cell addSubview:iconImage];
