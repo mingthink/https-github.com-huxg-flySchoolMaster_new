@@ -131,6 +131,11 @@
 -(void)notihandel:(NSNotification *)no
 {
     NSLog(@"收到通知......");
+    //关闭定时器
+    if(times)
+    {
+        [times invalidate];
+    }
     NSDictionary *dicc = no.object;
     NSString *mode = [dicc objectForKey:@"mode"];
     if(![mode isEqualToString:@"adAndFunctionList"])
@@ -429,6 +434,27 @@
         webview.titlestr = data.name;
         [self.navigationController pushViewController:webview animated:NO];
     }
+    if([data.mode isEqualToString:@"application"])
+    {
+        NSString *appurl = [[data.param componentsSeparatedByString:@"."]lastObject];
+        
+        NSString *urlstr = [NSString stringWithFormat:@"%@://",appurl];
+        
+        NSURL *url = [NSURL URLWithString:urlstr];
+        
+        if([[UIApplication sharedApplication]canOpenURL:url])
+        {
+            [[UIApplication sharedApplication]openURL:url];
+            
+        }
+        else
+        {
+            NSString *downloadstr = @"http://www.gaokaoApp.cn/";
+            
+            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:downloadstr]];
+        }
+
+    }
     
 }
 //删除某个功能操作
@@ -642,31 +668,7 @@
 {
     doneview.hidden = YES;
 }
-#pragma mark button action
--(void)select:(UIButton *)send
-{
-    UIView *view123 = (UIView *)[view viewWithTag:send.tag];
-    UIButton *btn = (UIButton *)[view123 viewWithTag:send.tag];
-    UIViewController *action = nil;
-    if(btn.tag==0)
-    {
-        action = [[MTGKZXViewController alloc]init];
-    }
-    if(btn.tag==3)
-    {
-        action = [[MTGKZSViewController alloc]init];
-    }
-    if(btn.tag ==6)
-    {
-        action = [[MTLINianGZViewController alloc]init];
-    }
-    else if(btn.tag!=0&&btn.tag!=3&&btn.tag!=6)
-    {
-        action = [[MTNOViewController alloc]init];
-    }
-    
-    [self.navigationController pushViewController:action animated:NO];
-}
+
 #pragma mark- Advaction
 //处理广告数据
 -(void)handelAdvData:(NSDictionary *)AdvDiction

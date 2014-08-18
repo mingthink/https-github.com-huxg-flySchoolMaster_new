@@ -188,12 +188,18 @@
 -(void)getPageInfo
 {
     NSDictionary *dic = [FuncPublic GetDefaultInfo:@"Newuser"];
+    
     NSMutableDictionary *dci = [NSMutableDictionary dictionary];
+    
     [dci setObject:[dic objectForKey:@"rid"] forKey:@"rid"];
+    
     [dci setObject:[dic objectForKey:@"id"] forKey:@"id"];
+    
     [dci setObject:[FuncPublic createUUID] forKey:@"r"];
+    
     [SVHTTPRequest GET:@"/api/module/base.html" parameters:dci completion:
      ^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
+         NSLog(@"界面定义数据:----->>>>>>%@",response);
          if(error!=nil)
          {
              [WToast showWithText:kMessage];
@@ -209,10 +215,15 @@
 -(void)getinfostr
 {
     NSDictionary *dic = [FuncPublic GetDefaultInfo:@"Newuser"];
+    
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    
     [dict setObject:[FuncPublic createUUID] forKey:@"r"];
+    
     [dict setObject:[dic objectForKey:@"id"] forKey:@"dvid"];
+    
     [dict setObject:[dic objectForKey:@"rid"] forKey:@"role"];
+    
     [SVHTTPRequest GET:@"/api/module/getNoticeMsg.html" parameters:dict completion:
      ^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
          if(error!=nil)

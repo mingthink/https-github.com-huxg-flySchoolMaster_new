@@ -48,7 +48,9 @@
 {
     [super viewDidLoad];
     MAAry = [NSArray array];
+    
     mainv = [[MTMainViewController alloc]init];
+    
     [self getdata];
     // [self getvision];
     
@@ -60,29 +62,36 @@
 {
     
     NSString *fiel = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)objectAtIndex:0];
+    
     NSString *fielpath = [fiel stringByAppendingString:[NSString stringWithFormat:@"/FileDocuments/%@",CachePath]];
+    
     NSDictionary * ddict = [[NSDictionary alloc]initWithContentsOfFile:fielpath];
-    //  NSLog(@"真机上的路径:%@",fielpath);
-    //  NSLog(@"功能整体数据:%@",ddict);
+    
     MAAry = [ddict objectForKey:@"data"];
    
     
     if(MAAry!=NULL)
     {
-       // NSLog(@"进入缓存数据........");
+       
         [self layoutMoudel:MAAry];
         
-        //return;
+       
     }
     else
     {
-        // NSLog(@"进入网络请求.......");
+        NSLog(@"进入网络请求.......");
         NSDictionary *dicc = [FuncPublic GetDefaultInfo:@"Newuser"];
+        
         NSString *uuid = [dicc objectForKey:@"rid"];
+        
         NSString *ridd = [dicc objectForKey:@"id"];
+        
         NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+        
         [dic setObject:[FuncPublic createUUID] forKey:@"r"];
+        
         [dic setObject:uuid forKey:@"rid"];
+        
         [dic setObject:ridd forKey:@"uid"];
         
         [SVHTTPRequest GET:@"/api/module/getModule.html" parameters:dic
@@ -97,16 +106,23 @@
                     {
                         // NSLog(@"返回的数据信息:%@",response);
                         [ FuncPublic saveDataToLocal:response toFileName:CachePath];
+                        
                         NSArray *arrar = [response objectForKey:@"data"];
+                        
                         [self layoutMoudel:arrar];
+                        
                         MAAry = [response objectForKey:@"data"];
                         
                         [[MyDbHandel defaultDBManager]openDb:DBName];
+                        
                         NSString *sql = [NSString stringWithFormat:@"drop table  if  EXISTS %@",NAME];
+                        
                         [[MyDbHandel defaultDBManager]creatTab:sql];
                         //同时将数据通过粘贴板共享出去
                         UIPasteboard *pd = [UIPasteboard pasteboardWithName:SharedData create:YES];
+                        
                         NSData *data = [NSKeyedArchiver archivedDataWithRootObject:response];
+                        
                         [pd setData:data forPasteboardType:@"userinfo"];
                     }
                     
@@ -117,7 +133,9 @@
 -(void)layoutMoudel:(NSArray *)Marry
 {
     NSString *fiel = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)objectAtIndex:0];
+    
     NSString *fielpath = [fiel stringByAppendingString:[NSString stringWithFormat:@"/FileDocuments/%@",PaGeCtrlCache]];
+    
     NSFileManager *FM = [NSFileManager defaultManager];
     //如果颜色配置缓存数据没有，则去请求数据
     if(![FM fileExistsAtPath:fielpath isDirectory:NO])
@@ -125,19 +143,30 @@
         
     }
     NSDictionary * ddict = [[NSDictionary alloc]initWithContentsOfFile:fielpath];
+    
     NSDictionary *dicc = [[ddict objectForKey:@"data"]objectForKey:@"background"];
     //   NSLog(@"传入的数据:%d",Marry.count);
     self.tabBar.hidden = YES;
+    
     UIImageView *image = [[UIImageView alloc]initWithFrame:CGRectMake(0, DEVH-50, DEVW, 50)];
+    
     NSString *barimage = [dicc objectForKey:@"moduleBg"];
+    
     NSString *barseleimg = [dicc objectForKey:@"selectedBg"];
+    
     image.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@_640",barimage]];
+    
     image.userInteractionEnabled = YES;
+    
     [self.view addSubview:image];
+    
     int wid = DEVW/Marry.count;
+    
     selectimage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, wid, 50)];
     // UIColor *col = [UIColor c]
     UIColor *colr = [MTStrToColor hexStringToColor:barseleimg];
+    
+    
     selectimage.backgroundColor = colr;
     // selectimage.image = [UIImage imageNamed:barseleimg];
     [image addSubview:selectimage];
@@ -148,11 +177,14 @@
         int num = [[[Marry objectAtIndex:i]objectForKey:@"num"]integerValue];
         
         UIImageView *imag = [[UIImageView alloc]initWithFrame:CGRectMake(wid*(num-1), 5, wid, 20)];
+        
         imag.contentMode = UIViewContentModeScaleAspectFit;
+        
         imag.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@",[[Marry objectAtIndex:i]objectForKey:@"icon"]]];
         [image addSubview:imag];
         
         UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(wid*(num-1), 25, wid, 25)];
+        
         label.text = [NSString stringWithFormat:@"%@",[[Marry objectAtIndex:i]objectForKey:@"name"]];
         label.textAlignment = 1;
         [image addSubview:label];
@@ -212,7 +244,9 @@
 {
    // NSLog(@"come this clicked........");
     NSDictionary *modic = [MAAry objectAtIndex:sendre.tag];
+    
     NSString *mode = [modic objectForKey:@"mode"];
+    
     [[NSNotificationCenter defaultCenter]postNotificationName:@"chageindex" object:modic];
     //先判断模块的模式，选择相应模式进入
     if([mode isEqualToString:@"adAndFunctionList"])

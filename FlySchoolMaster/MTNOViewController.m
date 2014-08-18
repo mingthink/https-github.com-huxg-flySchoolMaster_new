@@ -26,7 +26,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     [FuncPublic InstanceNavgationBar:@"" action:@selector(btnlcik:) superclass:self isroot:YES];
+    
     // Do any additional setup after loading the view from its nib.
 }
 -(void)btnlcik:(UIButton *)sender
@@ -41,7 +43,9 @@
 
 - (IBAction)call:(UIButton *)sender {
     NSString *number = sender.titleLabel.text;// 此处读入电话号码
+    
     NSString *num = [[NSString alloc] initWithFormat:@"tel://%@",number]; //number为号码字符串 如果使用这个方法 结束电话之后会进入联系人列表
+    
     [[UIApplication sharedApplication]openURL:[NSURL URLWithString:num]];
 
 }

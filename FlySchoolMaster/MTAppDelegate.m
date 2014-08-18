@@ -68,6 +68,7 @@
 -(void)clearcahce
 {
     msgList = [FuncPublic GetDefaultInfo:@"MessageListData"];
+    
     if (msgList==NULL)msgList = [NSMutableArray array];
     
 }
