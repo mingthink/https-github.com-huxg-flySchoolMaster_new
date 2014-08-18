@@ -38,60 +38,57 @@
 {
     [super viewDidLoad];
     
-
-    
-    if ([FuncPublic GetDefaultInfo:@"AppList"] == nil) {
-        [self getdata];
-    }
-    else
-        listarr = [[NSMutableArray alloc]initWithCapacity:0];
-        listarr = [FuncPublic GetDefaultInfo:@"AppList"];
-    
-    NSLog(@"listarr is ...%@",listarr);
-    
     [self drawUI];
+    
+    [self getdata];
+   
     
     
     // Do any additional setup after loading the view from its nib.好遥远
 }
 -(void)getdata
 {
-    
-    NSDictionary *diss = [FuncPublic GetDefaultInfo:@"Newuser"];
-    
-    NSString *dvid = [FuncPublic GetDefaultInfo:@"dvid"];
-    
-    NSString *rid = [diss objectForKey:@"rid"];
-    
-    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-    
-    [dic setObject:[FuncPublic createUUID] forKey:@"r"];
-    
-    [dic setObject:dvid forKey:@"dvid"];
-    
-    [dic setObject:rid forKey:@"rid"];
-    
-    [SVHTTPRequest GET:@"/api/module/getApplication.html" parameters:dic completion:
-     ^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
-         NSLog(@"返回信息:%@",response);
-         if(error!=nil)
-             return ;
-         if([[response objectForKey:@"status"]isEqualToString:@"false"])
-             return;
-         if([[response objectForKey:@"status"]isEqualToString:@"true"])
-         {
-             NSMutableArray *arrary = [[NSMutableArray alloc]init];
-             for (NSMutableDictionary *diction in [response objectForKey:@"data"]) {
-                 [arrary addObject:diction];
+    if([FuncPublic GetDefaultInfo:@"AppList"])
+    {
+        listarr = [FuncPublic GetDefaultInfo:@"AppList"];
+        
+        [applist reloadData];
+    }
+    else
+    {
+        NSDictionary *diss = [FuncPublic GetDefaultInfo:@"Newuser"];
+        
+        NSString *dvid = [FuncPublic GetDefaultInfo:@"dvid"];
+        
+        NSString *rid = [diss objectForKey:@"rid"];
+        
+        NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+        
+        [dic setObject:[FuncPublic createUUID] forKey:@"r"];
+        
+        [dic setObject:dvid forKey:@"dvid"];
+        
+        [dic setObject:rid forKey:@"rid"];
+        
+        [SVHTTPRequest GET:@"/api/module/getApplication.html" parameters:dic completion:
+         ^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
+             NSLog(@"返回信息:%@",response);
+             if(error!=nil)
+                 return ;
+             if([[response objectForKey:@"status"]isEqualToString:@"false"])
+                 return;
+             if([[response objectForKey:@"status"]isEqualToString:@"true"])
+             {
+                 listarr = [response objectForKey:@"data"];
                  
-                 dataDic = arrary;
+                 [applist reloadData];
+                 
+                 [FuncPublic SaveDefaultInfo:listarr Key:@"AppList"];
+                 
              }
              
-             [FuncPublic SaveDefaultInfo:dataDic Key:@"AppList"];
-             NSLog(@"dataDic is....%@",dataDic);
-         }
-       
-    }];
+         }];
+    }
     
 }
 -(void)drawUI
@@ -113,7 +110,7 @@
     applist.backgroundColor = [UIColor clearColor];
     
     [self.view addSubview:applist];
-
+    
 }
 #pragma mark-tableview
 
@@ -124,25 +121,38 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellid];
     
-       if(!cell)
+    if(!cell)
     {
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellid];
         
-    [FuncPublic InstanceLabel:[NSString stringWithFormat:@"%@",[[[[listarr objectAtIndex:indexPath.section]objectForKey:@"applications"] objectAtIndex:indexPath.row ] objectForKey:@"name"] ] RECT:CGRectMake(90, 30, 120, 20) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:cell Lines:0 TAG:0 Ailgnment:0];
-    UIImageView *iconImage = [[UIImageView alloc]initWithFrame:CGRectMake(5, 2, 76, 76)];
-
-    [FuncPublic InstanceLabel:[NSString stringWithFormat:@"%@",[[[[listarr objectAtIndex:indexPath.section]objectForKey:@"applications"] objectAtIndex:indexPath.row ] objectForKey:@"describe"] ] RECT:CGRectMake(90, 60, 150, 15) FontName:nil Red:0 green:0 blue:0 FontSize:12 Target:cell Lines:0 TAG:1 Ailgnment:0];
-    NSURL *iconURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",SERVER,[[[[listarr objectAtIndex:indexPath.section]objectForKey:@"applications"] objectAtIndex:indexPath.row ] objectForKey:@"icon"]]];
-    [iconImage setLoadingImageWithURL:iconURL placeholderImage:nil];
-     
+        [FuncPublic InstanceLabel:[NSString stringWithFormat:@"%@",[[[[listarr objectAtIndex:indexPath.section]objectForKey:@"applications"] objectAtIndex:indexPath.row ] objectForKey:@"name"] ] RECT:CGRectMake(90, 30, 120, 20) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:cell Lines:0 TAG:0 Ailgnment:0];
+        
+        UIImageView *iconImage = [[UIImageView alloc]initWithFrame:CGRectMake(5, 2, 72, 72)];
+        
+        [FuncPublic InstanceLabel:[NSString stringWithFormat:@"%@",[[[[listarr objectAtIndex:indexPath.section]objectForKey:@"applications"] objectAtIndex:indexPath.row ] objectForKey:@"describe"] ] RECT:CGRectMake(90, 60, 150, 15) FontName:nil Red:0 green:0 blue:0 FontSize:12 Target:cell Lines:0 TAG:1 Ailgnment:0];
+        
+        NSURL *iconURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",SERVER,[[[[listarr objectAtIndex:indexPath.section]objectForKey:@"applications"] objectAtIndex:indexPath.row ] objectForKey:@"icon"]]];
+        
+        [iconImage setLoadingImageWithURL:iconURL placeholderImage:nil];
+        
+        [iconImage setContentMode:UIViewContentModeScaleAspectFit];
+        
         UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        
         [button setTitle:@"下载" forState:UIControlStateNormal];
+        
         button.frame = CGRectMake(220, 30, 40, 30);
+        
         button.layer.cornerRadius = 5;
+        
         button.layer.borderWidth = 0.8;
+        
         button.tintColor = [UIColor blueColor];
+        
         [button addTarget:self action:@selector(downApp:) forControlEvents:UIControlEventTouchUpInside];
+        
         [cell addSubview:button];
+        
         [cell addSubview:iconImage];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -152,6 +162,7 @@
 -(NSArray*)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
     searchArr = [[NSMutableArray alloc]initWithCapacity:0];
+    
     for (int i = 0; i < listarr.count; i++) {
         [searchArr addObject:[[listarr objectAtIndex:i]objectForKey:@"name"]];
     }
@@ -187,15 +198,21 @@
         return nil;
     }
     UILabel *label = [[UILabel alloc]init];
+    
     label.frame = CGRectMake(12, 0, 200, 22);
+    
     label.backgroundColor = [UIColor clearColor];
+    
     label.textColor = [UIColor darkGrayColor];
+    
     label.font = [UIFont fontWithName:@"Helvetica-Bold" size:16];
+    
     label.text = sectionTitle;
     
     UIView *sectionView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, 30)];
-    //[sectionView setBackgroundColor:[UIColor blackColor]];
+    
     [sectionView addSubview:label];
+    
     return sectionView;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -215,12 +232,12 @@
         
     }
     else
-        {
-            NSString *downloadstr = @"http://www.gaokaoApp.cn/";
-            
-            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:downloadstr]];
-        }
-   }
+    {
+        NSString *downloadstr = @"http://www.gaokaoApp.cn/";
+        
+        [[UIApplication sharedApplication]openURL:[NSURL URLWithString:downloadstr]];
+    }
+}
 -(void)back:(id)sender
 {
     [self.navigationController popViewControllerAnimated:YES];
