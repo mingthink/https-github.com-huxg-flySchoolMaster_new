@@ -7,13 +7,14 @@
 //
 
 #import "MTTongXlViewController.h"
-
+#import "MTCustomBut.h"
 @interface MTTongXlViewController ()<UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate>
 {
     UITableView *mytab;
     NSMutableArray *datasource;
     UISearchBar *mysearch;
     NSArray *arr;
+    NSMutableArray *headviewarr;
 }
 
 @end
@@ -33,9 +34,23 @@
 {
     [super viewDidLoad];
     arr = [[NSArray alloc]initWithObjects:@"常用电话",@"同事",@"学生家长" ,nil];
+    headviewarr = [NSMutableArray array];
+    for(int i=0;i<arr.count;i++)
+    {
+        UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVW, 40)];
+        v.backgroundColor = [UIColor yellowColor];
+        v.userInteractionEnabled = YES;
+        MTCustomBut *buttons = [[MTCustomBut alloc]initWithFrame:CGRectMake(30, 0, 80, 40)];
+        NSString *btntitle = [arr objectAtIndex:i];
+        [buttons setTitle:btntitle forState:UIControlStateNormal];
+        [v addSubview:buttons];
+        [headviewarr addObject:v];
+        [buttons addTarget:self action:@selector(btnclick:) forControlEvents:UIControlEventTouchUpInside];
+        buttons.tag = i;
+    }
     
     [FuncPublic InstanceNavgationBar:@"通讯录" action:@selector(back) superclass:self isroot:NO];
-    mytab = [[UITableView alloc]initWithFrame:CGRectMake(0, 80, DEVW, DEVH-50-100) style:UITableViewStyleGrouped];
+    mytab = [[UITableView alloc]initWithFrame:CGRectMake(0, 100, DEVW, DEVH-50-100) style:UITableViewStyleGrouped];
     mytab.delegate = self;
     mytab.dataSource = self;
     [self.view addSubview:mytab];
@@ -47,11 +62,11 @@
 }
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 3;
+    return arr.count;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 10;
+    return 5;
 }
 
 
@@ -65,6 +80,18 @@
     }
     return cell;
     
+}
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    return [headviewarr objectAtIndex:section];
+}
+-(float)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 40;
+}
+-(void)btnclick:(MTCustomBut *)btn
+{
+    NSLog(@"btn clicked........");
 }
 -(void)back
 {
