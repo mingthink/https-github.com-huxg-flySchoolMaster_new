@@ -13,6 +13,7 @@
     UITableView *mytab;
     NSMutableArray *datasource;
     UISearchBar *mysearch;
+    NSArray *arr;
 }
 
 @end
@@ -31,6 +32,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    arr = [[NSArray alloc]initWithObjects:@"常用电话",@"同事",@"学生家长" ,nil];
+    
     [FuncPublic InstanceNavgationBar:@"通讯录" action:@selector(back) superclass:self isroot:NO];
     mytab = [[UITableView alloc]initWithFrame:CGRectMake(0, 80, DEVW, DEVH-50-100) style:UITableViewStylePlain];
     mytab.delegate = self;
