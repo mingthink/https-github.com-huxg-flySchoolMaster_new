@@ -28,6 +28,7 @@
 #import "MTPageModel.h"
 #import "MTMyWebView.h"
 #import "MTTongXlViewController.h"
+
 #define Duration 0.2
 #define WIDTH  60
 #define HIGHT  60
@@ -626,16 +627,19 @@
         
         [self.navigationController pushViewController:vii animated:NO];
     }
-    if([data.mode isEqualToString:@"webview"])
-    {
-        MTWebView *webview = [[MTWebView alloc]init];
+    if([data.name isEqualToString:@"通讯录"])
         
-        webview.urlstr = [NSString stringWithFormat:@"%@%@",SERVER,data.param];
+    {
+        MTTongXlViewController *message = [[MTTongXlViewController alloc]init];
+        
+//        MTWebView *webview = [[MTWebView alloc]init];
+//        
+//        webview.urlstr = [NSString stringWithFormat:@"%@%@",SERVER,data.param];
        // webview.urlstr=@"file:///Users/mingthink/Desktop/HTMLTEST/Csstest1.html";
         
-        webview.titlestr = data.name;
+//        webview.titlestr = data.name;
         
-        [self.navigationController pushViewController:webview animated:NO];
+        [self.navigationController pushViewController:message animated:NO];
     }
     if([data.name isEqualToString:@"校园公示"])
     {
