@@ -35,7 +35,7 @@
     arr = [[NSArray alloc]initWithObjects:@"常用电话",@"同事",@"学生家长" ,nil];
     
     [FuncPublic InstanceNavgationBar:@"通讯录" action:@selector(back) superclass:self isroot:NO];
-    mytab = [[UITableView alloc]initWithFrame:CGRectMake(0, 80, DEVW, DEVH-50-100) style:UITableViewStylePlain];
+    mytab = [[UITableView alloc]initWithFrame:CGRectMake(0, 80, DEVW, DEVH-50-100) style:UITableViewStyleGrouped];
     mytab.delegate = self;
     mytab.dataSource = self;
     [self.view addSubview:mytab];
@@ -44,6 +44,10 @@
     mysearch.delegate = self;
     [self.view addSubview:mysearch];
     // Do any additional setup after loading the view.
+}
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 3;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
