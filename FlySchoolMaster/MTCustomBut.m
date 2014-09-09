@@ -6,6 +6,7 @@
 //  Copyright (c) 2014年 MingThink. All rights reserved.
 //dklsklsad
 //dfddgdfgfdgbjnbghj
+//自定义button
 #import "MTCustomBut.h"
 
 @implementation MTCustomBut
