@@ -37,7 +37,7 @@
     mytab.dataSource = self;
     [self.view addSubview:mytab];
     mysearch = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 60, DEVW, 40)];
-    mysearch.barStyle = 4;
+    mysearch.barStyle = UIBarStyleDefault;
     mysearch.delegate = self;
     [self.view addSubview:mysearch];
     // Do any additional setup after loading the view.

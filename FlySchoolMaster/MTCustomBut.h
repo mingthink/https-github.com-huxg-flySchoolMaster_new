@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface MTCustomBut : UIButton
-
+@property()BOOL isclicked;
+@property()int asction;
 @end
