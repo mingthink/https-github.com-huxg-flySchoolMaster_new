@@ -177,7 +177,8 @@ static NSString *defaultUserAgent;
 - (SVHTTPRequest*)initWithAddress:(NSString*)urlString method:(SVHTTPRequestMethod)method parameters:(NSDictionary*)parameters saveToPath:(NSString*)savePath progress:(void (^)(float))progressBlock completion:(SVHTTPRequestCompletionHandler)completionBlock  {
     
     
-    urlString = [NSString stringWithFormat:@"%@%@",SERVER,urlString];
+    NSString *nowserver = [[FuncPublic GetDefaultInfo:@"SelectServers"]boolValue]?SERVER:SERVER3;
+    urlString = [NSString stringWithFormat:@"%@%@",nowserver,urlString];
     //urlString = [urlString stringByAddingPercentEscapesUsingEncoding:kCFStringEncodingUTF8];
     self = [super init];
     self.operationCompletionBlock = completionBlock;

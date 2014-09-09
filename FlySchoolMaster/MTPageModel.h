@@ -15,5 +15,7 @@
 @property(nonatomic,retain)NSString *logo;
 @property(nonatomic,retain)NSDictionary *backgroud;
 @property(nonatomic,retain)NSDictionary *button;
+@property(nonatomic,retain)NSString *pagemode;
+@property(nonatomic,retain)NSString *perpage;
 +(MTPageModel *)getPageModel;
 @end

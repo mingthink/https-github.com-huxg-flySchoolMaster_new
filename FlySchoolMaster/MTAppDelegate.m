@@ -21,6 +21,7 @@
 #import "SDImageCache.h"
 #import "Reachability.h"
 #import "WToast.h"
+#import "UncaughtExceptionHandler.h"
 @implementation MTAppDelegate
 {
     NSMutableArray *msgList;
@@ -29,15 +30,31 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearcahce) name:@"clearcache" object:nil];
+    NSLog(@"手机标识;%@",[FuncPublic createUUID]);
+    //错误追踪
+   // NSSetUncaughtExceptionHandler(&CrashHandlerExceptionHandler);
+    InstallUncaughtExceptionHandler();
+  //  InstallUncaughtExceptionHandler();
     
+//    UIView *vie = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 30, 30)];
+//    vie.backgroundColor = [UIColor redColor];
+//    [self.window insertSubview:vie atIndex:1000];
+//  [self.window bringSubviewToFront:vie];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(clearcahce) name:@"clearcache" object:nil];
+    //[UIApplication sharedApplication].applicationSupportsShakeToEdit = YES;
     
     // 设置网络状态变化时的通知函数
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:)
                                                  name:@"kNetworkReachabilityChangedNotification" object:nil];
+    
     hostReach = [Reachability reachabilityWithHostName:@"www.baidu.com"];
+    
     [hostReach startNotifier];
+    
     [[NSNotificationCenter defaultCenter]postNotificationName:UIApplicationDidReceiveMemoryWarningNotification object:nil userInfo:nil];
+    
+    //清除图片缓存
    // [[SDImageCache sharedImageCache]clearDisk];
     // [FuncPublic saveDataToLocal:nil toFileName:@"message.plist"];
     
@@ -45,7 +62,9 @@
     
     //NSLog(@"DIC IS ;%@",[FuncPublic GetDefaultInfo:@"MessageListData"]);
     NSString *Path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    
     NSString *filename = [Path stringByAppendingPathComponent:@"savemesstest"];
+    
     NSLog(@"文件路径:%@",filename);
     msgList = [NSKeyedUnarchiver unarchiveObjectWithFile: filename];
     //  msgList = [FuncPublic GetDefaultInfo:@"MessageListData"];
@@ -60,9 +79,13 @@
     
     // Override point for customization after application launch.
     [FuncPublic SaveDefaultInfo:@"5" Key:@"APPVersion"];
+    
     [FuncPublic SaveDefaultInfo:@"123" Key:@"dvid"];
+    
     MTStartViewController *start = [[MTStartViewController alloc]init];
+    
     self.window.rootViewController = start;
+    
     return YES;
 }
 -(void)clearcahce
@@ -86,20 +109,36 @@
     if(status == NotReachable)
     {
        // [MTAlertView Aletwithstring:@"networkDisabled"];
-        self.isreachable = NO;
+       // self.isreachable = NO;
+        _iswife = 0;
+        
+        _ismolie = 0;
+        [FuncPublic SaveDefaultInfo:@"0" Key:@"iswife"];
+        [FuncPublic SaveDefaultInfo:@"0" Key:@"ismobile"];
+     //   [FuncPublic SaveDefaultInfo:@"0" toFileName:@"ismobile"];
         
        
         return;
     }
     if (status==ReachableViaWiFi) {
+        [FuncPublic SaveDefaultInfo:@"1" Key:@"iswife"];
+        [FuncPublic SaveDefaultInfo:@"0" Key:@"ismobile"];
         
-        self.isreachable = YES;
+
+        _iswife = 1;
+        _ismolie = 0;
         [[NSNotificationCenter defaultCenter]postNotificationName:@"KCFNetChange" object:nil userInfo:nil];
         
     }
     if(status==ReachableViaWWAN)
     {
-        self.isreachable = YES;
+       // self.isreachable = YES;
+        [FuncPublic SaveDefaultInfo:@"0" Key:@"iswife"];
+        [FuncPublic SaveDefaultInfo:@"1" Key:@"ismobile"];
+        
+
+        _ismolie = 1;
+        _iswife = 0;
         [MTAlertView Aletwithstring:@"networkSwitch3G"];
     }
 }
@@ -251,4 +290,21 @@
     self.tab.navigationController.navigationBarHidden = YES;
     self.window.rootViewController = nav;
 }
+-(void)showalert
+{
+    
+    UIAlertView *aleert = [[UIAlertView alloc]initWithTitle:nil message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"cancel", nil];
+    aleert.userInteractionEnabled = YES;
+   // [aleert show];
+}
 @end
+void CrashHandlerExceptionHandler(NSException *exception) {
+    
+   
+    NSString *resas = [exception reason];
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"应用意外终止" message:resas delegate:nil cancelButtonTitle:@"cancel" otherButtonTitles:@"ok", nil];
+    [alert show];
+     NSLog(@"出错的原因输出数据:%@",[exception callStackSymbols]);
+    
+    
+}

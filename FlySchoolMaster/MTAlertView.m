@@ -8,6 +8,8 @@
 
 #import "MTAlertView.h"
 #import "MTAppDelegate.h"
+#import "UncaughtExceptionHandler.h"
+#import "MTTabrViewController.h"
 @implementation MTAlertView
 
 - (id)initWithFrame:(CGRect)frame
@@ -76,6 +78,47 @@
 						 
 					 }];
     
+}
++(void)showalertview:(NSString *)titile andleftact:(SEL)leftact andrightact:(SEL)rightact
+{
+    
+    CGSize size = [titile sizeWithFont:[UIFont systemFontOfSize:15.0f] constrainedToSize:CGSizeMake(150, MAXFLOAT) lineBreakMode:NSLineBreakByWordWrapping];
+    UIView *Alview = [[UIView alloc]init];
+    
+   // Alview.layer.cornerRadius = .4;
+    
+    // NSLog(@"消息具体提示:%@",txtxstr);
+    
+    Alview.backgroundColor = [UIColor blackColor];
+    
+    Alview.alpha = .3;
+    
+    
+    Alview.frame = CGRectMake(0, 0, DEVW, DEVH);
+    
+    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, Alview.frame.size.width, Alview.frame.size.height)];
+    
+    label.numberOfLines = 0;
+    
+    label.font = [UIFont systemFontOfSize:15.0f];
+    
+    label.lineBreakMode = NSLineBreakByWordWrapping;
+    
+    label.text = titile;
+    
+   // [Alview addSubview:label];
+    
+    UIWindow *mainwindow = [[UIApplication sharedApplication]keyWindow];
+    
+    [mainwindow addSubview:Alview];
+    
+  //  [MTAlertView missview:Alview];
+    
+
+}
+-(void)clicked:(id)sender
+{
+    NSLog(@"clicked button!!!!!!!!!");
 }
 /*
  // Only override drawRect: if you perform custom drawing.

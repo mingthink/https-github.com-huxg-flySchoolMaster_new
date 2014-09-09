@@ -22,6 +22,8 @@
     model.logo = [dic objectForKey:@"logo"];
     model.backgroud = [dic objectForKey:@"background"];
     model.button = [dic objectForKey:@"button"];
+    model.pagemode = [dic objectForKey:@"pageMode"];
+    model.perpage = [dic objectForKey:@"perPage"];
     return model;
 
 }

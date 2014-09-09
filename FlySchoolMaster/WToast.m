@@ -259,7 +259,7 @@
 	toast.length = length;
 	
 	UIWindow *mainWindow = [[UIApplication sharedApplication] keyWindow];
-	//[mainWindow addSubview:toast];
+	[mainWindow addSubview:toast];
 	
 	[toast __flipViewAccordingToStatusBarOrientation];
 	[toast __show];

@@ -185,6 +185,7 @@ static MyDbHandel * _sharedDBManager;
     MDdata.param = [rs stringForColumnIndex:5];
     MDdata.status = [rs stringForColumnIndex:6];
     MDdata.ver = [rs stringForColumnIndex:7];
+        MDdata.moudname = [rs stringForColumnIndex:8];
     [arr addObject:MDdata];
         
       //  NSLog(@"图标名字%@",MDdata.name);

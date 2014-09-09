@@ -18,6 +18,7 @@
     NSMutableArray *dataDic;
     NSMutableArray *searchArr;
     NSString *str;
+    
 }
 @end
 
@@ -37,7 +38,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+   
     [self drawUI];
     
     [self getdata];
@@ -155,6 +156,7 @@
         
         [cell addSubview:iconImage];
     }
+   // cell.contentView.frame = CGRectMake(0, 0, 320, 80);
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
@@ -188,7 +190,8 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 80.0;
+   // UITableViewCell *cell = (UITableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    return 80;
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -219,6 +222,11 @@
 {
     return 30.0;
 }
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+   
+}
 -(void)downApp:(UIButton *)sender
 {
     
@@ -233,7 +241,7 @@
     }
     else
     {
-        NSString *downloadstr = @"http://www.gaokaoApp.cn/";
+        NSString *downloadstr = @"itms-apps://itunes.apple.com/app/id899507670";
         
         [[UIApplication sharedApplication]openURL:[NSURL URLWithString:downloadstr]];
     }

@@ -42,14 +42,17 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     page = 1;
+    
     datasouce = [[NSMutableArray alloc]initWithCapacity:0];
+    
     mysearch.delegate = self;
     
     issearch = YES;
-    [self setUI];
+   // [self setUI];
     
-    [self getdata:nil andpagnum:1];
+  //  [self getdata:nil andpagnum:1];
    
    
     // Do any additional setup after loading the view from its nib.

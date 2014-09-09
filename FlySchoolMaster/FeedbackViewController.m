@@ -147,12 +147,13 @@
     // NSMutableDictionary *dic = [FuncPublic GetDefaultInfo:@"UserInfo"];
     [[FuncPublic SharedFuncPublic] StartActivityAnimation:self];
     NSMutableDictionary *param = [[NSMutableDictionary alloc] init];
-    if([FuncPublic GetDefaultInfo:@"authCode"]==NULL)
+     NSDictionary *dci = [FuncPublic GetDefaultInfo:@"Newuser"];
+    if([FuncPublic GetDefaultInfo:@"Newuser"]==NULL)
     {
         [param setObject:@"" forKey:@"authCode"];
     }
     else{
-        [param setObject:[FuncPublic GetDefaultInfo :@"authCode"] forKey:@"authCode"];
+        [param setObject:[dci objectForKey:@"authCode"] forKey:@"authCode"];
     }
     if (flg == 1) {
         if(self.avPlay != nil){
@@ -162,16 +163,19 @@
     }else{
         [param setObject:[FuncPublic emptyStr:feedView.text] forKey:@"mindContent"];
     }
+   
     [param setObject:[FuncPublic createUUID] forKey:@"r"];
     [param setObject:[FuncPublic GetDefaultInfo:@"dvid"] forKey:@"dvid"];
-    [param setObject:[FuncPublic GetDefaultInfo:@"mobilenumber"] forKey:@"mobilenumber"];
+    [param setObject:[dci objectForKey:@"id"] forKey:@"uid"];
     [param setObject:@"writerFeedback" forKey:@"action"];
-    
+   // NSLog(@"传入数据：+++++++++%@",param);
     // NSString *url =[NSString stringWithFormat:@"/action/common.ashx?action=writerFeedback&r=%@&dvid=%@&ksh=%@",[FuncPublic createUUID],[FuncPublic GetDefaultInfo:@"DeviceToken"],[dic objectForKey:@"ksh"]];
     
     [SVHTTPRequest POST:@"/action/common.ashx"
              parameters:param
              completion:^(id response, NSHTTPURLResponse *urlResponse, NSError *error) {
+                 
+                 NSLog(@"意见反馈返回信息:%@",response);
                  [[FuncPublic SharedFuncPublic] StopActivityAnimation];
                  if (error != nil) {
                      [WToast showWithText:kMessage];

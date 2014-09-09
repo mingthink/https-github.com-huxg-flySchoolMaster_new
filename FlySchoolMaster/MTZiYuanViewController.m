@@ -91,14 +91,21 @@
     for(int i =0;i<arr.count;i++)
     {
         [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"icon"]];
+        
         [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"id"]];
         
         [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"mode"]];
+        
         [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"name"]];
+        
         [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"num"]];
+        
         [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"param"]];
+        
         [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"status"]];
+        
         [insarr addObject:[[arr objectAtIndex:i]objectForKey:@"ver"]];
+        
         [insarr addObject:mouname];
         // [insarr addObject:[NSNumber numberWithInt:2]];
         /*
@@ -129,16 +136,21 @@
     model = [MTPageModel getPageModel];
     
     itemarr = [NSMutableArray array];
+    
     delebutarr = [NSMutableArray array];
     
     backview = [[UIView alloc]initWithFrame:CGRectMake(0, 60, DEVW, DEVH-60-50)];
+    
     UIImageView *backimag = [[UIImageView alloc]initWithFrame:backview.bounds];
+    
     NSString *backimastr = [model.backgroud objectForKey:@"otherBg"];
+    
     backimag.image = [UIImage imageNamed:backimastr];
     
     //  self.view.backgroundColor = [UIColor colorWithRed:60.0/255.0 green:105.0/255 blue:210.0/255 alpha:1.0];
    // backview.backgroundColor = [UIColor colorWithRed:60.0/255.0 green:105.0/255 blue:210.0/255 alpha:1.0];
     [self.view addSubview:backview];
+    
     for(UIView *v in [backview subviews])
     {
         [v removeFromSuperview];
@@ -146,10 +158,12 @@
     
     
     [backview addSubview:backimag];
+    
     NSString *sql = [NSString stringWithFormat:@"select * from %@ where mouname = '%@' order by num asc ",NAME,mouname];
     NSArray *arrr = [[MyDbHandel defaultDBManager]select:sql];
     
     NSMutableArray *mutaarr = [NSMutableArray array];
+    
     for(MTMudelDaTa *datas in arrr)
     {
         if([datas.status isEqualToString:@"1" ])
@@ -164,22 +178,31 @@
         
         
         int row = i/4;
+        
         int dow = i%4;
+        
         MTMudelDaTa *data = [mutaarr objectAtIndex:i];
+        
         UIView *vi = [[UIView alloc]init];
         
         vi.frame = CGRectMake(10+dow*75, 10+row *80, 60, 90);
+        
         vi.tag = data.num;
         
         //vi.hidden = NO;
         
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        
         btn.frame = CGRectMake(0, 10, 60, 60);
+        
         if([data.icon hasSuffix:@".png"])
         {
             UIImageView *imageview = [[UIImageView alloc]init];
+            
             NSString *urlstr = [NSString stringWithFormat:@"%@%@",SERVER,data.icon];
+            
             [imageview setImageWithURL:[NSURL URLWithString:urlstr]];
+            
            // UIImage *imagee = [self getImageFromURL:[NSString stringWithFormat:@"%@%@",SERVER,data.icon]];
             [btn setBackgroundImage:imageview.image forState:UIControlStateNormal];
         }
@@ -188,25 +211,36 @@
             [btn setBackgroundImage:[UIImage imageNamed:data.icon] forState:UIControlStateNormal];
         }
         btn.tag = data.num;
+        
         [btn addTarget:self action:@selector(selectitem:) forControlEvents:UIControlEventTouchUpInside];
+        
         [vi addSubview:btn];
+        
         [backview addSubview:vi];
         //        if(vi.tag>=9)
         //          [ vi removeFromSuperview];
         
         
         UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(0, 70, 60, 20)];
+        
         label.text = data.name;
+        
         label.font = [UIFont systemFontOfSize:12];
+        
         label.textAlignment = 1;
+        
         [vi addSubview:label];
+        
         UIButton *btn1 = [UIButton buttonWithType:UIButtonTypeCustom];
+        
         btn1.frame = CGRectMake(0, 0, 25, 25);
         
         [btn1 setBackgroundImage:[UIImage imageNamed:@"deleteTag.png"] forState:UIControlStateNormal];
         
         btn1.hidden = YES;
+        
         [btn1 addTarget:self action:@selector(deletebtn:) forControlEvents:UIControlEventTouchUpInside];
+        
         btn1.tag  = data.num+1001;
         // [btn1 addTarget:self action:@selector(deleteaction:) forControlEvents:UIControlEventTouchUpInside];
         [delebutarr addObject:btn1];
@@ -215,7 +249,9 @@
         
         
         UILongPressGestureRecognizer *gesture = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(buttonLongPressed:)];
+        
         [vi addGestureRecognizer:gesture];
+        
         [itemarr addObject:vi];
         
     }
@@ -223,18 +259,11 @@
 }
 
 
-//网络图片下载
--(UIImage *) getImageFromURL:(NSString *)fileURL {
-    NSLog(@"执行图片下载函数");
-    UIImage * result;
-    NSData * data = [NSData dataWithContentsOfURL:[NSURL URLWithString:fileURL]];
-    result = [UIImage imageWithData:data];
-    return result;
-}
 #pragma mark -longpress action
 - (void)buttonLongPressed:(UILongPressGestureRecognizer *)sender
 {
     NSString *mouname = [_MouDic objectForKey:@"name"];
+    
     UIView *btn = (UIView *)sender.view;
     
     // NSLog(@"change view tag = %d",sender.view.tag);
@@ -242,15 +271,19 @@
     {
         
         [self BeginWobble];
+        
         for(UIButton *btn in delebutarr)
         {
             btn.hidden = NO;
         }
         startPoint = [sender locationInView:sender.view];
+        
         originPoint = btn.center;
+        
         [UIView animateWithDuration:.2 animations:^{
             
             btn.transform = CGAffineTransformMakeScale(1.1, 1.1);
+            
             btn.alpha = 0.7;
         }];
         
@@ -264,7 +297,9 @@
         CGPoint newPoint = [sender locationInView:sender.view];
         
         CGFloat deltaX = newPoint.x-startPoint.x;
+        
         CGFloat deltaY = newPoint.y-startPoint.y;
+        
         btn.center = CGPointMake(btn.center.x+deltaX,btn.center.y+deltaY);
     }
     if (sender.state == UIGestureRecognizerStateEnded)
@@ -273,9 +308,13 @@
         CGPoint newPoint = [sender locationInView:sender.view];
         //   CGPoint newPoint = [sender locationInView:sender.view];
        long int index = [self indexOfPoint:btn.center withButton:btn];
+        
         CGFloat deltaX = newPoint.x-startPoint.x;
+        
         CGFloat deltaY = newPoint.y-startPoint.y;
+        
         btn.center = CGPointMake(btn.center.x+deltaX,btn.center.y+deltaY);
+        
         if(index<0)
         {
             [self BeginWobble];
@@ -423,6 +462,8 @@
     shake = YES;
     for (UIView *viewe in [backview subviews])
     {
+        if(![viewe isKindOfClass:[UIImageView class]])
+        {
         srand([[NSDate date] timeIntervalSince1970]);
         float rand=(float)random();
         CFTimeInterval t=rand*0.0000000001;
@@ -439,6 +480,7 @@
                   viewe.transform=CGAffineTransformMakeRotation(0.05);
               } completion:^(BOOL finished) {}];
          }];
+    }
     }
     
 }

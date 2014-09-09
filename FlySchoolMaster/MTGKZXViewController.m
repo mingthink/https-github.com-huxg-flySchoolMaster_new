@@ -71,7 +71,7 @@
 {
     
     NSMutableDictionary *dic = [[NSMutableDictionary alloc]initWithCapacity:0];
-    [dic setObject:[NSString stringWithFormat:@"%d",pag] forKey:@"page_number"];
+    [dic setObject:[NSString stringWithFormat:@"%d",page] forKey:@"page_number"];
     [dic setObject:@"1" forKey:@"isDoPaging"];
     [dic setObject:@"5" forKey:@"txbPageSize"];
     [dic setObject:[FuncPublic createUUID] forKey:@"r"];
@@ -120,7 +120,7 @@
                         [WToast showWithText:@"已经全部加载"];
                         return;
                     }
-                    page++;
+                   // page++;
                     for(NSDictionary *dic in [response objectForKey:@"data"])
                     {
                         [datalist addObject:dic];
@@ -239,7 +239,10 @@
     {
         page = 1;
     }
-    
+    else
+    {
+        page = page+1;
+    }
    
     [self loaddata:page];
     [refersh endRefreshing];

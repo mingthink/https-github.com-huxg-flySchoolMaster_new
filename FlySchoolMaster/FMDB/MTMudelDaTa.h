@@ -25,6 +25,7 @@
 @property(nonatomic,retain)NSString *param;
 
 @property(nonatomic,retain)NSString *status;
+@property(nonatomic,retain)NSString *moudname;
 @property()NSString *ver;
 
 @end

@@ -47,6 +47,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NSLog(@"进入直接面。。。。。。。。。。");
     MAAry = [NSArray array];
     
     mainv = [[MTMainViewController alloc]init];
@@ -83,7 +84,7 @@
         NSDictionary *dicc = [FuncPublic GetDefaultInfo:@"Newuser"];
         
         NSString *uuid = [dicc objectForKey:@"rid"];
-        
+        NSString *dvid = [FuncPublic GetDefaultInfo:@"dvid"];
         NSString *ridd = [dicc objectForKey:@"id"];
         
         NSMutableDictionary *dic = [NSMutableDictionary dictionary];
@@ -93,6 +94,9 @@
         [dic setObject:uuid forKey:@"rid"];
         
         [dic setObject:ridd forKey:@"uid"];
+        
+        [dic setObject:dvid forKey:@"dvid"];
+        
         
         [SVHTTPRequest GET:@"/api/module/getModule.html" parameters:dic
                 completion:^(NSMutableDictionary * response, NSHTTPURLResponse *urlResponse, NSError *error) {
@@ -104,7 +108,7 @@
                     }
                     else if([[response objectForKey:@"status"]isEqualToString:@"true"])
                     {
-                        // NSLog(@"返回的数据信息:%@",response);
+                         NSLog(@"返回的数据信息:%@",response);
                         [ FuncPublic saveDataToLocal:response toFileName:CachePath];
                         
                         NSArray *arrar = [response objectForKey:@"data"];
@@ -174,24 +178,35 @@
     //tabbar自动配置
     for(int i =0;i<Marry.count;i++)
     {
-        int num = [[[Marry objectAtIndex:i]objectForKey:@"num"]integerValue];
+       // int num = [[[Marry objectAtIndex:i]objectForKey:@"num"]integerValue];
         
-        UIImageView *imag = [[UIImageView alloc]initWithFrame:CGRectMake(wid*(num-1), 5, wid, 20)];
+        UIImageView *imag = [[UIImageView alloc]initWithFrame:CGRectMake(wid*i, 5, wid, 20)];
         
         imag.contentMode = UIViewContentModeScaleAspectFit;
         
         imag.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@",[[Marry objectAtIndex:i]objectForKey:@"icon"]]];
+        
         [image addSubview:imag];
         
-        UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(wid*(num-1), 25, wid, 25)];
+        UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(wid*i, 25, wid, 25)];
         
         label.text = [NSString stringWithFormat:@"%@",[[Marry objectAtIndex:i]objectForKey:@"name"]];
+        NSLog(@"功能模块的名字:%@",label.text);
+        
         label.textAlignment = 1;
+        
+        label.font = [UIFont systemFontOfSize:16.0f];
+        
+        label.textColor = [UIColor whiteColor];
+        
         [image addSubview:label];
         
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [btn setFrame:CGRectMake(wid*(num-1)+20, 0, wid, 49)];
-        btn.tag = num-1;
+        
+        [btn setFrame:CGRectMake(wid*i, 0, wid, 49)];
+        
+        btn.tag = i;
+        
         [btn addTarget:self action:@selector(btnclick:) forControlEvents:UIControlEventTouchUpInside];
         
         [image addSubview:btn];
@@ -200,23 +215,29 @@
     //主功能模块配置
     
     mainv.Mudic = [Marry objectAtIndex:0];
+    
     self.nav = [[UINavigationController alloc]initWithRootViewController:mainv];
     
     
     //FuncListclass
     MTZiYuanViewController  *ziyuanview = [[MTZiYuanViewController alloc]init];
+    
     UINavigationController *nav = [[UINavigationController alloc]initWithRootViewController:ziyuanview];
     
     //WebviewClass
     MTWebView *searchview = [[MTWebView alloc]init];
+    
     UINavigationController *nav1 = [[UINavigationController alloc]initWithRootViewController:searchview];
     
     
     //BulitinClass
     MTSetViewController *setview = [[MTSetViewController alloc]init];
+    
     UINavigationController *nav3 = [[UINavigationController alloc]initWithRootViewController:setview];
+    
     // self.viewControllers = [NSArray arrayWithObject:self.nav,ziyuanview];
     self.viewControllers = [NSArray arrayWithObjects:self.nav, nil];
+    
     commenmoud = [NSArray arrayWithObjects:self.nav,nav,nav1,nav3, nil];
     
     
@@ -231,6 +252,7 @@
     if (dic !=nil && ![[dic objectForKey:@"versionCode"] isEqualToString:@"1"]) {
         //更新版本
         updateurl = [dic objectForKey:@"file"];
+        
         [FuncPublic showMessage:self Msg:[dic objectForKey:@"desc"] BtnTitle:@"立即更新" action:@selector(updateVersion) close:nil];
     }
     
@@ -254,18 +276,26 @@
         
         
         UINavigationController *nav = (UINavigationController *)[commenmoud objectAtIndex:0];
+        
         [nav popToRootViewControllerAnimated:NO];
+        
         MTMainViewController *main = nav.viewControllers[0];
+        
         main.Mudic = modic;
+        
         self.viewControllers = [NSArray arrayWithObject:nav];
     }
     if([mode isEqualToString:@"functionList"])
     {
-        
+
         UINavigationController *nav = (UINavigationController *)[commenmoud objectAtIndex:1];
+        
         nav.navigationBarHidden = YES;
+        
         [nav popToRootViewControllerAnimated:NO];
+        
         MTZiYuanViewController  *ziyuanview = nav.viewControllers[0];
+        
         ziyuanview.MouDic = modic;
        // NSLog(@"传过去的字典数据:H%@",ziyuanview.MouDic);
         self.viewControllers = [NSArray arrayWithObject:nav];
@@ -273,17 +303,24 @@
     if([mode isEqualToString:@"webview"])
     {
         UINavigationController *nav = (UINavigationController *)[commenmoud objectAtIndex:2];
+        
         nav.navigationBarHidden = YES;
+        
         [nav popToRootViewControllerAnimated:NO];
+        
         MTWebView *web = nav.viewControllers[0];
+        
         web.MoudelDic = modic;
+        
         web.isroot = YES;
+        
         self.viewControllers = [NSArray arrayWithObject:nav];
     }
     if([mode isEqualToString:@"builtin"])
     {
         UINavigationController *nav = (UINavigationController *)[commenmoud objectAtIndex:3];
         nav.navigationBarHidden = YES;
+        [nav popToRootViewControllerAnimated:NO];
         
         self.viewControllers = [NSArray arrayWithObject:nav];
     }
@@ -291,6 +328,10 @@
     selectimage.frame =CGRectMake(sendre.tag*wid, 0, wid, 50);
     
 }
+//- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
+//{
+//    NSLog(@"点击了barrrr.....");
+//}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

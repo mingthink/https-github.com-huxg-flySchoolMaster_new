@@ -17,10 +17,10 @@
     #import "MTAlertView.h"
     
 #endif
-#define SERVER @"http://172.16.1.1:91"
-//#define SERVER @"http://220.175.104.19:81"
-#define SERVER1 @"http://220.175.104.19:81"
-#define SERVER2 @"http://192.168.1.110:36"
+#define SERVER @"http://172.16.1.1:8141"
+#define SERVER3 @"http://220.175.104.19:81"
+//#define SERVER1 @"http://220.175.104.19:81"
+//#define SERVER2 @"http://192.168.1.110:36"
 
 #define DEVW [[UIScreen mainScreen] bounds].size.width
 #define DEVH [[UIScreen mainScreen] bounds].size.height

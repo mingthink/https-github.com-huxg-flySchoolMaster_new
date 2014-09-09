@@ -34,7 +34,7 @@
     NSString *backimastr = [model.backgroud objectForKey:@"otherBg"];
     backimage.image = [UIImage imageNamed:backimastr];
     
-    NSString *str = [[FuncPublic GetDefaultInfo:@"APPVersion"]objectForKey:@"versionCode"];
+    NSString *str = [[FuncPublic GetDefaultInfo:@"APPVersions"]objectForKey:@"baseVer"];
    // CGRectMake(<#CGFloat x#>, <#CGFloat y#>, CGFloat width, <#CGFloat height#>)
     //[ FuncPublic InstanceLabel:@"应用名称：高考小秘书校长端" RECT: CGRectMake(0, 70, 300, 40) FontName:nil Red:0 green:0 blue:0 FontSize:14 Target:self.view Lines:1 TAG:1 Ailgnment:1];
     [FuncPublic InstanceLabel:[NSString stringWithFormat: @"当前版本号：%@",str] RECT: CGRectMake(18, 250, 300, 40) FontName:nil Red:0 green:0 blue:0 FontSize:18 Target:self.view Lines:1 TAG:1 Ailgnment:1];

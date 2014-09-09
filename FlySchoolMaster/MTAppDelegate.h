@@ -13,7 +13,9 @@
 
 @property (strong, nonatomic) UIWindow *window;
 @property(nonatomic,retain)MTTabrViewController *tab;
-@property()BOOL isreachable;
+@property()BOOL iswife;
+@property()BOOL ismolie;
 -(void)changeroot;
-
+-(void)showalert;
 @end
+void CrashHandlerExceptionHandler(NSException *exception);

@@ -10,4 +10,5 @@
 
 @interface MTAlertView : UIView
 +(void)Aletwithstring:(NSString *)str ;
++(void)showalertview:(NSString *)titile andleftact:(SEL)leftact andrightact:(SEL)rightact;
 @end
