@@ -13,6 +13,7 @@
 		6503C94519493D140051194A /* 设置背景图.png in Resources */ = {isa = PBXBuildFile; fileRef = 6503C94419493D140051194A /* 设置背景图.png */; };
 		6503C949194964B90051194A /* MTAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6503C947194964B90051194A /* MTAboutViewController.m */; };
 		6503C94A194964B90051194A /* MTAboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6503C948194964B90051194A /* MTAboutViewController.xib */; };
+		65094DE619BE9F8100FABA48 /* MTCustomBut.m in Sources */ = {isa = PBXBuildFile; fileRef = 65094DE519BE9F8100FABA48 /* MTCustomBut.m */; };
 		650974E819A3393D001366FB /* UncaughtExceptionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 650974E719A3393D001366FB /* UncaughtExceptionHandler.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		650C028F1946A5E30006E624 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 650C028E1946A5E30006E624 /* Foundation.framework */; };
 		650C02911946A5E30006E624 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 650C02901946A5E30006E624 /* CoreGraphics.framework */; };
@@ -431,6 +432,8 @@
 		6503C946194964B90051194A /* MTAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTAboutViewController.h; sourceTree = "<group>"; };
 		6503C947194964B90051194A /* MTAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTAboutViewController.m; sourceTree = "<group>"; };
 		6503C948194964B90051194A /* MTAboutViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MTAboutViewController.xib; sourceTree = "<group>"; };
+		65094DE419BE9F8100FABA48 /* MTCustomBut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTCustomBut.h; sourceTree = "<group>"; };
+		65094DE519BE9F8100FABA48 /* MTCustomBut.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTCustomBut.m; sourceTree = "<group>"; };
 		650974E619A3393D001366FB /* UncaughtExceptionHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UncaughtExceptionHandler.h; sourceTree = "<group>"; };
 		650974E719A3393D001366FB /* UncaughtExceptionHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UncaughtExceptionHandler.m; sourceTree = "<group>"; };
 		650C028B1946A5E30006E624 /* FlySchoolMaster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlySchoolMaster.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1364,6 +1367,8 @@
 			children = (
 				658E03FB19B9371800D08FEF /* MTTongXlViewController.h */,
 				658E03FC19B9371800D08FEF /* MTTongXlViewController.m */,
+				65094DE419BE9F8100FABA48 /* MTCustomBut.h */,
+				65094DE519BE9F8100FABA48 /* MTCustomBut.m */,
 			);
 			name = TongXLClass;
 			sourceTree = "<group>";
@@ -2218,6 +2223,7 @@
 				65727A931988DF0B00D91B1D /* DaiNavigationTransition+AccessObject.m in Sources */,
 				65F657AE1999FB6600829ED2 /* MTAppCenter.m in Sources */,
 				650C03AD1946CDE60006E624 /* MTZiYuanViewController.m in Sources */,
+				65094DE619BE9F8100FABA48 /* MTCustomBut.m in Sources */,
 				650C02E21946A65A0006E624 /* SVHTTPRequest.m in Sources */,
 				650C03031946A7490006E624 /* MTStartViewController.m in Sources */,
 				650C02E11946A65A0006E624 /* SVHTTPClient.m in Sources */,

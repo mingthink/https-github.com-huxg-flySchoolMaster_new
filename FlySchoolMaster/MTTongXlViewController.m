@@ -32,11 +32,12 @@
 {
     [super viewDidLoad];
     [FuncPublic InstanceNavgationBar:@"通讯录" action:@selector(back) superclass:self isroot:NO];
-    mytab = [[UITableView alloc]initWithFrame:CGRectMake(0, 80, DEVW, DEVH-50-80) style:UITableViewStylePlain];
+    mytab = [[UITableView alloc]initWithFrame:CGRectMake(0, 80, DEVW, DEVH-50-100) style:UITableViewStylePlain];
     mytab.delegate = self;
     mytab.dataSource = self;
     [self.view addSubview:mytab];
-    mysearch = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 60, DEVW, 20)];
+    mysearch = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 60, DEVW, 40)];
+    mysearch.barStyle = 4;
     mysearch.delegate = self;
     [self.view addSubview:mysearch];
     // Do any additional setup after loading the view.
