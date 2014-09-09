@@ -8,6 +8,7 @@
 
 #import "MTTongXlViewController.h"
 #import "MTCustomBut.h"
+#import "MTContrctTable.h"
 @interface MTTongXlViewController ()<UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate>
 {
     UITableView *mytab;
@@ -34,39 +35,70 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    arr = [[NSArray alloc]initWithObjects:@"常用电话",@"同事",@"学生家长" ,nil];
+    arr = [[NSArray alloc]initWithObjects:@"常用电话",@"同事",@"学生家长" ,@"常用",nil];
+    
     headviewarr = [NSMutableArray array];
+    
     buttonsarr = [NSMutableArray array];
+    
     for(int i=0;i<arr.count;i++)
     {
         UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 40)];
+        
         v.backgroundColor = [UIColor redColor];
+        
         MTCustomBut *buttons = [[MTCustomBut alloc]initWithFrame:CGRectMake(0, 0, 100, 40)];
+        
         NSString *btntitle = [arr objectAtIndex:i];
+        
         [buttons setTitle:btntitle forState:UIControlStateNormal];
+        
        // [buttons setBackgroundColor:[UIColor redColor]];
        
         [buttons addTarget:self action:@selector(btnclick:) forControlEvents:UIControlEventTouchUpInside];
+        
         buttons.tag = i;
+        
         buttons.isclicked = NO;
+        
         buttons.asction = i;
         
         [v addSubview:buttons];
+        
         [headviewarr addObject:v];
+        
         [buttonsarr addObject:buttons];
     }
     
     [FuncPublic InstanceNavgationBar:@"通讯录" action:@selector(back) superclass:self isroot:NO];
+    
     mytab = [[UITableView alloc]initWithFrame:CGRectMake(0, 100, DEVW, DEVH-50-100) style:UITableViewStyleGrouped];
+    
     mytab.delegate = self;
+    
+    
     mytab.dataSource = self;
+    
     [self.view addSubview:mytab];
-    mysearch = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 60, DEVW, 40)];
+    
+    mysearch = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 60, DEVW-50, 40)];
+    
     mysearch.barStyle = UIBarStyleDefault;
+    
     mysearch.delegate = self;
+    
     [self.view addSubview:mysearch];
+    
+    UIButton *searchbut = [UIButton buttonWithType:UIButtonTypeCustom];
+    [searchbut setTitle:@"搜索" forState:UIControlStateNormal];
+    [searchbut setFrame:CGRectMake(DEVW-50, 60, 50, 40)];
+    [self.view addSubview:searchbut];
+    [searchbut addTarget:self action:@selector(srarchclick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    
     // Do any additional setup after loading the view.
 }
+#pragma mark tableview handel
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return arr.count;
@@ -88,6 +120,11 @@
     return cell;
     
 }
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    MTContrctTable *table = [[MTContrctTable alloc]init];
+    [self.navigationController pushViewController:table animated:NO];
+}
 -(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MTCustomBut *but = [buttonsarr objectAtIndex:indexPath.section];
@@ -101,11 +138,27 @@
 {
     return 40;
 }
+-(float)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 3;
+}
 -(void)btnclick:(MTCustomBut * )btn
 {
   //  NSLog(@"btn clicked........");
     btn.isclicked = !btn.isclicked;
+   // [mytab reloadData];
     [mytab reloadSections:[NSIndexSet indexSetWithIndex:btn.asction] withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+#pragma mark srachbar handel
+
+-(void)srarchclick:(UIButton *)button
+{
+    
+}
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    //NSLog(@"come thi fusn....");
+    [mysearch resignFirstResponder];
 }
 -(void)back
 {
