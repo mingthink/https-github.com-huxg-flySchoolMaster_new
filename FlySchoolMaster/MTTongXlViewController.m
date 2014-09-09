@@ -15,6 +15,7 @@
     UISearchBar *mysearch;
     NSArray *arr;
     NSMutableArray *headviewarr;
+    NSMutableArray *buttonsarr;
 }
 
 @end
@@ -35,18 +36,24 @@
     [super viewDidLoad];
     arr = [[NSArray alloc]initWithObjects:@"常用电话",@"同事",@"学生家长" ,nil];
     headviewarr = [NSMutableArray array];
+    buttonsarr = [NSMutableArray array];
     for(int i=0;i<arr.count;i++)
     {
-        UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVW, 40)];
-        v.backgroundColor = [UIColor yellowColor];
-        v.userInteractionEnabled = YES;
-        MTCustomBut *buttons = [[MTCustomBut alloc]initWithFrame:CGRectMake(30, 0, 80, 40)];
+        UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 40)];
+        v.backgroundColor = [UIColor redColor];
+        MTCustomBut *buttons = [[MTCustomBut alloc]initWithFrame:CGRectMake(0, 0, 100, 40)];
         NSString *btntitle = [arr objectAtIndex:i];
         [buttons setTitle:btntitle forState:UIControlStateNormal];
-        [v addSubview:buttons];
-        [headviewarr addObject:v];
+       // [buttons setBackgroundColor:[UIColor redColor]];
+       
         [buttons addTarget:self action:@selector(btnclick:) forControlEvents:UIControlEventTouchUpInside];
         buttons.tag = i;
+        buttons.isclicked = NO;
+        buttons.asction = i;
+        
+        [v addSubview:buttons];
+        [headviewarr addObject:v];
+        [buttonsarr addObject:buttons];
     }
     
     [FuncPublic InstanceNavgationBar:@"通讯录" action:@selector(back) superclass:self isroot:NO];
@@ -81,6 +88,11 @@
     return cell;
     
 }
+-(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    MTCustomBut *but = [buttonsarr objectAtIndex:indexPath.section];
+    return but.isclicked?40:0;
+}
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     return [headviewarr objectAtIndex:section];
@@ -89,9 +101,11 @@
 {
     return 40;
 }
--(void)btnclick:(MTCustomBut *)btn
+-(void)btnclick:(MTCustomBut * )btn
 {
-    NSLog(@"btn clicked........");
+  //  NSLog(@"btn clicked........");
+    btn.isclicked = !btn.isclicked;
+    [mytab reloadSections:[NSIndexSet indexSetWithIndex:btn.asction] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 -(void)back
 {
