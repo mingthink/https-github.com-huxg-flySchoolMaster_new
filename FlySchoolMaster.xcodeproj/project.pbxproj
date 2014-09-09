@@ -14,6 +14,7 @@
 		6503C949194964B90051194A /* MTAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6503C947194964B90051194A /* MTAboutViewController.m */; };
 		6503C94A194964B90051194A /* MTAboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6503C948194964B90051194A /* MTAboutViewController.xib */; };
 		65094DE619BE9F8100FABA48 /* MTCustomBut.m in Sources */ = {isa = PBXBuildFile; fileRef = 65094DE519BE9F8100FABA48 /* MTCustomBut.m */; };
+		65094E3219BECAD400FABA48 /* MTContantPersonModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 65094E3119BECAD400FABA48 /* MTContantPersonModel.m */; };
 		650974E819A3393D001366FB /* UncaughtExceptionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 650974E719A3393D001366FB /* UncaughtExceptionHandler.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		650C028F1946A5E30006E624 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 650C028E1946A5E30006E624 /* Foundation.framework */; };
 		650C02911946A5E30006E624 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 650C02901946A5E30006E624 /* CoreGraphics.framework */; };
@@ -434,6 +435,8 @@
 		6503C948194964B90051194A /* MTAboutViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MTAboutViewController.xib; sourceTree = "<group>"; };
 		65094DE419BE9F8100FABA48 /* MTCustomBut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTCustomBut.h; sourceTree = "<group>"; };
 		65094DE519BE9F8100FABA48 /* MTCustomBut.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTCustomBut.m; sourceTree = "<group>"; };
+		65094E3019BECAD400FABA48 /* MTContantPersonModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTContantPersonModel.h; sourceTree = "<group>"; };
+		65094E3119BECAD400FABA48 /* MTContantPersonModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTContantPersonModel.m; sourceTree = "<group>"; };
 		650974E619A3393D001366FB /* UncaughtExceptionHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UncaughtExceptionHandler.h; sourceTree = "<group>"; };
 		650974E719A3393D001366FB /* UncaughtExceptionHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UncaughtExceptionHandler.m; sourceTree = "<group>"; };
 		650C028B1946A5E30006E624 /* FlySchoolMaster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlySchoolMaster.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1369,6 +1372,8 @@
 				658E03FC19B9371800D08FEF /* MTTongXlViewController.m */,
 				65094DE419BE9F8100FABA48 /* MTCustomBut.h */,
 				65094DE519BE9F8100FABA48 /* MTCustomBut.m */,
+				65094E3019BECAD400FABA48 /* MTContantPersonModel.h */,
+				65094E3119BECAD400FABA48 /* MTContantPersonModel.m */,
 			);
 			name = TongXLClass;
 			sourceTree = "<group>";
@@ -2214,6 +2219,7 @@
 				650C02FD1946A6600006E624 /* UIButton+WebCache.m in Sources */,
 				654B6D5619822A61007518AB /* MTAdAndFuncView.m in Sources */,
 				65D08A98197C976A00738BA1 /* MTMudelDaTa.m in Sources */,
+				65094E3219BECAD400FABA48 /* MTContantPersonModel.m in Sources */,
 				655896A419629F9B004941D8 /* Reachability.m in Sources */,
 				650C02FC1946A6600006E624 /* SDWebImagePrefetcher.m in Sources */,
 				65409E011948187E008E9BA0 /* MTScoreDetViewController.m in Sources */,
