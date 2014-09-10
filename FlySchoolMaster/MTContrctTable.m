@@ -43,7 +43,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    num = 10;
     datalist = [NSMutableArray array];
     listarr = [NSMutableArray array];
     NSFileManager *FM = [NSFileManager defaultManager];
@@ -156,23 +156,29 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *cellid = @"cell";
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    UILabel *namelabel = [[UILabel alloc]initWithFrame:CGRectMake(20, 0, 100, 20)];
-    UILabel *phonelabel = [[UILabel alloc]initWithFrame:CGRectMake(150, 0, 150, 20)];
-    UILabel *addresslabel = [[UILabel alloc]initWithFrame:CGRectMake(20, 25, 200, 20)];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellid];
+    UILabel *namelabel = [[UILabel alloc]initWithFrame:CGRectMake(8, 3, 240, 20)];
+    namelabel.font = [UIFont fontWithName:@"TrebuchetMS-Bold" size:20];
+    UILabel *phonelabel = [[UILabel alloc]initWithFrame:CGRectMake(8, 44, 130, 20)];
+    phonelabel.font = [UIFont systemFontOfSize:16];
+    UILabel *addresslabel = [[UILabel alloc]initWithFrame:CGRectMake(8, 25, 300, 20)];
+    addresslabel.font = [UIFont systemFontOfSize:16];
+    UILabel *web = [[UILabel alloc]initWithFrame:CGRectMake(8, 47, 132, 20)];
+    web.font = [UIFont systemFontOfSize:16];
     //MTContantPersonModel *model = [datalist objectAtIndex:indexPath.row];
     if(!cell)
     {
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellid];
+        [cell.contentView addSubview:namelabel];
+        [cell.contentView addSubview:phonelabel];
+        [cell.contentView addSubview:addresslabel];
+        [cell.contentView addSubview:web];
+        namelabel.text = [[datalist objectAtIndex:indexPath.row]objectForKey:@"name"];
         
+        phonelabel.text = [NSString stringWithFormat:@"☎️%@",[[datalist objectAtIndex:indexPath.row]objectForKey:@"tel"]];
+        addresslabel.text = [[datalist objectAtIndex:indexPath.row]objectForKey:@"address"];
     }
-    [cell.contentView addSubview:namelabel];
-    [cell.contentView addSubview:phonelabel];
-    [cell.contentView addSubview:addresslabel];
-    namelabel.text = [[listarr objectAtIndex:indexPath.row]objectForKey:@"name"];
     
-    phonelabel.text = [[listarr objectAtIndex:indexPath.row]objectForKey:@"tel"];
-    addresslabel.text = [[listarr objectAtIndex:indexPath.row]objectForKey:@"webAddress"];;
     return cell;
 }
 -(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -255,12 +261,23 @@
 //刷新方法
 -(void)refesshview:(MJRefreshBaseView *)refersh
 {
-    if([datalist count]<10)
+    if([datalist count]<=10)
     {
         [refersh endRefreshing];
         return;
     }
-    
+    else
+    {
+        for(int i=num;i<num+rowsnum;i++)
+        {
+            NSDictionary *dcic = [datalist objectAtIndex:i];
+            [listarr addObject:dcic];
+            if(i>[datalist count]-1)
+                continue;
+        }
+        [mytable reloadData];
+        [refersh endRefreshing];
+    }
     
 }
 
@@ -319,7 +336,10 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
+-(void)dealloc
+{
+    [footview free];
+}
 /*
 #pragma mark - Navigation
 
