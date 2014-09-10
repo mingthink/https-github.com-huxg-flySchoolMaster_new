@@ -28,7 +28,8 @@
     MJRefreshFooterView *footview;
    // MJRefreshHeaderView *headview;
     int num;
-    
+    int pagenum;
+    BOOL isseach;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -43,6 +44,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    pagenum=1;
     num = 10;
     datalist = [NSMutableArray array];
     listarr = [NSMutableArray array];
@@ -94,9 +96,13 @@
     
     [self.view addSubview:mytable];
     
-    mysearch = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 60, DEVW, 40)];
+    mysearch = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 60, DEVW-40, 40)];
     
     mysearch.delegate = self;
+    
+    mysearch.placeholder = @"请输入关键字";
+    
+    mysearch.showsCancelButton = YES;
     
     [self.view addSubview:mysearch];
     
@@ -156,7 +162,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *cellid = @"cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellid];
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     UILabel *namelabel = [[UILabel alloc]initWithFrame:CGRectMake(8, 3, 240, 20)];
     namelabel.font = [UIFont fontWithName:@"TrebuchetMS-Bold" size:20];
     UILabel *phonelabel = [[UILabel alloc]initWithFrame:CGRectMake(8, 44, 130, 20)];
@@ -183,7 +189,7 @@
 }
 -(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 50;
+    return 80;
 }
 //-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 //{
@@ -261,6 +267,13 @@
 //刷新方法
 -(void)refesshview:(MJRefreshBaseView *)refersh
 {
+    
+    if(isseach)
+    {
+        
+    }
+    else
+    {
     if([datalist count]<=10)
     {
         [refersh endRefreshing];
@@ -270,17 +283,69 @@
     {
         for(int i=num;i<num+rowsnum;i++)
         {
+            if(i<=[datalist count]-1)
+            {
             NSDictionary *dcic = [datalist objectAtIndex:i];
             [listarr addObject:dcic];
-            if(i>[datalist count]-1)
+                num=num+10;
+            }
+           else
                 continue;
         }
         [mytable reloadData];
         [refersh endRefreshing];
     }
+    }
+}
+-(void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
     
 }
+//-(void)searchBarBookmarkButtonClicked:(UISearchBar *)searchBar
+//{
+//    NSLog(@"click cancel..........");
+//}
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [mysearch resignFirstResponder];
+    [self searches];
+}
+-(void)searches
+{
+   // NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    NSString *seachtext = mysearch.text;
+    seachtext = [seachtext stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *userdic = [FuncPublic GetDefaultInfo:@"Newuser"];
+    NSString *oid = [userdic objectForKey:@"organID"];
+    NSString *ids = [userdic objectForKey:@"id"];
+    NSMutableDictionary *dcit = [NSMutableDictionary dictionary];
+    [dcit setObject:oid  forKey:@"oid"];
+    [dcit setObject:ids forKey:@"uid"];
+    [dcit setObject:[FuncPublic getDvid] forKey:@"dvid"];
+    [dcit setObject:[FuncPublic createUUID] forKey:@"r"];
+    [dcit setObject:_pid forKey:@"pid"];
+    [dcit setObject:_cid forKey:@"cid"];
+    [dcit setObject:seachtext forKey:@"keyword"];
+    [dcit setObject:@"1" forKey:@"isDoPaging"];
+    [dcit setObject:[NSString stringWithFormat:@"%d",pagenum] forKey:@"page_number"];
+    [dcit setObject:@"10" forKey:@"txbPageSize"];
+    NSLog(@"dict is :%@",dcit);
+    [SVHTTPRequest POST:@"/api/contact/cateSearch.html" parameters:dcit completion:
+     ^(id response, NSHTTPURLResponse *urlResponse, NSError *error) {
+          NSLog(@"搜索结果：------------------------------------%@",response);
+         if([[response objectForKey:@"status"]isEqualToString:@"true"])
+         {
+             [listarr removeAllObjects];
+             listarr = nil;
+             listarr = [NSMutableArray array];
+             listarr = [response objectForKey:@"data"];
+             [mytable reloadData];
+         }
+       
+    }];
 
+    
+}
 #pragma mark loadmore
 -(NSString *)gettimeNow
 {
