@@ -49,31 +49,31 @@
     
     [self.view addSubview:mytable];
     
-//加载更多数据视图
-    
-    loadview = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVW, 40)];
-    
-    loadview.backgroundColor = [UIColor darkGrayColor];
-    
-    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(0, 5, DEVW, 15)];
-    
-    label.text = @"松开加载更多数据";
-    label.tag = 1002;
-    
-    [loadview addSubview:label];
-    
-    UILabel *timelabel = [[UILabel alloc]initWithFrame:CGRectMake(60, 22, 200, 15)];
-    timelabel.text = [self gettimeNow];
-    [loadview addSubview:timelabel];
-    timelabel.font = [UIFont systemFontOfSize:12];
-    timelabel.tag = 1003;
-    
-    UIActivityIndicatorView *action = [[UIActivityIndicatorView alloc]init];
-    action.center = CGPointMake(160, 20);
-    action.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
-    action.color = [UIColor darkGrayColor];
-    action.tag = 1004;
-    [loadview addSubview:action];
+////加载更多数据视图
+//    
+//    loadview = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVW, 40)];
+//    
+//    loadview.backgroundColor = [UIColor darkGrayColor];
+//    
+//    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(0, 5, DEVW, 15)];
+//    
+//    label.text = @"松开加载更多数据";
+//    label.tag = 1002;
+//    
+//    [loadview addSubview:label];
+//    
+//    UILabel *timelabel = [[UILabel alloc]initWithFrame:CGRectMake(60, 22, 200, 15)];
+//    timelabel.text = [self gettimeNow];
+//    [loadview addSubview:timelabel];
+//    timelabel.font = [UIFont systemFontOfSize:12];
+//    timelabel.tag = 1003;
+//    
+//    UIActivityIndicatorView *action = [[UIActivityIndicatorView alloc]init];
+//    action.center = CGPointMake(160, 20);
+//    action.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+//    action.color = [UIColor darkGrayColor];
+//    action.tag = 1004;
+//    [loadview addSubview:action];
     
   //  [self.view addSubview:loadview];
     
@@ -86,6 +86,7 @@
 #pragma mark tableview handel
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    NSLog(@"行数;%d",[datalist count]);
     return [datalist count];
 }
 
@@ -95,7 +96,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *cellid = @"cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellid];
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     UILabel *namelabel = [[UILabel alloc]initWithFrame:CGRectMake(20, 0, 100, 20)];
     UILabel *phonelabel = [[UILabel alloc]initWithFrame:CGRectMake(150, 0, 150, 20)];
     UILabel *addresslabel = [[UILabel alloc]initWithFrame:CGRectMake(20, 25, 200, 20)];
@@ -113,6 +114,10 @@
     phonelabel.text = [[datalist objectAtIndex:indexPath.row]objectForKey:@"tel"];
     addresslabel.text = [[datalist objectAtIndex:indexPath.row]objectForKey:@"webAddress"];;
     return cell;
+}
+-(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 50;
 }
 //-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 //{
@@ -155,15 +160,15 @@
         }
         
     }];
-    [mytable reloadData];
+   // [mytable reloadData];
    //NSLog(@"arr is .. %@",datalist);
     
 //    [mytable reloadData];
 }
--(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return rowhei;
-}
+//-(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    return rowhei;
+//}
 -(void)back
 {
     [self.navigationController popViewControllerAnimated:YES];

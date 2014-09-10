@@ -59,6 +59,17 @@
     
     [self.view addSubview:mytab];
     
+    seatable = [[UITableView alloc]initWithFrame:CGRectMake(0, 100, DEVW, DEVH-50-100) style:UITableViewStyleGrouped];
+    
+    seatable.delegate = self;
+    
+    
+    seatable.dataSource = self;
+    
+    [self.view addSubview:seatable];
+    
+    seatable.hidden = YES;
+    
     mysearch = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 60, DEVW-50, 40)];
     
     mysearch.barStyle = UIBarStyleDefault;
@@ -94,7 +105,7 @@
             arr = [response objectForKey:@"data"];
            
             [mytab reloadData];
-             [self tablehead];
+            [self tablehead:arr];
             
         }
      //   NSLog(@"请求的返回数据:%d",[[response objectForKey:@"data"]count]);
@@ -103,13 +114,13 @@
     
     
 }
--(void)tablehead
+-(void)tablehead:(NSMutableArray *)arrs
 {
     headviewarr = [NSMutableArray array];
     
     buttonsarr = [NSMutableArray array];
     
-    for(int i=0;i<arr.count;i++)
+    for(int i=0;i<arrs.count;i++)
     {
         UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 40)];
         
@@ -117,7 +128,7 @@
         
         MTCustomBut *buttons = [[MTCustomBut alloc]initWithFrame:CGRectMake(0, 0, 100, 40)];
         
-        NSString *btntitle = [[arr objectAtIndex:i]objectForKey:@"cateName"];
+        NSString *btntitle = [[arrs objectAtIndex:i]objectForKey:@"cateName"];
         
         [buttons setTitle:btntitle forState:UIControlStateNormal];
         
@@ -142,17 +153,29 @@
 #pragma mark tableview handel
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
+    if(tableView==mytab)
     return arr.count;
+    else return searcharr.count;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
    // return 5;
 //    NSLog(@"数据源内容是:----------%@",[arr objectAtIndex:1]);
 //    NSLog(@"每个组的数据长度:=====%d",[[[arr objectAtIndex:section]objectForKey:@"childCate"]count]);
+    if(tableView==mytab)
+    {
     if([[[arr objectAtIndex:section]objectForKey:@"childCate"]count]>0)
     return [[[arr objectAtIndex:section]objectForKey:@"childCate"]count];
     else
         return 1;
+    }
+    else
+    {
+        if([[[searcharr objectAtIndex:section]objectForKey:@"childCate"]count]>0)
+            return [[[searcharr objectAtIndex:section]objectForKey:@"childCate"]count];
+        else
+            return 1;
+    }
 }
 
 
@@ -183,19 +206,19 @@
     else
     {
         static NSString *cellid = @"cell";
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellid];
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         UILabel *namelabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 10, 60, 20)];
-                UILabel *phonenum = [[UILabel alloc]initWithFrame:CGRectMake(90, 10, 150, 20)];
+        UILabel *phonenum = [[UILabel alloc]initWithFrame:CGRectMake(90, 10, 150, 20)];
         if(!cell)
         {
             cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellid];
         }
-        [cell.contentView addSubview:namelabel];
+                [cell.contentView addSubview:namelabel];
                 [cell.contentView addSubview:phonenum];
-                if([[[arr objectAtIndex:indexPath.section] objectForKey:@"childCate"]count]>0)
+                if([[[searcharr objectAtIndex:indexPath.section] objectForKey:@"childCate"]count]>0)
                 {
-                    namelabel.text = [[[[arr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"name"];
-                    phonenum.text = [[[[arr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"mobile"];
+                    namelabel.text = [[[[searcharr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"name"];
+                    phonenum.text = [[[[searcharr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"mobile"];
                 }
                 else
                 {
@@ -257,7 +280,7 @@
 -(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MTCustomBut *but = [buttonsarr objectAtIndex:indexPath.section];
-    if(!isseach)
+    if(tableView==mytab)
     return but.isclicked?40:0;
     else
         return but.isclicked?80:0;
@@ -278,17 +301,24 @@
 {
   //  NSLog(@"btn clicked........");
     btn.isclicked = !btn.isclicked;
+    if(seatable.hidden==NO)
+      [ seatable reloadData];
    // [mytab reloadData];
+    else
     [mytab reloadSections:[NSIndexSet indexSetWithIndex:btn.asction] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 #pragma mark srachbar handel
 
 -(void)srarchclick:(UIButton *)button
 {
+     [mysearch resignFirstResponder];
+    if(![mysearch.text isEqualToString:@""])
     [self seachs];
 }
 -(void)seachs
 {
+    
+    searcharr = [NSMutableArray array];
     [[FuncPublic SharedFuncPublic]StartActivityAnimation:self];
     NSString *seachtext = mysearch.text;
     NSDictionary *userdic = [FuncPublic GetDefaultInfo:@"Newuser"];
@@ -305,12 +335,14 @@
         NSLog(@"搜索的返回结果:%@",response);
         if([[response objectForKey:@"status"]isEqualToString:@"true"])
         {
-            isseach = YES;
-        [arr removeAllObjects];
-        arr = [response objectForKey:@"data"];
-            [self tablehead];
-            [mytab reloadData];
+            
+        seatable.hidden = NO;
+        searcharr = [response objectForKey:@"data"];
+            [self tablehead:searcharr];
+            [seatable reloadData];
         }
+        else
+            seatable.hidden = YES;
         
     }];
 }
@@ -326,6 +358,7 @@
 {
     //NSLog(@"come thi fusn....");
     [mysearch resignFirstResponder];
+    if(![mysearch.text isEqualToString:@""])
     [self seachs];
 }
 -(void)back
