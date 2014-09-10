@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface MTContrctTable : UIViewController
-
+@property(nonatomic,retain)NSString *pid;
+@property(nonatomic,retain)NSString *cid;
 @end
