@@ -86,7 +86,7 @@
 #pragma mark tableview handel
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSLog(@"行数;%d",[datalist count]);
+    
     return [datalist count];
 }
 

@@ -11,4 +11,5 @@
 @interface MTContrctTable : UIViewController
 @property(nonatomic,retain)NSString *pid;
 @property(nonatomic,retain)NSString *cid;
+@property(nonatomic,retain)NSString *title;
 @end

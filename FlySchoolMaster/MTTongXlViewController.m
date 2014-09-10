@@ -17,7 +17,7 @@
     NSMutableArray *searcharr;
     NSMutableArray *datasource;
     UISearchBar *mysearch;
-   // NSArray *arr;
+    // NSArray *arr;
     NSMutableArray *arr;
     NSMutableArray *copyarr;
     NSMutableArray *headviewarr;
@@ -43,7 +43,7 @@
     [super viewDidLoad];
     arr = [NSMutableArray array];
     copyarr = [NSMutableArray array];
-   // arr = [[NSArray alloc]initWithObjects:@"常用电话",@"同事",@"学生家长" ,@"常用",nil];
+    // arr = [[NSArray alloc]initWithObjects:@"常用电话",@"同事",@"学生家长" ,@"常用",nil];
     
     [self getdatas];
     
@@ -79,9 +79,13 @@
     [self.view addSubview:mysearch];
     
     UIButton *searchbut = [UIButton buttonWithType:UIButtonTypeCustom];
+    
     [searchbut setTitle:@"搜索" forState:UIControlStateNormal];
+    
     [searchbut setFrame:CGRectMake(DEVW-50, 60, 50, 40)];
+    
     [self.view addSubview:searchbut];
+    
     [searchbut addTarget:self action:@selector(srarchclick:) forControlEvents:UIControlEventTouchUpInside];
     
     
@@ -91,24 +95,33 @@
 -(void)getdatas
 {
     NSDictionary *userdic = [FuncPublic GetDefaultInfo:@"Newuser"];
+    
     NSString *oid = [userdic objectForKey:@"organID"];
+    
     NSString *ids = [userdic objectForKey:@"id"];
+    
     NSMutableDictionary *dcit = [NSMutableDictionary dictionary];
+    
     [dcit setObject:oid  forKey:@"oid"];
+    
     [dcit setObject:ids forKey:@"uid"];
+    
     [dcit setObject:[FuncPublic getDvid] forKey:@"dvid"];
+    
     [dcit setObject:[FuncPublic createUUID] forKey:@"r"];
+    
     [SVHTTPRequest GET:@"/api/contact/" parameters:dcit completion:^(id response, NSHTTPURLResponse *urlResponse, NSError *error) {
-       
+        
         if([[response objectForKey:@"status"]isEqualToString:@"true"])
         {
             arr = [response objectForKey:@"data"];
-           
+            
             [mytab reloadData];
+            
             [self tablehead:arr];
             
         }
-     //   NSLog(@"请求的返回数据:%d",[[response objectForKey:@"data"]count]);
+        //   NSLog(@"请求的返回数据:%d",[[response objectForKey:@"data"]count]);
     }];
     
     
@@ -126,7 +139,7 @@
         
         v.backgroundColor = [UIColor redColor];
         
-        MTCustomBut *buttons = [[MTCustomBut alloc]initWithFrame:CGRectMake(0, 0, 100, 40)];
+        MTCustomBut *buttons = [[MTCustomBut alloc]initWithFrame:CGRectMake(0, 0, 200, 40)];
         
         NSString *btntitle = [[arrs objectAtIndex:i]objectForKey:@"cateName"];
         
@@ -148,26 +161,26 @@
         
         [buttonsarr addObject:buttons];
     }
-
+    
 }
 #pragma mark tableview handel
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     if(tableView==mytab)
-    return arr.count;
+        return arr.count;
     else return searcharr.count;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-   // return 5;
-//    NSLog(@"数据源内容是:----------%@",[arr objectAtIndex:1]);
-//    NSLog(@"每个组的数据长度:=====%d",[[[arr objectAtIndex:section]objectForKey:@"childCate"]count]);
+    // return 5;
+    //    NSLog(@"数据源内容是:----------%@",[arr objectAtIndex:1]);
+    //    NSLog(@"每个组的数据长度:=====%d",[[[arr objectAtIndex:section]objectForKey:@"childCate"]count]);
     if(tableView==mytab)
     {
-    if([[[arr objectAtIndex:section]objectForKey:@"childCate"]count]>0)
-    return [[[arr objectAtIndex:section]objectForKey:@"childCate"]count];
-    else
-        return 1;
+        if([[[arr objectAtIndex:section]objectForKey:@"childCate"]count]>0)
+            return [[[arr objectAtIndex:section]objectForKey:@"childCate"]count];
+        else
+            return 1;
     }
     else
     {
@@ -184,95 +197,137 @@
     
     if(tableView==mytab)
     {
-    static NSString *cellid = @"cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellid];
-    
-    if(!cell)
-    {
-        cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellid];
-            }
-    if([[[arr objectAtIndex:indexPath.section] objectForKey:@"childCate"]count]>0)
-    {
-        cell.textLabel.text = [[[[arr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"cateName"];
-    }
-    else
-    {
-        cell.textLabel.text=@"";
-    }
+        static NSString *cellid = @"cell";
+        
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellid];
+        
+        if(!cell)
+        {
+            cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellid];
+        }
+        if([[[arr objectAtIndex:indexPath.section] objectForKey:@"childCate"]count]>0)
+        {
+            cell.textLabel.text = [[[[arr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"cateName"];
+        }
+        else
+        {
+            cell.textLabel.text=@"";
+        }
         return cell;
-   
+        
     }
     
     else
     {
         static NSString *cellid = @"cell";
+        
         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        UILabel *namelabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 10, 60, 20)];
-        UILabel *phonenum = [[UILabel alloc]initWithFrame:CGRectMake(90, 10, 150, 20)];
+        
+        UILabel *namelabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 10, 150, 20)];
+        
+        namelabel.font = [UIFont systemFontOfSize:13];
+        
+        UILabel *phonenum = [[UILabel alloc]initWithFrame:CGRectMake(170, 10, 70, 20)];
+        
+        phonenum.font = [UIFont systemFontOfSize:12];
+        
+        UILabel *telnum = [[UILabel alloc]initWithFrame:CGRectMake(250, 10, 70, 20)];
+        
+        telnum.font = [UIFont systemFontOfSize:10];
+        
+        UILabel *adress = [[UILabel alloc]initWithFrame:CGRectMake(10, 35, 300, 20)];
+        
+        UILabel *webaddress = [[UILabel alloc]initWithFrame:CGRectMake(10, 60, 300, 20)];
+        
+        adress.font = [UIFont systemFontOfSize:13];
+        
+        webaddress.font = [UIFont systemFontOfSize:13];
         if(!cell)
         {
             cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellid];
         }
-                [cell.contentView addSubview:namelabel];
-                [cell.contentView addSubview:phonenum];
-                if([[[searcharr objectAtIndex:indexPath.section] objectForKey:@"childCate"]count]>0)
-                {
-                    namelabel.text = [[[[searcharr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"name"];
-                    phonenum.text = [[[[searcharr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"mobile"];
-                }
-                else
-                {
-                   // cell.textLabel.text=@"";
-                }
+        [cell.contentView addSubview:namelabel];
+        
+        [cell.contentView addSubview:phonenum];
+        
+        [cell.contentView addSubview:telnum];
+        
+        [cell.contentView addSubview:adress];
+        
+        [cell.contentView addSubview:webaddress];
+        
+        if([[[searcharr objectAtIndex:indexPath.section] objectForKey:@"childCate"]count]>0)
+        {
+            namelabel.text = [[[[searcharr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"name"];
+            
+            phonenum.text = [[[[searcharr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"mobile"];
+            
+            adress.text = [[[[searcharr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"address"];
+            
+            NSString *web = @"网址:";
+            
+            webaddress.text = [web stringByAppendingString:[[[[searcharr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"webAddress"]];
+            
+            telnum.text = [[[[searcharr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"tel"];
+            
+        }
+        else
+        {
+            // cell.textLabel.text=@"";
+        }
         
         return cell;
     }
     
-//    else
-//    {
-//        static NSString *cellids = @"cells";
-//        UITableViewCell *cells = [tableView dequeueReusableCellWithIdentifier:cellids];
-//        UILabel *namelabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 10, 60, 20)];
-//        UILabel *phonenum = [[UILabel alloc]initWithFrame:CGRectMake(90, 10, 150, 20)];
-//        if(!cells)
-//        {
-//            cells = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellids];
-////            for(UIView *v in cells.subviews)
-////            {
-////                [v removeFromSuperview];
-////            }
-//            
-//        }
-//        [cells.contentView addSubview:namelabel];
-//        [cells.contentView addSubview:phonenum];
-//        if([[[arr objectAtIndex:indexPath.section] objectForKey:@"childCate"]count]>0)
-//        {
-//            namelabel.text = [[[[arr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"name"];
-//            phonenum.text = [[[[arr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"mobile"];
-//        }
-//        else
-//        {
-//           // cell.textLabel.text=@"";
-//        }
-//     return cells;
-//        
-//    }
+    //    else
+    //    {
+    //        static NSString *cellids = @"cells";
+    //        UITableViewCell *cells = [tableView dequeueReusableCellWithIdentifier:cellids];
+    //        UILabel *namelabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 10, 60, 20)];
+    //        UILabel *phonenum = [[UILabel alloc]initWithFrame:CGRectMake(90, 10, 150, 20)];
+    //        if(!cells)
+    //        {
+    //            cells = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellids];
+    ////            for(UIView *v in cells.subviews)
+    ////            {
+    ////                [v removeFromSuperview];
+    ////            }
+    //
+    //        }
+    //        [cells.contentView addSubview:namelabel];
+    //        [cells.contentView addSubview:phonenum];
+    //        if([[[arr objectAtIndex:indexPath.section] objectForKey:@"childCate"]count]>0)
+    //        {
+    //            namelabel.text = [[[[arr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"name"];
+    //            phonenum.text = [[[[arr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"mobile"];
+    //        }
+    //        else
+    //        {
+    //           // cell.textLabel.text=@"";
+    //        }
+    //     return cells;
+    //
+    //    }
     
     
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     MTContrctTable *table = [[MTContrctTable alloc]init];
+    
     if(tableView==mytab)
     {
         table.pid = [[arr objectAtIndex:indexPath.section]objectForKey:@"id"];
+        
         table.cid = [[[[arr objectAtIndex:indexPath.section]objectForKey:@"childCate"]objectAtIndex:indexPath.row]objectForKey:@"id"];
     }
     else
     {
         table.pid = [[searcharr objectAtIndex:indexPath.section]objectForKey:@"id"];
+        
         table.cid = [[[[searcharr objectAtIndex:indexPath.section]objectForKey:@"childCate"]objectAtIndex:indexPath.row]objectForKey:@"id"];
     }
     [self.navigationController pushViewController:table animated:NO];
@@ -280,8 +335,9 @@
 -(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MTCustomBut *but = [buttonsarr objectAtIndex:indexPath.section];
+    
     if(tableView==mytab)
-    return but.isclicked?40:0;
+        return but.isclicked?40:0;
     else
         return but.isclicked?80:0;
 }
@@ -297,48 +353,71 @@
 {
     return 3;
 }
+-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    UIView *v=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 3)];
+    v.backgroundColor = [UIColor grayColor];
+    return v;
+}
 -(void)btnclick:(MTCustomBut * )btn
 {
-  //  NSLog(@"btn clicked........");
+    //  NSLog(@"btn clicked........");
     btn.isclicked = !btn.isclicked;
     if(seatable.hidden==NO)
-      [ seatable reloadData];
-   // [mytab reloadData];
+        [seatable reloadData];
+       // [ seatable reloadSections:[NSIndexSet indexSetWithIndex:btn.asction] withRowAnimation:UITableViewRowAnimationFade];
+    // [mytab reloadData];
     else
-    [mytab reloadSections:[NSIndexSet indexSetWithIndex:btn.asction] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [mytab reloadSections:[NSIndexSet indexSetWithIndex:btn.asction] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 #pragma mark srachbar handel
 
 -(void)srarchclick:(UIButton *)button
 {
-     [mysearch resignFirstResponder];
+    [mysearch resignFirstResponder];
+    
     if(![mysearch.text isEqualToString:@""])
-    [self seachs];
+        [self seachs];
 }
 -(void)seachs
 {
     
     searcharr = [NSMutableArray array];
+    
     [[FuncPublic SharedFuncPublic]StartActivityAnimation:self];
+    
     NSString *seachtext = mysearch.text;
+    
     NSDictionary *userdic = [FuncPublic GetDefaultInfo:@"Newuser"];
+    
     NSString *oid = [userdic objectForKey:@"organID"];
+    
     NSString *ids = [userdic objectForKey:@"id"];
+    
     NSMutableDictionary *dcit = [NSMutableDictionary dictionary];
+    
     [dcit setObject:oid  forKey:@"oid"];
+    
     [dcit setObject:ids forKey:@"uid"];
+    
     [dcit setObject:[FuncPublic getDvid] forKey:@"dvid"];
+    
     [dcit setObject:[FuncPublic createUUID] forKey:@"r"];
+    
     [dcit setObject:seachtext forKey:@"keyword"];
+    
     [SVHTTPRequest GET:@"/api/contact/search.html" parameters:dcit completion:^(id response, NSHTTPURLResponse *urlResponse, NSError *error) {
         [[FuncPublic SharedFuncPublic]StopActivityAnimation];
-        NSLog(@"搜索的返回结果:%@",response);
+         NSLog(@"搜索的返回结果:%@",response);
         if([[response objectForKey:@"status"]isEqualToString:@"true"])
         {
             
-        seatable.hidden = NO;
-        searcharr = [response objectForKey:@"data"];
+            seatable.hidden = NO;
+            
+            searcharr = [response objectForKey:@"data"];
+            
             [self tablehead:searcharr];
+            
             [seatable reloadData];
         }
         else
@@ -349,17 +428,22 @@
 -(void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
     NSLog(@"取消搜索..........");
-     [mysearch resignFirstResponder];
+    [mysearch resignFirstResponder];
+    
     isseach = NO;
+    
     arr = copyarr;
+    
     [mytab reloadData];
 }
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     //NSLog(@"come thi fusn....");
     [mysearch resignFirstResponder];
+    
     if(![mysearch.text isEqualToString:@""])
-    [self seachs];
+        
+        [self seachs];
 }
 -(void)back
 {
@@ -373,14 +457,14 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+ {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end
