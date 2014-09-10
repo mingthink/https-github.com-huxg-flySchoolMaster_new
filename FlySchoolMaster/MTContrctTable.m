@@ -8,6 +8,7 @@
 
 #import "MTContrctTable.h"
 #import "MTContantPersonModel.h"
+#import "SVHTTPRequest.h"
 @interface MTContrctTable ()<UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate>
 
 @end
@@ -18,6 +19,7 @@
     NSMutableArray *datalist;
     float rowhei;
     UIView *loadview;
+    
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -97,17 +99,19 @@
     UILabel *namelabel = [[UILabel alloc]initWithFrame:CGRectMake(20, 0, 100, 20)];
     UILabel *phonelabel = [[UILabel alloc]initWithFrame:CGRectMake(150, 0, 150, 20)];
     UILabel *addresslabel = [[UILabel alloc]initWithFrame:CGRectMake(20, 25, 200, 20)];
-    MTContantPersonModel *model = [datalist objectAtIndex:indexPath.row];
+    //MTContantPersonModel *model = [datalist objectAtIndex:indexPath.row];
     if(!cell)
     {
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellid];
-        [cell.contentView addSubview:namelabel];
-        [cell.contentView addSubview:phonelabel];
-        [cell.contentView addSubview:addresslabel];
-        namelabel.text = model.name;
-        phonelabel.text = model.phonenum;
-        addresslabel.text = model.address;
+        
     }
+    [cell.contentView addSubview:namelabel];
+    [cell.contentView addSubview:phonelabel];
+    [cell.contentView addSubview:addresslabel];
+    namelabel.text = [[datalist objectAtIndex:indexPath.row]objectForKey:@"name"];
+    
+    phonelabel.text = [[datalist objectAtIndex:indexPath.row]objectForKey:@"tel"];
+    addresslabel.text = [[datalist objectAtIndex:indexPath.row]objectForKey:@"webAddress"];;
     return cell;
 }
 //-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
@@ -116,21 +120,45 @@
 //}
 -(void)getdata
 {
-    for(int i =0;i<10;i++)
-    {
-        MTContantPersonModel *model = [[MTContantPersonModel alloc]init];
+//    for(int i =0;i<10;i++)
+//    {
+//        MTContantPersonModel *model = [[MTContantPersonModel alloc]init];
+//        
+//        model.name = @"蔡跃春";
+//        
+//        model.address = @"高新大道589号";
+//        
+//        model.phonenum = @"13340116537";
+//        
+//        rowhei = 50;
+//        
+//        [datalist addObject:model];
+//    }
+    NSDictionary *userdic = [FuncPublic GetDefaultInfo:@"Newuser"];
+    NSString *oid = [userdic objectForKey:@"organID"];
+    NSString *ids = [userdic objectForKey:@"id"];
+    NSMutableDictionary *dcit = [NSMutableDictionary dictionary];
+    [dcit setObject:oid  forKey:@"oid"];
+    [dcit setObject:ids forKey:@"uid"];
+    [dcit setObject:[FuncPublic getDvid] forKey:@"dvid"];
+    [dcit setObject:[FuncPublic createUUID] forKey:@"r"];
+    [dcit setObject:_pid forKey:@"pid"];
+    [dcit setObject:_cid forKey:@"cid"];
+    [SVHTTPRequest GET:@"/api/contact/detail.html" parameters:dcit completion:^(id response, NSHTTPURLResponse *urlResponse, NSError *error) {
+         //NSMutableArray *arr = [[NSMutableArray alloc]init];
+        if ([[response objectForKey:@"status"]isEqualToString:@"true"]) {
+           
+           
+                datalist = [response objectForKey:@"data"];
+            
+            [mytable reloadData];
+        }
         
-        model.name = @"蔡跃春";
-        
-        model.address = @"高新大道589号";
-        
-        model.phonenum = @"13340116537";
-        
-        rowhei = 50;
-        
-        [datalist addObject:model];
-    }
+    }];
     [mytable reloadData];
+   //NSLog(@"arr is .. %@",datalist);
+    
+//    [mytable reloadData];
 }
 -(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -163,29 +191,29 @@
     
 }
 
--(void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    NSLog(@"scorll did scroll.........");
-    
-    NSLog(@"偏移量:%f",scrollView.contentOffset.y);
-    if(scrollView.contentOffset.y>100)
-    {
-        mytable.tableFooterView = loadview;
-        //loadview.hidden = NO;
-    }
-}
--(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
-{
-    if(scrollView.contentOffset.y==100)
-    {
-    
-    [scrollView setContentOffset:CGPointMake(0, 100) animated:YES];
-    }
-}
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-   // mytable.tableFooterView = nil;
-}
+//-(void)scrollViewDidScroll:(UIScrollView *)scrollView
+//{
+//    NSLog(@"scorll did scroll.........");
+//    
+//    NSLog(@"偏移量:%f",scrollView.contentOffset.y);
+//    if(scrollView.contentOffset.y>100)
+//    {
+//        mytable.tableFooterView = loadview;
+//        //loadview.hidden = NO;
+//    }
+//}
+//-(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
+//{
+//    if(scrollView.contentOffset.y==100)
+//    {
+//    
+//    [scrollView setContentOffset:CGPointMake(0, 100) animated:YES];
+//    }
+//}
+//-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+//{
+//   // mytable.tableFooterView = nil;
+//}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
