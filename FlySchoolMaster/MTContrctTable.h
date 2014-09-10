@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MTContrctTable : UITableViewController
+@interface MTContrctTable : UIViewController
 
 @end

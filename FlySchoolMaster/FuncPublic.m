@@ -664,6 +664,16 @@ FuncPublic * _funcPublic    =   nil;
 	
 	return uuidStr;
 }
++(NSString *)getDvid
+{
+    CFUUIDRef puuid = CFUUIDCreate( nil );
+    CFStringRef uuidString = CFUUIDCreateString( nil, puuid );
+    NSString * result = (NSString *)CFBridgingRelease(CFStringCreateCopy( NULL, uuidString));
+     CFRelease(puuid);
+     CFRelease(uuidString);
+     return result;
+
+}
 //判断是否为整形：
 +(BOOL)isPureInt:(NSString*)string{
     

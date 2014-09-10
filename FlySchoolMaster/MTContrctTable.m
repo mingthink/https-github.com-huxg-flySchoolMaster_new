@@ -7,21 +7,22 @@
 //
 
 #import "MTContrctTable.h"
-#import "MTCustomViewCell.h"
-@interface MTContrctTable ()<UIScrollViewDelegate>
-{
-    NSMutableArray *arr;
-}
+#import "MTContantPersonModel.h"
+@interface MTContrctTable ()<UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate>
+
 @end
 
 @implementation MTContrctTable
 {
-    UIView *v;
+    UITableView *mytable;
+    NSMutableArray *datalist;
+    float rowhei;
+    UIView *loadview;
 }
 
-- (id)initWithStyle:(UITableViewStyle)style
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    self = [super initWithStyle:style];
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
     }
@@ -31,149 +32,165 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    arr = [NSMutableArray array];
-    [arr addObject:@"cyc"];
-    [arr addObject:@"cyc1"];
-    [arr addObject:@"cyc2"];
-    [arr addObject:@"cyc3"];
-    [FuncPublic InstanceNavgationBar:@"通讯录列表" action:@selector(back) superclass:self isroot:NO];
-    v = [[UIView alloc]initWithFrame:CGRectMake(0, DEVH-50-40, DEVW, 40)];
-    v.backgroundColor = [UIColor grayColor];
-    v.hidden = YES;
-    UIButton *load = [UIButton buttonWithType:UIButtonTypeCustom];
-    load.frame = CGRectMake(0, 0, 100, 30);
-    [load setTitle:@"加载更多" forState:UIControlStateNormal];
-    [load addTarget:self action:@selector(laoddata:) forControlEvents:UIControlEventTouchUpInside];
-    [v addSubview:load];
-    [self.view addSubview:v];
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
     
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    datalist = [NSMutableArray array];
+    
+    [self getdata];
+    
+    [FuncPublic InstanceNavgationBar:@"通讯录列表" action:@selector(back) superclass:self isroot:NO];
+    
+    mytable = [[UITableView alloc]initWithFrame:CGRectMake(0, 60, DEVW, DEVH-60-50) style:UITableViewStylePlain];
+    
+    mytable.dataSource = self;
+    
+    mytable.delegate = self;
+    
+    [self.view addSubview:mytable];
+    
+//加载更多数据视图
+    
+    loadview = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVW, 40)];
+    
+    loadview.backgroundColor = [UIColor darkGrayColor];
+    
+    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(0, 5, DEVW, 15)];
+    
+    label.text = @"松开加载更多数据";
+    label.tag = 1002;
+    
+    [loadview addSubview:label];
+    
+    UILabel *timelabel = [[UILabel alloc]initWithFrame:CGRectMake(60, 22, 200, 15)];
+    timelabel.text = [self gettimeNow];
+    [loadview addSubview:timelabel];
+    timelabel.font = [UIFont systemFontOfSize:12];
+    timelabel.tag = 1003;
+    
+    UIActivityIndicatorView *action = [[UIActivityIndicatorView alloc]init];
+    action.center = CGPointMake(160, 20);
+    action.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+    action.color = [UIColor darkGrayColor];
+    action.tag = 1004;
+    [loadview addSubview:action];
+    
+  //  [self.view addSubview:loadview];
+    
+  //  loadview.hidden = YES;
+
+    
+    
+    // Do any additional setup after loading the view.
+}
+#pragma mark tableview handel
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [datalist count];
 }
 
-- (void)didReceiveMemoryWarning
+// Row display. Implementers should *always* try to reuse cells by setting each cell's reuseIdentifier and querying for available reusable cells with dequeueReusableCellWithIdentifier:
+// Cell gets various attributes set automatically based on table (separators) and data source (accessory views, editing controls)
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    static NSString *cellid = @"cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellid];
+    UILabel *namelabel = [[UILabel alloc]initWithFrame:CGRectMake(20, 0, 100, 20)];
+    UILabel *phonelabel = [[UILabel alloc]initWithFrame:CGRectMake(150, 0, 150, 20)];
+    UILabel *addresslabel = [[UILabel alloc]initWithFrame:CGRectMake(20, 25, 200, 20)];
+    MTContantPersonModel *model = [datalist objectAtIndex:indexPath.row];
+    if(!cell)
+    {
+        cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellid];
+        [cell.contentView addSubview:namelabel];
+        [cell.contentView addSubview:phonelabel];
+        [cell.contentView addSubview:addresslabel];
+        namelabel.text = model.name;
+        phonelabel.text = model.phonenum;
+        addresslabel.text = model.address;
+    }
+    return cell;
 }
--(void)laoddata:(UIButton *)btn
+//-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+//{
+//    return loadview;
+//}
+-(void)getdata
 {
-    
+    for(int i =0;i<10;i++)
+    {
+        MTContantPersonModel *model = [[MTContantPersonModel alloc]init];
+        
+        model.name = @"蔡跃春";
+        
+        model.address = @"高新大道589号";
+        
+        model.phonenum = @"13340116537";
+        
+        rowhei = 50;
+        
+        [datalist addObject:model];
+    }
+    [mytable reloadData];
+}
+-(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return rowhei;
 }
 -(void)back
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
-#pragma mark - Table view data source
-
-
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+#pragma mark loadmore
+-(NSString *)gettimeNow
 {
-
-    return arr.count;
-}
-
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *cellid = @"cell";
-    MTCustomViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellid];
-    if(!cell)
-    {
-        NSArray *cellarr = [[NSBundle mainBundle]loadNibNamed:@"MTCustomViewCell" owner:self options:nil];
-        cell = cellarr[0];
-        NSString *sre = [arr objectAtIndex:indexPath.row];
-        cell.labels.text =sre ;
-        
-    }
+    //获得系统时间
+    NSDate * senddate = [NSDate date];
+    NSDateFormatter *dateformatter = [[NSDateFormatter alloc] init];
+    [dateformatter setDateFormat:@"HH:mm"];
+    NSString * locationString=[dateformatter stringFromDate:senddate];
     
-    return cell;
+    //获得系统日期
+    NSCalendar * cal = [NSCalendar currentCalendar];
+    NSUInteger unitFlags = NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit;
+    NSDateComponents * conponent = [cal components:unitFlags fromDate:senddate];
+    NSInteger year = [conponent year];
+    NSInteger month = [conponent month];
+    NSInteger day = [conponent day];
+    NSString * nsDateString = [NSString stringWithFormat:@"%d/%d/%d",year,month,day];
+    
+    NSString *timestr = [NSString stringWithFormat:@"last Update:%@ %@",nsDateString,locationString];
+    return timestr;
+    
 }
--(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    return 50;
+    NSLog(@"scorll did scroll.........");
+    
+    NSLog(@"偏移量:%f",scrollView.contentOffset.y);
+    if(scrollView.contentOffset.y>100)
+    {
+        mytable.tableFooterView = loadview;
+        //loadview.hidden = NO;
+    }
 }
 -(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
 {
-    [scrollView setContentOffset:CGPointMake(0, 40) animated:YES];
-    for(UIButton *btn in v.subviews)
+    if(scrollView.contentOffset.y==100)
     {
-        [btn setTitle:@"正在加载" forState:UIControlStateNormal];
-        [self performSelector:@selector(loaddtass:) withObject:nil];
-     //
-    }
-}
--(void)loaddtass:(id)sender
-{
-    [arr addObject:@"chadj"];
-    [self performSelector:@selector(finishload:) withObject:nil afterDelay:2];
-}
--(void)finishload:(id)sneder
-{
-    [self.tableView reloadData];
-    v.hidden = YES;
-    for(UIButton *btn in v.subviews)
-    {
-        [btn setTitle:@"加载更多" forState:UIControlStateNormal];
-    }
-}
--(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
-{
     
+    [scrollView setContentOffset:CGPointMake(0, 100) animated:YES];
+    }
 }
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    
+   // mytable.tableFooterView = nil;
 }
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+- (void)didReceiveMemoryWarning
 {
-    if(scrollView.contentOffset.y>40)
-    {
-        v.hidden = NO;
-    }
-   // NSLog(@"scorlll did scro.....");
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 /*
 #pragma mark - Navigation

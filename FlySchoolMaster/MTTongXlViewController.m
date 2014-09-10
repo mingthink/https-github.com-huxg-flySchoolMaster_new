@@ -9,12 +9,14 @@
 #import "MTTongXlViewController.h"
 #import "MTCustomBut.h"
 #import "MTContrctTable.h"
+#import "SVHTTPRequest.h"
 @interface MTTongXlViewController ()<UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate>
 {
     UITableView *mytab;
     NSMutableArray *datasource;
     UISearchBar *mysearch;
-    NSArray *arr;
+   // NSArray *arr;
+    NSMutableArray *arr;
     NSMutableArray *headviewarr;
     NSMutableArray *buttonsarr;
 }
@@ -35,7 +37,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    arr = [[NSArray alloc]initWithObjects:@"常用电话",@"同事",@"学生家长" ,@"常用",nil];
+    arr = [NSMutableArray array];
+   // arr = [[NSArray alloc]initWithObjects:@"常用电话",@"同事",@"学生家长" ,@"常用",nil];
+    
+    [self getdatas];
     
     headviewarr = [NSMutableArray array];
     
@@ -98,6 +103,29 @@
     
     // Do any additional setup after loading the view.
 }
+#pragma mark datahandel
+-(void)getdatas
+{
+    NSDictionary *userdic = [FuncPublic GetDefaultInfo:@"Newuser"];
+    NSString *oid = [userdic objectForKey:@"organID"];
+    NSString *ids = [userdic objectForKey:@"id"];
+    NSMutableDictionary *dcit = [NSMutableDictionary dictionary];
+    [dcit setObject:oid  forKey:@"oid"];
+    [dcit setObject:ids forKey:@"uid"];
+    [dcit setObject:[FuncPublic getDvid] forKey:@"dvid"];
+    [dcit setObject:[FuncPublic createUUID] forKey:@"r"];
+    [SVHTTPRequest GET:@"/api/contact/" parameters:dcit completion:^(id response, NSHTTPURLResponse *urlResponse, NSError *error) {
+        if([[response objectForKey:@"status"]isEqualToString:@"true"])
+        {
+            arr = [response objectForKey:@"data"];
+            [mytab reloadData];
+        }
+     //   NSLog(@"请求的返回数据:%d",[[response objectForKey:@"data"]count]);
+    }];
+    
+    
+    
+}
 #pragma mark tableview handel
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -105,7 +133,7 @@
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 5;
+    return [[[arr objectAtIndex:section]objectForKey:@"childCate"]count];
 }
 
 
@@ -116,6 +144,7 @@
     if(!cell)
     {
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellid];
+        cell.textLabel.text = [[[[arr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"cateName"];
     }
     return cell;
     

@@ -33,7 +33,7 @@
 -(void)StopActivityAnimation;
 #pragma mark 打开及关闭风火轮   end------------
 
-
++(NSString *)getDvid;
 + (NSString *)createUUID;
 
 /*
