@@ -9,7 +9,10 @@
 #import "MTContrctTable.h"
 #import "MTContantPersonModel.h"
 #import "SVHTTPRequest.h"
-@interface MTContrctTable ()<UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate>
+#import "MJRefresh.h"
+#import "MJRefreshBaseView.h"
+#define rowsnum 10
+@interface MTContrctTable ()<UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate,UISearchBarDelegate,MJRefreshBaseViewDelegate>
 
 @end
 
@@ -19,6 +22,12 @@
     NSMutableArray *datalist;
     float rowhei;
     UIView *loadview;
+    UISearchBar *mysearch;
+    NSMutableArray *listarr;
+    
+    MJRefreshFooterView *footview;
+   // MJRefreshHeaderView *headview;
+    int num;
     
 }
 
@@ -36,12 +45,48 @@
     [super viewDidLoad];
     
     datalist = [NSMutableArray array];
+    listarr = [NSMutableArray array];
+    NSFileManager *FM = [NSFileManager defaultManager];
+    NSString *fielpaths = [NSHomeDirectory()stringByAppendingString:@"/Documents/FileDocuments"];
+    NSString *fullpath = [fielpaths stringByAppendingString:[NSString stringWithFormat:@"/%@/%@.txt",Contranct,_cid]];
+   
+    if([FM fileExistsAtPath:fullpath isDirectory:NO ])
+    {
+        
+        NSDictionary *dict = [[NSDictionary alloc]initWithContentsOfFile:fullpath];
+        NSString *ves = [dict objectForKey:@"vers"];
+      //  NSLog(@"文件缓存路径:%@",ves);
+        if([ves isEqualToString:_versions])
+        {
+            
+            datalist = [dict objectForKey:@"data"];
+            if([datalist count]>10)
+            {
+                for(int i=0;i<rowsnum;i++)
+                {
+                    NSDictionary *dic = [datalist objectAtIndex:i];
+                    [listarr addObject:dic];
+                }
+            }
+            else
+                listarr = datalist;
+
+        }
+        else
+        {
+            [self getdata];
+        }
+    }
+    else
+    {
+        
     
     [self getdata];
+    }
     
     [FuncPublic InstanceNavgationBar:@"通讯录列表" action:@selector(back) superclass:self isroot:NO];
     
-    mytable = [[UITableView alloc]initWithFrame:CGRectMake(0, 60, DEVW, DEVH-60-50) style:UITableViewStylePlain];
+    mytable = [[UITableView alloc]initWithFrame:CGRectMake(0, 100, DEVW, DEVH-100-50) style:UITableViewStylePlain];
     
     mytable.dataSource = self;
     
@@ -49,18 +94,33 @@
     
     [self.view addSubview:mytable];
     
+    mysearch = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 60, DEVW, 40)];
+    
+    mysearch.delegate = self;
+    
+    [self.view addSubview:mysearch];
+    
+    footview = [[MJRefreshFooterView alloc]init];
+    footview.delegate = self;
+    footview.scrollView = mytable;
+    
+//    headview = [[MJRefreshHeaderView alloc]init];
+//    headview.delegate =self;
+//    headview.scrollView = mytable;
+
+    
 ////加载更多数据视图
 //    
-//    loadview = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVW, 40)];
+    loadview = [[UIView alloc]initWithFrame:CGRectMake(0, 0, DEVW, 40)];
 //    
-//    loadview.backgroundColor = [UIColor darkGrayColor];
+    loadview.backgroundColor = [UIColor whiteColor];
 //    
-//    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(0, 5, DEVW, 15)];
+    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(100, 5, DEVW, 15)];
 //    
-//    label.text = @"松开加载更多数据";
-//    label.tag = 1002;
+    label.text = @"正在加载";
+    label.tag = 1002;
 //    
-//    [loadview addSubview:label];
+   // [loadview addSubview:label];
 //    
 //    UILabel *timelabel = [[UILabel alloc]initWithFrame:CGRectMake(60, 22, 200, 15)];
 //    timelabel.text = [self gettimeNow];
@@ -68,12 +128,12 @@
 //    timelabel.font = [UIFont systemFontOfSize:12];
 //    timelabel.tag = 1003;
 //    
-//    UIActivityIndicatorView *action = [[UIActivityIndicatorView alloc]init];
-//    action.center = CGPointMake(160, 20);
-//    action.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
-//    action.color = [UIColor darkGrayColor];
-//    action.tag = 1004;
-//    [loadview addSubview:action];
+    UIActivityIndicatorView *action = [[UIActivityIndicatorView alloc]init];
+    action.center = CGPointMake(160, 20);
+    action.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+    action.color = [UIColor darkGrayColor];
+    action.tag = 1004;
+    [loadview addSubview:action];
     
   //  [self.view addSubview:loadview];
     
@@ -87,7 +147,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     
-    return [datalist count];
+    return [listarr count];
 }
 
 // Row display. Implementers should *always* try to reuse cells by setting each cell's reuseIdentifier and querying for available reusable cells with dequeueReusableCellWithIdentifier:
@@ -109,10 +169,10 @@
     [cell.contentView addSubview:namelabel];
     [cell.contentView addSubview:phonelabel];
     [cell.contentView addSubview:addresslabel];
-    namelabel.text = [[datalist objectAtIndex:indexPath.row]objectForKey:@"name"];
+    namelabel.text = [[listarr objectAtIndex:indexPath.row]objectForKey:@"name"];
     
-    phonelabel.text = [[datalist objectAtIndex:indexPath.row]objectForKey:@"tel"];
-    addresslabel.text = [[datalist objectAtIndex:indexPath.row]objectForKey:@"webAddress"];;
+    phonelabel.text = [[listarr objectAtIndex:indexPath.row]objectForKey:@"tel"];
+    addresslabel.text = [[listarr objectAtIndex:indexPath.row]objectForKey:@"webAddress"];;
     return cell;
 }
 -(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -125,20 +185,11 @@
 //}
 -(void)getdata
 {
-//    for(int i =0;i<10;i++)
-//    {
-//        MTContantPersonModel *model = [[MTContantPersonModel alloc]init];
-//        
-//        model.name = @"蔡跃春";
-//        
-//        model.address = @"高新大道589号";
-//        
-//        model.phonenum = @"13340116537";
-//        
-//        rowhei = 50;
-//        
-//        [datalist addObject:model];
-//    }
+    
+    
+    
+    NSLog(@"进入网络请求..........");
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     NSDictionary *userdic = [FuncPublic GetDefaultInfo:@"Newuser"];
     NSString *oid = [userdic objectForKey:@"organID"];
     NSString *ids = [userdic objectForKey:@"id"];
@@ -150,12 +201,26 @@
     [dcit setObject:_pid forKey:@"pid"];
     [dcit setObject:_cid forKey:@"cid"];
     [SVHTTPRequest GET:@"/api/contact/detail.html" parameters:dcit completion:^(id response, NSHTTPURLResponse *urlResponse, NSError *error) {
-         //NSMutableArray *arr = [[NSMutableArray alloc]init];
+      
         if ([[response objectForKey:@"status"]isEqualToString:@"true"]) {
            
-           
-                datalist = [response objectForKey:@"data"];
+            [dict setObject:[response objectForKey:@"data"] forKey:@"data"];
+            [dict setObject:_versions forKey:@"vers"];
+        
+          //  NSString *path = [Contranct strin
+            [FuncPublic saveDataToLocal:dict toFileName:[NSString stringWithFormat:@"%@/%@.txt",Contranct,_cid]];
             
+                datalist = [response objectForKey:@"data"];
+            if([datalist count]>10)
+            {
+            for(int i=0;i<rowsnum;i++)
+            {
+                NSDictionary *dic = [datalist objectAtIndex:i];
+                [listarr addObject:dic];
+            }
+            }
+            else
+                listarr = datalist;
             [mytable reloadData];
         }
         
@@ -173,6 +238,32 @@
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
+- (void)refreshViewBeginRefreshing:(MJRefreshBaseView *)refreshView
+{
+//    if(refreshView ==headview)
+//    {
+//        isRefreshing = YES;
+//        NSLog(@"刷新");
+//    }
+//    else if(refreshView==footview)
+//    {
+//        isRefreshing = NO;
+//        NSLog(@"加载");
+//    }
+    [self performSelector:@selector(refesshview:) withObject:refreshView afterDelay:2.0];
+}
+//刷新方法
+-(void)refesshview:(MJRefreshBaseView *)refersh
+{
+    if([datalist count]<10)
+    {
+        [refersh endRefreshing];
+        return;
+    }
+    
+    
+}
+
 #pragma mark loadmore
 -(NSString *)gettimeNow
 {
@@ -200,12 +291,16 @@
 //{
 //    NSLog(@"scorll did scroll.........");
 //    
-//    NSLog(@"偏移量:%f",scrollView.contentOffset.y);
-//    if(scrollView.contentOffset.y>100)
+//    NSLog(@"偏移量:%f",(scrollView.contentSize.height-scrollView.frame.size.height)+100);
+//    if(scrollView.contentOffset.y>(scrollView.contentSize.height-scrollView.frame.size.height)+100)
 //    {
 //        mytable.tableFooterView = loadview;
+//        UIActivityIndicatorView *action = (UIActivityIndicatorView *)[loadview viewWithTag:1004];
+//        [action startAnimating];
 //        //loadview.hidden = NO;
 //    }
+//    else
+//        mytable.tableFooterView = nil;
 //}
 //-(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
 //{

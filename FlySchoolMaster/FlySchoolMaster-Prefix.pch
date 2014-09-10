@@ -51,4 +51,5 @@
 #define PaGeCtrlCache @"UserPagecache.txt"
 #define UserAletInfo @"UserAlertInfo.txt"
 #define SharedData @"shareddata"
+#define Contranct @"Contranct"
 

@@ -111,7 +111,7 @@
     [dcit setObject:[FuncPublic createUUID] forKey:@"r"];
     
     [SVHTTPRequest GET:@"/api/contact/" parameters:dcit completion:^(id response, NSHTTPURLResponse *urlResponse, NSError *error) {
-        
+       // NSLog(@"请求的返回数据:%@",response);
         if([[response objectForKey:@"status"]isEqualToString:@"true"])
         {
             arr = [response objectForKey:@"data"];
@@ -323,6 +323,8 @@
         table.pid = [[arr objectAtIndex:indexPath.section]objectForKey:@"id"];
         
         table.cid = [[[[arr objectAtIndex:indexPath.section]objectForKey:@"childCate"]objectAtIndex:indexPath.row]objectForKey:@"id"];
+        
+        table.versions = [[[[arr objectAtIndex:indexPath.section]objectForKey:@"childCate"]objectAtIndex:indexPath.row]objectForKey:@"ver"];
     }
     else
     {
