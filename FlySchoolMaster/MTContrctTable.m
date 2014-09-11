@@ -65,6 +65,7 @@
         {
             
             datalist = [dict objectForKey:@"data"];
+           // NSLog(@"缓存的数据长度:%d",[datalist count]);
             if([datalist count]>10)
             {
                 for(int i=0;i<rowsnum;i++)
@@ -206,8 +207,8 @@
         [cell.contentView addSubview:dialnum];
         namelabel.text = [[listarr objectAtIndex:indexPath.row]objectForKey:@"name"];
         
-        phonelabel.text = [NSString stringWithFormat:@"%@",[[listarr objectAtIndex:indexPath.row]objectForKey:@"tel"]];
-        NSString *phoe = [[listarr objectAtIndex:indexPath.row]objectForKey:@"tel"];
+        phonelabel.text = [NSString stringWithFormat:@"%@",[[listarr objectAtIndex:indexPath.row]objectForKey:@"mobile"]];
+        NSString *phoe = [[listarr objectAtIndex:indexPath.row]objectForKey:@"mobile"];
         NSString *dialtext = @"☎️";
         // [dialnum setTitle:[NSString stringWithFormat:@"%@%@",dialtext,phoe] forState:UIControlStateNormal];
         addresslabel.text = [[listarr objectAtIndex:indexPath.row]objectForKey:@"address"];
@@ -217,7 +218,7 @@
 }
 -(void)dialnum:(UIButton *)sender
 {
-    NSString *number = [[listarr objectAtIndex:sender.tag]objectForKey:@"tel"];// 此处读入电话号码
+    NSString *number = [[listarr objectAtIndex:sender.tag]objectForKey:@"mobile"];// 此处读入电话号码
     NSString *numben = [[NSString alloc] initWithFormat:@"tel://%@",number]; //number为号码字符串 如果使用这个方法 结束电话之后会进入联系人列表
     [[UIApplication sharedApplication]openURL:[NSURL URLWithString:numben]];
 }
