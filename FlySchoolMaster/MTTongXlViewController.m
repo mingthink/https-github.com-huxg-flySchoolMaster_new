@@ -80,7 +80,9 @@
     
     UIButton *searchbut = [UIButton buttonWithType:UIButtonTypeCustom];
     
-    [searchbut setTitle:@"搜索" forState:UIControlStateNormal];
+    [searchbut setTitle:@"取消搜索" forState:UIControlStateNormal];
+    
+    searchbut.titleLabel.font = [UIFont systemFontOfSize:10];
     
     [searchbut setFrame:CGRectMake(DEVW-50, 60, 50, 40)];
     
@@ -379,8 +381,10 @@
 {
     [mysearch resignFirstResponder];
     
-    if(![mysearch.text isEqualToString:@""])
-        [self seachs];
+    seatable.hidden = YES;
+    
+//    if(![mysearch.text isEqualToString:@""])
+//        [self seachs];
 }
 -(void)seachs
 {
