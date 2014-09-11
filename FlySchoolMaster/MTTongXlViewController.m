@@ -82,9 +82,11 @@
     
     [searchbut setTitle:@"取消搜索" forState:UIControlStateNormal];
     
-    searchbut.titleLabel.font = [UIFont systemFontOfSize:10];
+    searchbut.titleLabel.font = [UIFont systemFontOfSize:12];
     
     [searchbut setFrame:CGRectMake(DEVW-50, 60, 50, 40)];
+    
+    [searchbut setBackgroundColor:[UIColor grayColor]];
     
     [self.view addSubview:searchbut];
     
@@ -275,7 +277,7 @@
         }
         else
         {
-            // cell.textLabel.text=@"";
+             cell.textLabel.text=@"";
         }
         
         return cell;
@@ -317,7 +319,10 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    UITableViewCell *cells = (UITableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     
+    if([cells.textLabel.text isEqual:@""])
+        return;
     MTContrctTable *table = [[MTContrctTable alloc]init];
     
     if(tableView==mytab)
@@ -327,12 +332,16 @@
         table.cid = [[[[arr objectAtIndex:indexPath.section]objectForKey:@"childCate"]objectAtIndex:indexPath.row]objectForKey:@"id"];
         
         table.versions = [[[[arr objectAtIndex:indexPath.section]objectForKey:@"childCate"]objectAtIndex:indexPath.row]objectForKey:@"ver"];
+        
+        table.titless = [[[[arr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"cateName"];
     }
     else
     {
         table.pid = [[searcharr objectAtIndex:indexPath.section]objectForKey:@"id"];
         
         table.cid = [[[[searcharr objectAtIndex:indexPath.section]objectForKey:@"childCate"]objectAtIndex:indexPath.row]objectForKey:@"id"];
+        
+        table.titless = [[searcharr objectAtIndex:indexPath.section]objectForKey:@"cateName"];
     }
     [self.navigationController pushViewController:table animated:NO];
 }
@@ -363,6 +372,7 @@
     v.backgroundColor = [UIColor grayColor];
     return v;
 }
+//tabelview headbutton clicks
 -(void)btnclick:(MTCustomBut * )btn
 {
     //  NSLog(@"btn clicked........");
@@ -376,7 +386,7 @@
         [mytab reloadSections:[NSIndexSet indexSetWithIndex:btn.asction] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 #pragma mark srachbar handel
-
+//search bar cancel button clicks
 -(void)srarchclick:(UIButton *)button
 {
     [mysearch resignFirstResponder];
