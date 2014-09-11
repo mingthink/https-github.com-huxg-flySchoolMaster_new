@@ -141,7 +141,8 @@
     {
         UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 40)];
         
-        v.backgroundColor = [UIColor redColor];
+        //v.backgroundColor = [UIColor colorWithRed:0. green:112. blue:112. alpha:1];
+        v.backgroundColor = [UIColor darkGrayColor];
         
         MTCustomBut *buttons = [[MTCustomBut alloc]initWithFrame:CGRectMake(0, 0, 200, 40)];
         
@@ -230,12 +231,24 @@
         UILabel *namelabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 10, 150, 20)];
         
         namelabel.font = [UIFont systemFontOfSize:13];
+        //dialed button
+        MTCustomBut *dianbut = [MTCustomBut buttonWithType:UIButtonTypeCustom];
+        
+        dianbut.frame = CGRectMake(240, 10, 30, 20);
+        
+        [dianbut setTitle:@"☎️" forState:UIControlStateNormal];
+        
+        dianbut.tag = indexPath.row;
+        
+        dianbut.asction = indexPath.section;
+        
+        [dianbut addTarget:self action:@selector(dianum:) forControlEvents:UIControlEventTouchUpInside];
         
         UILabel *phonenum = [[UILabel alloc]initWithFrame:CGRectMake(170, 10, 70, 20)];
         
         phonenum.font = [UIFont systemFontOfSize:12];
         
-        UILabel *telnum = [[UILabel alloc]initWithFrame:CGRectMake(250, 10, 70, 20)];
+        UILabel *telnum = [[UILabel alloc]initWithFrame:CGRectMake(270, 10, 50, 20)];
         
         telnum.font = [UIFont systemFontOfSize:10];
         
@@ -253,6 +266,8 @@
         [cell.contentView addSubview:namelabel];
         
         [cell.contentView addSubview:phonenum];
+        
+        [cell.contentView addSubview:dianbut];
         
         [cell.contentView addSubview:telnum];
         
@@ -273,11 +288,12 @@
             webaddress.text = [web stringByAppendingString:[[[[searcharr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"webAddress"]];
             
             telnum.text = [[[[searcharr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"tel"];
-            
+            dianbut.hidden = NO;
         }
         else
         {
              cell.textLabel.text=@"";
+            dianbut.hidden = YES;
         }
         
         return cell;
@@ -315,7 +331,14 @@
     
     
 }
-
+//拨打电话
+-(void)dianum:(MTCustomBut *)button
+{
+    
+    NSString *number = [[[[searcharr objectAtIndex:button.asction] objectForKey:@"childCate"]objectAtIndex:button.tag ]objectForKey:@"tel"];// 此处读入电话号码
+    NSString *numben = [[NSString alloc] initWithFormat:@"tel://%@",number]; //number为号码字符串 如果使用这个方法 结束电话之后会进入联系人列表
+    [[UIApplication sharedApplication]openURL:[NSURL URLWithString:numben]];
+}
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
