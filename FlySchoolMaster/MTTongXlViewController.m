@@ -1,4 +1,4 @@
-//
+//wqeq
 //  MTTongXlViewController.m
 //  FlySchoolMaster
 // sfsdfsdibds是东方酒店送 i 风景
@@ -289,7 +289,7 @@
     //        {
     //            cells = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellids];
     ////            for(UIView *v in cells.subviews)
-    ////            {
+    ////            {sss
     ////                [v removeFromSuperview];
     ////            }
     //
@@ -370,6 +370,7 @@
        // [ seatable reloadSections:[NSIndexSet indexSetWithIndex:btn.asction] withRowAnimation:UITableViewRowAnimationFade];
     // [mytab reloadData];
     else
+        
         [mytab reloadSections:[NSIndexSet indexSetWithIndex:btn.asction] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 #pragma mark srachbar handel

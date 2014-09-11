@@ -1047,6 +1047,7 @@
 		650C02C31946A61F0006E624 /* Class */ = {
 			isa = PBXGroup;
 			children = (
+				65D1905D19C13DE7000E8067 /* TongZhiGGClass */,
 				658E03FA19B936B000D08FEF /* TongXLClass */,
 				65F657B11999FC1A00829ED2 /* SetClass */,
 				65F657B01999FB7D00829ED2 /* ModelClass */,
@@ -1479,6 +1480,13 @@
 				65D08A9E197CB20B00738BA1 /* MTOTerViewController.xib */,
 			);
 			name = OTer;
+			sourceTree = "<group>";
+		};
+		65D1905D19C13DE7000E8067 /* TongZhiGGClass */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = TongZhiGGClass;
 			sourceTree = "<group>";
 		};
 		65F657B01999FB7D00829ED2 /* ModelClass */ = {

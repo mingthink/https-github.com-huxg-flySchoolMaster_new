@@ -1,4 +1,4 @@
-//  dddd
+//
 //  MTContrctTable.m
 //  FlySchoolMaster
 //
@@ -23,7 +23,8 @@
     float rowhei;
     UIView *loadview;
     UISearchBar *mysearch;
-    NSMutableArray *listarr;
+    NSMutableArray *listarr;//数据源
+    NSMutableArray *beforesearch;//搜索之前数据源的复制数据
     
     MJRefreshFooterView *footview;
    // MJRefreshHeaderView *headview;
@@ -44,12 +45,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NSLog(@"cid is ；%@",_cid);
+    beforesearch = [NSMutableArray array];
     pagenum=1;
-    num = 10;
+    num = 0;
     datalist = [NSMutableArray array];
     listarr = [NSMutableArray array];
     NSFileManager *FM = [NSFileManager defaultManager];
-    NSString *fielpaths = [NSHomeDirectory()stringByAppendingString:@"/Documents/FileDocuments"];
+    NSString *fielpaths = [NSHomeDirectory()stringByAppendingString:@"/Documents"];
     NSString *fullpath = [fielpaths stringByAppendingString:[NSString stringWithFormat:@"/%@/%@.txt",Contranct,_cid]];
    
     if([FM fileExistsAtPath:fullpath isDirectory:NO ])
@@ -57,7 +60,7 @@
         
         NSDictionary *dict = [[NSDictionary alloc]initWithContentsOfFile:fullpath];
         NSString *ves = [dict objectForKey:@"vers"];
-      //  NSLog(@"文件缓存路径:%@",ves);
+        NSLog(@"文件缓存路径:%@",ves);
         if([ves isEqualToString:_versions])
         {
             
@@ -96,15 +99,27 @@
     
     [self.view addSubview:mytable];
     
-    mysearch = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 60, DEVW-40, 40)];
+    mysearch = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 60, DEVW-60, 40)];
     
     mysearch.delegate = self;
     
     mysearch.placeholder = @"请输入关键字";
     
-    mysearch.showsCancelButton = YES;
+  //  mysearch.showsCancelButton = YES;
     
     [self.view addSubview:mysearch];
+    
+    UIButton *cancelbtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    cancelbtn.frame = CGRectMake(DEVW-60, 60, 60, 40);
+    
+    [cancelbtn setTitle:@"取消搜索" forState:UIControlStateNormal];
+    
+    cancelbtn.titleLabel.font = [UIFont systemFontOfSize:10];
+    
+    [cancelbtn addTarget:self action:@selector(cancelsearch:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.view addSubview:cancelbtn];
     
     footview = [[MJRefreshFooterView alloc]init];
     footview.delegate = self;
@@ -179,10 +194,10 @@
         [cell.contentView addSubview:phonelabel];
         [cell.contentView addSubview:addresslabel];
         [cell.contentView addSubview:web];
-        namelabel.text = [[datalist objectAtIndex:indexPath.row]objectForKey:@"name"];
+        namelabel.text = [[listarr objectAtIndex:indexPath.row]objectForKey:@"name"];
         
-        phonelabel.text = [NSString stringWithFormat:@"☎️%@",[[datalist objectAtIndex:indexPath.row]objectForKey:@"tel"]];
-        addresslabel.text = [[datalist objectAtIndex:indexPath.row]objectForKey:@"address"];
+        phonelabel.text = [NSString stringWithFormat:@"☎️%@",[[listarr objectAtIndex:indexPath.row]objectForKey:@"tel"]];
+        addresslabel.text = [[listarr objectAtIndex:indexPath.row]objectForKey:@"address"];
     }
     
     return cell;
@@ -220,8 +235,16 @@
             [dict setObject:_versions forKey:@"vers"];
         
           //  NSString *path = [Contranct strin
-            [FuncPublic saveDataToLocal:dict toFileName:[NSString stringWithFormat:@"%@/%@.txt",Contranct,_cid]];
             
+          //  [FuncPublic saveDataToLocal:dict toFileName:[NSString stringWithFormat:@"%@/%@.txt",Contranct,_cid]];
+            NSString *fielpaths = [NSHomeDirectory()stringByAppendingString:@"/Documents"];
+            NSString *dpath = [fielpaths stringByAppendingString:[NSString stringWithFormat:@"/%@",Contranct]];
+            NSString *fullpath = [fielpaths stringByAppendingString:[NSString stringWithFormat:@"/%@/%@.txt",Contranct,_cid]];
+            NSFileManager *fiel = [NSFileManager defaultManager];
+            [fiel createDirectoryAtPath:dpath withIntermediateDirectories:YES attributes:nil error:nil];
+            [fiel createFileAtPath:fullpath contents:nil attributes:nil];
+           // NSLog(@"缓存路径:%@",fullpath);
+            [dict writeToFile:fullpath atomically:NO];
                 datalist = [response objectForKey:@"data"];
             if([datalist count]>10)
             {
@@ -264,14 +287,41 @@
 //    }
     [self performSelector:@selector(refesshview:) withObject:refreshView afterDelay:2.0];
 }
+//取消搜索
+-(void)cancelsearch:(UIButton *)seneder
+{
+    NSLog(@"点击取消搜索...........");
+    if(isseach)
+    {
+        NSLog(@"进入此方法.................");
+    [mysearch resignFirstResponder];
+    
+    listarr = nil;
+    
+    listarr = [NSMutableArray arrayWithArray:beforesearch];
+   // listarr = beforesearch;
+    NSLog(@"取消搜索之后的数据源:%@",listarr);
+    [mytable reloadData];
+    
+    isseach = NO;
+    }
+    else
+        return;
+    
+    
+    
+}
 //刷新方法
 -(void)refesshview:(MJRefreshBaseView *)refersh
 {
-    
+    //处于搜索状态的加载
     if(isseach)
     {
-        
+        [self searches];
     }
+    
+    
+    //处于普通状态的加载
     else
     {
     if([datalist count]<=10)
@@ -281,13 +331,14 @@
     }
     else
     {
+        num = num+10;
         for(int i=num;i<num+rowsnum;i++)
         {
             if(i<=[datalist count]-1)
             {
             NSDictionary *dcic = [datalist objectAtIndex:i];
             [listarr addObject:dcic];
-                num=num+10;
+                
             }
            else
                 continue;
@@ -308,38 +359,71 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     [mysearch resignFirstResponder];
+    
+    isseach = YES;
+    beforesearch = [listarr copy];
+    
     [self searches];
 }
+//搜索事件
 -(void)searches
 {
    // NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     NSString *seachtext = mysearch.text;
+    
     seachtext = [seachtext stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
     NSDictionary *userdic = [FuncPublic GetDefaultInfo:@"Newuser"];
+    
     NSString *oid = [userdic objectForKey:@"organID"];
+    
     NSString *ids = [userdic objectForKey:@"id"];
+    
     NSMutableDictionary *dcit = [NSMutableDictionary dictionary];
+    
     [dcit setObject:oid  forKey:@"oid"];
+    
     [dcit setObject:ids forKey:@"uid"];
+    
     [dcit setObject:[FuncPublic getDvid] forKey:@"dvid"];
+    
     [dcit setObject:[FuncPublic createUUID] forKey:@"r"];
+    
     [dcit setObject:_pid forKey:@"pid"];
+    
     [dcit setObject:_cid forKey:@"cid"];
+    
     [dcit setObject:seachtext forKey:@"keyword"];
+    
     [dcit setObject:@"1" forKey:@"isDoPaging"];
+    
     [dcit setObject:[NSString stringWithFormat:@"%d",pagenum] forKey:@"page_number"];
+    
     [dcit setObject:@"10" forKey:@"txbPageSize"];
     NSLog(@"dict is :%@",dcit);
     [SVHTTPRequest POST:@"/api/contact/cateSearch.html" parameters:dcit completion:
      ^(id response, NSHTTPURLResponse *urlResponse, NSError *error) {
-          NSLog(@"搜索结果：------------------------------------%@",response);
+         // NSLog(@"搜索结果：------------------------------------%@",response);
          if([[response objectForKey:@"status"]isEqualToString:@"true"])
          {
+             if(pagenum==1)
+             {
              [listarr removeAllObjects];
+             
              listarr = nil;
+             
              listarr = [NSMutableArray array];
-             listarr = [response objectForKey:@"data"];
+             }
+             for(NSDictionary *dci in [response objectForKey:@"data"])
+             {
+                 [listarr addObject:dci];
+             }
+             
+           //  listarr = [response objectForKey:@"data"];
+           //  NSLog(@"搜索的数据源：%@",listarr);
              [mytable reloadData];
+             
+             pagenum++;
          }
        
     }];
