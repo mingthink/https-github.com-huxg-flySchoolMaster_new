@@ -10,6 +10,8 @@
 #import "MTCustomBut.h"
 #import "MTContrctTable.h"
 #import "SVHTTPRequest.h"
+#import "WToast.h"
+#define DEGREES_TO_RADIANS(d) (d * M_PI / 180)
 @interface MTTongXlViewController ()<UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate>
 {
     UITableView *mytab;
@@ -23,6 +25,7 @@
     NSMutableArray *headviewarr;
     NSMutableArray *buttonsarr;
     BOOL isseach;
+    CALayer *celllayer;
 }
 
 @end
@@ -82,7 +85,9 @@
     
     [searchbut setTitle:@"取消搜索" forState:UIControlStateNormal];
     
-    searchbut.titleLabel.font = [UIFont systemFontOfSize:10];
+    searchbut.titleLabel.font = [UIFont systemFontOfSize:12];
+    
+    searchbut.backgroundColor = [UIColor grayColor];
     
     [searchbut setFrame:CGRectMake(DEVW-50, 60, 50, 40)];
     
@@ -139,7 +144,7 @@
     {
         UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 40)];
         
-        v.backgroundColor = [UIColor redColor];
+        v.backgroundColor = [UIColor darkGrayColor];
         
         MTCustomBut *buttons = [[MTCustomBut alloc]initWithFrame:CGRectMake(0, 0, 200, 40)];
         
@@ -277,7 +282,7 @@
         {
             // cell.textLabel.text=@"";
         }
-        
+       
         return cell;
     }
     
@@ -313,7 +318,39 @@
     
     
 }
-
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+   // [self animationForIndexPath:indexPath];
+}
+- (void)animationForIndexPath:(NSIndexPath *)indexPath {
+    int row = indexPath.row;
+    float radians = (120 + row*30)%360;
+    radians = 20;
+    CALayer *layer = celllayer;
+    
+    // Rotation Animation
+    CABasicAnimation *animation  = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
+    animation.fromValue =@DEGREES_TO_RADIANS(radians);
+    animation.toValue = @DEGREES_TO_RADIANS(0);
+    
+    // Opacity Animation;
+    CABasicAnimation *fadeAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    fadeAnimation.fromValue = @0.1f;
+    fadeAnimation.toValue = @1.f;
+    
+    // Translation Animation
+    CABasicAnimation *translationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.translation.x"];
+    ;
+    translationAnimation.fromValue = @(-300.f * ((indexPath.row%2 == 0) ? -1: 1));
+    translationAnimation.toValue = @0.f;
+    
+    
+    CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
+    animationGroup.duration = 0.4f;
+    animationGroup.animations = @[animation,fadeAnimation,translationAnimation];
+    animationGroup.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    [layer addAnimation:animationGroup forKey:@"spinAnimation"];
+}
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -428,7 +465,10 @@
             [seatable reloadData];
         }
         else
+        {
             seatable.hidden = YES;
+            [WToast showWithText:[response objectForKey:@"msg"]];
+        }
         
     }];
 }

@@ -81,8 +81,8 @@
         
     }
     
-//    NSLog(@".....%@",dataList);
-//    if (dataList != NULL) {
+    //    NSLog(@".....%@",dataList);
+    //    if (dataList != NULL) {
     
     
     cell.textLabel.text = [[dataList objectAtIndex:indexPath.row]objectForKey:@"title"];
@@ -92,9 +92,9 @@
     lab.text = [[dataList objectAtIndex:indexPath.row] objectForKey:@"cateName"];
     [cell addSubview:lab];
     
-//    }
-//    else
-//        NSLog(@"nil");
+    //    }
+    //    else
+    //        NSLog(@"nil");
     return cell;
 }
 
@@ -123,7 +123,7 @@
     [dic setObject:@"10" forKey:@"txbPageSize"];
     [dic setObject:ID forKey:@"cid"];
     [dic setObject:[FuncPublic createUUID] forKey:@"r"];
-   // NSLog(@"uid is %@",userdic);
+    // NSLog(@"uid is %@",userdic);
     [SVHTTPRequest GET:@"/api/information/default.html" parameters:dic completion:^(id response, NSHTTPURLResponse *urlResponse, NSError *error) {
         dataList = [response objectForKey:@"data"];
         //NSLog(@"data is %@",dataList);
@@ -131,7 +131,7 @@
         NSLog(@"data is %@",dataList);
     }];
     
-
+    
 }
 -(void)getclassData
 {
@@ -142,28 +142,28 @@
     [dic setObject:[NSString stringWithFormat:@"%@",[userdic objectForKey:@"id"]] forKey:@"uid"];
     [dic setObject:[FuncPublic createUUID] forKey:@"r"];
     [SVHTTPRequest GET:@"/api/information/category.html" parameters:dic
- completion:^(id response, NSHTTPURLResponse *urlResponse, NSError *error) {
-     arrary = [response objectForKey:@"data"];
-     
-     view = [[UIImageView alloc]initWithFrame:CGRectMake(150, 92, 160, 30*arrary.count)];
-     //view.backgroundColor = [UIColor blackColor];
-     view.hidden = YES;
-     view.userInteractionEnabled = YES;
-    for (int i=0; i<arrary.count; i++) {
-        UIButton *button = [FuncPublic InstanceButton:@"setting_btn_bg" Ect:@"png" RECT:CGRectMake(0, i*28, 160, 30) AddView:view ViewController:self SEL_:@selector(click:) Kind:1 TAG:i];
-        [button setTitle:[NSString stringWithFormat:@"%@",[[arrary objectAtIndex:i] valueForKey:@"cateName"]] forState:UIControlStateNormal];
-//        button.tintColor = [UIColor blackColor];
-//        
-        button.contentHorizontalAlignment = 1;
-        
-    }
-     [self getList:[[arrary objectAtIndex:4]objectForKey:@"id"]];
-     [but setTitle:[NSString stringWithFormat:@"%@",[[arrary objectAtIndex:4]objectForKey:@"cateName"]] forState:UIControlStateNormal];
-     NSLog(@"id is%@",[[arrary objectAtIndex:0]objectForKey:@"id"]);
-     [self.view addSubview:view];
-     //[maintab reloadData];
- }];
-   
+            completion:^(id response, NSHTTPURLResponse *urlResponse, NSError *error) {
+                arrary = [response objectForKey:@"data"];
+                
+                view = [[UIImageView alloc]initWithFrame:CGRectMake(150, 92, 160, 30*arrary.count)];
+                //view.backgroundColor = [UIColor blackColor];
+                view.hidden = YES;
+                view.userInteractionEnabled = YES;
+                for (int i=0; i<arrary.count; i++) {
+                    UIButton *button = [FuncPublic InstanceButton:@"setting_btn_bg" Ect:@"png" RECT:CGRectMake(0, i*28, 160, 30) AddView:view ViewController:self SEL_:@selector(click:) Kind:1 TAG:i];
+                    [button setTitle:[NSString stringWithFormat:@"%@",[[arrary objectAtIndex:i] valueForKey:@"cateName"]] forState:UIControlStateNormal];
+                    //        button.tintColor = [UIColor blackColor];
+                    //
+                    button.contentHorizontalAlignment = 1;
+                    
+                }
+                [self getList:[[arrary objectAtIndex:4]objectForKey:@"id"]];
+                [but setTitle:[NSString stringWithFormat:@"%@",[[arrary objectAtIndex:4]objectForKey:@"cateName"]] forState:UIControlStateNormal];
+                NSLog(@"id is%@",[[arrary objectAtIndex:0]objectForKey:@"id"]);
+                [self.view addSubview:view];
+                //[maintab reloadData];
+            }];
+    
 }
 
 -(void)click:(UIButton*)sender
@@ -194,14 +194,14 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+ {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end
