@@ -59,16 +59,16 @@
         
     }
     [self performSelector:@selector(pushnext:) withObject:nil afterDelay:2];
-    if(![FuncPublic GetDefaultInfo:@"firstLauchss"])
-    {
-    [FuncPublic SaveDefaultInfo:@"No" Key:@"firstLauchss"];
-    [self performSelector:@selector(pushnext:) withObject:nil afterDelay:2];
-    }
-    else
-    {
-        [self performSelector:@selector(pushnext) withObject:nil afterDelay:2];
-    }
-    [self performSelector:@selector(pushnext:) withObject:nil afterDelay:2];
+//    if(![FuncPublic GetDefaultInfo:@"firstLauchss"])
+//    {
+//    [FuncPublic SaveDefaultInfo:@"No" Key:@"firstLauchss"];
+//    [self performSelector:@selector(pushnext:) withObject:nil afterDelay:2];
+//    }
+//    else
+//    {
+//        [self performSelector:@selector(pushnext) withObject:nil afterDelay:2];
+//    }
+   // [self performSelector:@selector(pushnext:) withObject:nil afterDelay:2];
 }
 //启动画面数据请求
 -(void)loaddata
