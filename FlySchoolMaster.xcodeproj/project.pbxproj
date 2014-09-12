@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		650314C219C1ACF700BCE0E7 /* 47.gif in Resources */ = {isa = PBXBuildFile; fileRef = 650314C119C1ACF700BCE0E7 /* 47.gif */; };
 		6503C93F19492F900051194A /* 未标题-1(1).png in Resources */ = {isa = PBXBuildFile; fileRef = 6503C93E19492F900051194A /* 未标题-1(1).png */; };
 		6503C942194939190051194A /* 未标题-36.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 6503C940194939190051194A /* 未标题-36.jpg */; };
 		6503C943194939190051194A /* 未标题-37.png in Resources */ = {isa = PBXBuildFile; fileRef = 6503C941194939190051194A /* 未标题-37.png */; };
@@ -85,6 +86,11 @@
 		650C03C21946D5290006E624 /* MTTabrViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 650C03C01946D5290006E624 /* MTTabrViewController.m */; };
 		650C03C31946D5290006E624 /* MTTabrViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 650C03C11946D5290006E624 /* MTTabrViewController.xib */; };
 		650C03C51946E58D0006E624 /* 底图.png in Resources */ = {isa = PBXBuildFile; fileRef = 650C03C41946E58D0006E624 /* 底图.png */; };
+		65155E1319C16D8A00518840 /* MTPublicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65155E1219C16D8A00518840 /* MTPublicViewController.m */; };
+		65155E1519C17E7900518840 /* 43.gif in Resources */ = {isa = PBXBuildFile; fileRef = 65155E1419C17E7900518840 /* 43.gif */; };
+		65155E1719C18F8D00518840 /* 08.gif in Resources */ = {isa = PBXBuildFile; fileRef = 65155E1619C18F8D00518840 /* 08.gif */; };
+		65155E1919C190CE00518840 /* setting_btn_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 65155E1819C190CE00518840 /* setting_btn_bg.png */; };
+		65155E1D19C1950900518840 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 65155E1C19C1950900518840 /* 1.png */; };
 		6519D633198F1B6D00B55F97 /* deleteTag.png in Resources */ = {isa = PBXBuildFile; fileRef = 6519D632198F1B6D00B55F97 /* deleteTag.png */; };
 		6519D635198F1C3D00B55F97 /* album_delete@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6519D634198F1C3D00B55F97 /* album_delete@2x.png */; };
 		652554901951127800E57A3D /* MTLINianGZViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6525548E1951127800E57A3D /* MTLINianGZViewController.m */; };
@@ -429,6 +435,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		650314C119C1ACF700BCE0E7 /* 47.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = 47.gif; sourceTree = "<group>"; };
 		6503C93E19492F900051194A /* 未标题-1(1).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "未标题-1(1).png"; sourceTree = "<group>"; };
 		6503C940194939190051194A /* 未标题-36.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "未标题-36.jpg"; sourceTree = "<group>"; };
 		6503C941194939190051194A /* 未标题-37.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "未标题-37.png"; sourceTree = "<group>"; };
@@ -548,6 +555,12 @@
 		650C03C01946D5290006E624 /* MTTabrViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTTabrViewController.m; sourceTree = "<group>"; };
 		650C03C11946D5290006E624 /* MTTabrViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MTTabrViewController.xib; sourceTree = "<group>"; };
 		650C03C41946E58D0006E624 /* 底图.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "底图.png"; sourceTree = "<group>"; };
+		65155E1119C16D8A00518840 /* MTPublicViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTPublicViewController.h; sourceTree = "<group>"; };
+		65155E1219C16D8A00518840 /* MTPublicViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTPublicViewController.m; sourceTree = "<group>"; };
+		65155E1419C17E7900518840 /* 43.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = 43.gif; sourceTree = "<group>"; };
+		65155E1619C18F8D00518840 /* 08.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = 08.gif; sourceTree = "<group>"; };
+		65155E1819C190CE00518840 /* setting_btn_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = setting_btn_bg.png; sourceTree = "<group>"; };
+		65155E1C19C1950900518840 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
 		6519D632198F1B6D00B55F97 /* deleteTag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = deleteTag.png; sourceTree = "<group>"; };
 		6519D634198F1C3D00B55F97 /* album_delete@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "album_delete@2x.png"; sourceTree = "<group>"; };
 		6525548D1951127800E57A3D /* MTLINianGZViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTLINianGZViewController.h; sourceTree = "<group>"; };
@@ -1178,6 +1191,11 @@
 		650C036C1946B0540006E624 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				650314C119C1ACF700BCE0E7 /* 47.gif */,
+				65155E1C19C1950900518840 /* 1.png */,
+				65155E1819C190CE00518840 /* setting_btn_bg.png */,
+				65155E1619C18F8D00518840 /* 08.gif */,
+				65155E1419C17E7900518840 /* 43.gif */,
 				658E03FE19B9396F00D08FEF /* 智慧校园登录 */,
 				65DB2E3B19AF1FA900071F36 /* myjs.js */,
 				65DB2E3219AED22900071F36 /* 4.jpg */,
@@ -1500,6 +1518,8 @@
 				650C03BA1946CE670006E624 /* MTMainViewController.h */,
 				650C03BB1946CE670006E624 /* MTMainViewController.m */,
 				650C03BC1946CE670006E624 /* MTMainViewController.xib */,
+				65155E1119C16D8A00518840 /* MTPublicViewController.h */,
+				65155E1219C16D8A00518840 /* MTPublicViewController.m */,
 				650C03AB1946CDE60006E624 /* MTZiYuanViewController.m */,
 				650C03AA1946CDE60006E624 /* MTZiYuanViewController.h */,
 				650C03AC1946CDE60006E624 /* MTZiYuanViewController.xib */,
@@ -1908,6 +1928,7 @@
 				658E040C19B9396F00D08FEF /* 密码.png in Resources */,
 				65CA747A199312FE00283351 /* y_118.png in Resources */,
 				65F9F17D194737D000DF1442 /* right.png in Resources */,
+				65155E1D19C1950900518840 /* 1.png in Resources */,
 				65F9F131194737D000DF1442 /* btn_ok.png in Resources */,
 				65F9F137194737D000DF1442 /* input_b.png in Resources */,
 				65F9F102194737D000DF1442 /* msg_icon_a@2x.png in Resources */,
@@ -1970,6 +1991,7 @@
 				65CA746E199312FE00283351 /* G_6_59.png in Resources */,
 				65F9F0F8194737D000DF1442 /* back_btn@2x.png in Resources */,
 				65F9F108194737D000DF1442 /* focus_a.png in Resources */,
+				650314C219C1ACF700BCE0E7 /* 47.gif in Resources */,
 				65409E2419483BCC008E9BA0 /* 未标题-26.png in Resources */,
 				65F9F114194737D000DF1442 /* m_cjpm.png in Resources */,
 				650C038D1946B0540006E624 /* main_search.png in Resources */,
@@ -2030,6 +2052,7 @@
 				65F9F144194737D000DF1442 /* lqqk_line@2x.png in Resources */,
 				65F9F148194737D000DF1442 /* play_stop@2x.png in Resources */,
 				65CA7468199312FE00283351 /* book.png in Resources */,
+				65155E1919C190CE00518840 /* setting_btn_bg.png in Resources */,
 				65F9F191194737D000DF1442 /* clear_check_b@2x.png in Resources */,
 				65409DFD1947F63B008E9BA0 /* MTStuListViewController.xib in Resources */,
 				653DF37B194E7A1000B66B76 /* MTStuDetailViewController.xib in Resources */,
@@ -2121,6 +2144,7 @@
 				65CA7461199312FE00283351 /* B_6_59.png in Resources */,
 				65F9F169194737D000DF1442 /* s_detail_b.png in Resources */,
 				65F9F13D194737D000DF1442 /* lqqk_bg.png in Resources */,
+				65155E1719C18F8D00518840 /* 08.gif in Resources */,
 				65F9F155194737D000DF1442 /* sound_bg.png in Resources */,
 				65F9F156194737D000DF1442 /* sound_bg@2x.png in Resources */,
 				65F9F17C194737D000DF1442 /* navi_setting@2x.png in Resources */,
@@ -2137,6 +2161,7 @@
 				6519D633198F1B6D00B55F97 /* deleteTag.png in Resources */,
 				65F9F146194737D000DF1442 /* play_a@2x.png in Resources */,
 				650C03881946B0540006E624 /* companylogo.png in Resources */,
+				65155E1519C17E7900518840 /* 43.gif in Resources */,
 				650C03BE1946CE670006E624 /* MTMainViewController.xib in Resources */,
 				6503C942194939190051194A /* 未标题-36.jpg in Resources */,
 				65F9F161194737D000DF1442 /* p_s_check.png in Resources */,
@@ -2249,6 +2274,7 @@
 				65409DE91947DD92008E9BA0 /* MJRefreshFooterView.m in Sources */,
 				65F9F02F19472D7900DF1442 /* MTGKZXViewController.m in Sources */,
 				65727A931988DF0B00D91B1D /* DaiNavigationTransition+AccessObject.m in Sources */,
+				65155E1319C16D8A00518840 /* MTPublicViewController.m in Sources */,
 				65094E3919BEDEA900FABA48 /* MTCustomViewCell.m in Sources */,
 				65F657AE1999FB6600829ED2 /* MTAppCenter.m in Sources */,
 				650C03AD1946CDE60006E624 /* MTZiYuanViewController.m in Sources */,

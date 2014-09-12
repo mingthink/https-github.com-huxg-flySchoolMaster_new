@@ -1,5 +1,5 @@
 //
-//  main.mfbfdb
+//  main.m
 //  FlySchoolMaster
 //
 //  Created by caiyc on 14-6-10.

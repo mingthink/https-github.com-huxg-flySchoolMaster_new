@@ -4,7 +4,7 @@
 //
 //  Created by caiyc on 14-6-10.
 //  Copyright (c) 2014年 MingThink. All rights reserved.
-//
+// sdsdas
 
 #import "MTMainViewController.h"
 #import "SVHTTPRequest.h"
@@ -28,7 +28,7 @@
 #import "MTPageModel.h"
 #import "MTMyWebView.h"
 #import "MTTongXlViewController.h"
-
+#import "MTPublicViewController.h"
 #define Duration 0.2
 #define WIDTH  60
 #define HIGHT  60
@@ -38,6 +38,7 @@
 #define BTNWIDTH  WIDTH - TAGH
 #define BTNHIGHT  HIGHT - TAGH
 #define userinfor @"userset.list"
+//kdjkdjsa
 @interface MTMainViewController ()<UIScrollViewDelegate>
 {
     UIPageControl *mypage;
@@ -620,6 +621,11 @@
         MTGKZSViewController * vii = [[MTGKZSViewController alloc]init];
         
         [self.navigationController pushViewController:vii animated:NO];
+    }
+    if ([data.name isEqualToString:@"公示栏"]) {
+        MTPublicViewController *vii = [[MTPublicViewController alloc]init];
+        [self.navigationController pushViewController:vii animated:NO];
+        NSLog(@"come in..");
     }
     if([data.name isEqualToString:@"历年高招"])
     {
@@ -1242,5 +1248,7 @@
 -(void)dealloc
 {
     
+}
+- (IBAction)as:(id)sender {
 }
 @end

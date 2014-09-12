@@ -82,11 +82,9 @@
     
     [searchbut setTitle:@"取消搜索" forState:UIControlStateNormal];
     
-    searchbut.titleLabel.font = [UIFont systemFontOfSize:12];
+    searchbut.titleLabel.font = [UIFont systemFontOfSize:10];
     
     [searchbut setFrame:CGRectMake(DEVW-50, 60, 50, 40)];
-    
-    [searchbut setBackgroundColor:[UIColor grayColor]];
     
     [self.view addSubview:searchbut];
     
@@ -141,8 +139,7 @@
     {
         UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 40)];
         
-        //v.backgroundColor = [UIColor colorWithRed:0. green:112. blue:112. alpha:1];
-        v.backgroundColor = [UIColor darkGrayColor];
+        v.backgroundColor = [UIColor redColor];
         
         MTCustomBut *buttons = [[MTCustomBut alloc]initWithFrame:CGRectMake(0, 0, 200, 40)];
         
@@ -231,24 +228,12 @@
         UILabel *namelabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 10, 150, 20)];
         
         namelabel.font = [UIFont systemFontOfSize:13];
-        //dialed button
-        MTCustomBut *dianbut = [MTCustomBut buttonWithType:UIButtonTypeCustom];
-        
-        dianbut.frame = CGRectMake(240, 10, 30, 20);
-        
-        [dianbut setTitle:@"☎️" forState:UIControlStateNormal];
-        
-        dianbut.tag = indexPath.row;
-        
-        dianbut.asction = indexPath.section;
-        
-        [dianbut addTarget:self action:@selector(dianum:) forControlEvents:UIControlEventTouchUpInside];
         
         UILabel *phonenum = [[UILabel alloc]initWithFrame:CGRectMake(170, 10, 70, 20)];
         
         phonenum.font = [UIFont systemFontOfSize:12];
         
-        UILabel *telnum = [[UILabel alloc]initWithFrame:CGRectMake(270, 10, 50, 20)];
+        UILabel *telnum = [[UILabel alloc]initWithFrame:CGRectMake(250, 10, 70, 20)];
         
         telnum.font = [UIFont systemFontOfSize:10];
         
@@ -266,8 +251,6 @@
         [cell.contentView addSubview:namelabel];
         
         [cell.contentView addSubview:phonenum];
-        
-        [cell.contentView addSubview:dianbut];
         
         [cell.contentView addSubview:telnum];
         
@@ -288,12 +271,11 @@
             webaddress.text = [web stringByAppendingString:[[[[searcharr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"webAddress"]];
             
             telnum.text = [[[[searcharr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"tel"];
-            dianbut.hidden = NO;
+            
         }
         else
         {
-             cell.textLabel.text=@"";
-            dianbut.hidden = YES;
+            // cell.textLabel.text=@"";
         }
         
         return cell;
@@ -331,21 +313,11 @@
     
     
 }
-//拨打电话
--(void)dianum:(MTCustomBut *)button
-{
-    
-    NSString *number = [[[[searcharr objectAtIndex:button.asction] objectForKey:@"childCate"]objectAtIndex:button.tag ]objectForKey:@"tel"];// 此处读入电话号码
-    NSString *numben = [[NSString alloc] initWithFormat:@"tel://%@",number]; //number为号码字符串 如果使用这个方法 结束电话之后会进入联系人列表
-    [[UIApplication sharedApplication]openURL:[NSURL URLWithString:numben]];
-}
+
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    UITableViewCell *cells = (UITableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     
-    if([cells.textLabel.text isEqual:@""])
-        return;
     MTContrctTable *table = [[MTContrctTable alloc]init];
     
     if(tableView==mytab)
@@ -355,16 +327,12 @@
         table.cid = [[[[arr objectAtIndex:indexPath.section]objectForKey:@"childCate"]objectAtIndex:indexPath.row]objectForKey:@"id"];
         
         table.versions = [[[[arr objectAtIndex:indexPath.section]objectForKey:@"childCate"]objectAtIndex:indexPath.row]objectForKey:@"ver"];
-        
-        table.titless = [[[[arr objectAtIndex:indexPath.section] objectForKey:@"childCate"]objectAtIndex:indexPath.row ]objectForKey:@"cateName"];
     }
     else
     {
         table.pid = [[searcharr objectAtIndex:indexPath.section]objectForKey:@"id"];
         
         table.cid = [[[[searcharr objectAtIndex:indexPath.section]objectForKey:@"childCate"]objectAtIndex:indexPath.row]objectForKey:@"id"];
-        
-        table.titless = [[searcharr objectAtIndex:indexPath.section]objectForKey:@"cateName"];
     }
     [self.navigationController pushViewController:table animated:NO];
 }
@@ -395,7 +363,6 @@
     v.backgroundColor = [UIColor grayColor];
     return v;
 }
-//tabelview headbutton clicks
 -(void)btnclick:(MTCustomBut * )btn
 {
     //  NSLog(@"btn clicked........");
@@ -409,7 +376,7 @@
         [mytab reloadSections:[NSIndexSet indexSetWithIndex:btn.asction] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 #pragma mark srachbar handel
-//search bar cancel button clicks
+
 -(void)srarchclick:(UIButton *)button
 {
     [mysearch resignFirstResponder];
