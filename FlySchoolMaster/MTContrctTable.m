@@ -11,6 +11,7 @@
 #import "SVHTTPRequest.h"
 #import "MJRefresh.h"
 #import "MJRefreshBaseView.h"
+#import "WToast.h"
 #define rowsnum 10
 @interface MTContrctTable ()<UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate,UISearchBarDelegate,MJRefreshBaseViewDelegate>
 
@@ -289,7 +290,7 @@
             addresslabel.text = [[listarr objectAtIndex:indexPath.row]objectForKey:@"address"];
         }
     }
-    
+    cell.backgroundColor = [UIColor colorWithRed:229./255 green:229./255 blue:229./255 alpha:1];
     return cell;
 }
 -(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -451,12 +452,20 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     [mysearch resignFirstResponder];
+    if(mysearch.text.length<2)
+    {
+        [WToast showWithText:@"请输入两个以上关键字"];
+        return;
+    }
+    else{
+    
     
     isseach = YES;
     isloadmore = NO;
     // beforesearch = [listarr copy];
     
     [self searches];
+    }
 }
 //搜索事件
 -(void)searches

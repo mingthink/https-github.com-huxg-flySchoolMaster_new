@@ -10,6 +10,7 @@
 #import "MTCustomBut.h"
 #import "MTContrctTable.h"
 #import "SVHTTPRequest.h"
+#define DEGREES_TO_RADIANS(d) (d * M_PI / 180)
 @interface MTTongXlViewController ()<UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate>
 {
     UITableView *mytab;
@@ -23,6 +24,7 @@
     NSMutableArray *headviewarr;
     NSMutableArray *buttonsarr;
     BOOL isseach;
+    CALayer *celllayer;
 }
 
 @end
@@ -279,7 +281,7 @@
         {
             // cell.textLabel.text=@"";
         }
-        
+       
         return cell;
     }
     
@@ -315,7 +317,39 @@
     
     
 }
-
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+   // [self animationForIndexPath:indexPath];
+}
+- (void)animationForIndexPath:(NSIndexPath *)indexPath {
+    int row = indexPath.row;
+    float radians = (120 + row*30)%360;
+    radians = 20;
+    CALayer *layer = celllayer;
+    
+    // Rotation Animation
+    CABasicAnimation *animation  = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
+    animation.fromValue =@DEGREES_TO_RADIANS(radians);
+    animation.toValue = @DEGREES_TO_RADIANS(0);
+    
+    // Opacity Animation;
+    CABasicAnimation *fadeAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    fadeAnimation.fromValue = @0.1f;
+    fadeAnimation.toValue = @1.f;
+    
+    // Translation Animation
+    CABasicAnimation *translationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.translation.x"];
+    ;
+    translationAnimation.fromValue = @(-300.f * ((indexPath.row%2 == 0) ? -1: 1));
+    translationAnimation.toValue = @0.f;
+    
+    
+    CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
+    animationGroup.duration = 0.4f;
+    animationGroup.animations = @[animation,fadeAnimation,translationAnimation];
+    animationGroup.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    [layer addAnimation:animationGroup forKey:@"spinAnimation"];
+}
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
