@@ -10,6 +10,7 @@
 #import "MTCustomBut.h"
 #import "MTContrctTable.h"
 #import "SVHTTPRequest.h"
+#import "WToast.h"
 #define DEGREES_TO_RADIANS(d) (d * M_PI / 180)
 @interface MTTongXlViewController ()<UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate>
 {
@@ -464,7 +465,10 @@
             [seatable reloadData];
         }
         else
+        {
             seatable.hidden = YES;
+            [WToast showWithText:[response objectForKey:@"msg"]];
+        }
         
     }];
 }

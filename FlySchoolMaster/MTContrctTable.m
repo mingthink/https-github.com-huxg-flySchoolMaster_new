@@ -452,12 +452,12 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     [mysearch resignFirstResponder];
-    if(mysearch.text.length<2)
-    {
-        [WToast showWithText:@"请输入两个以上关键字"];
-        return;
-    }
-    else{
+//    if(mysearch.text.length<2)
+//    {
+//        [WToast showWithText:@"请输入两个以上关键字"];
+//        return;
+//    }
+//    else{
     
     
     isseach = YES;
@@ -465,7 +465,7 @@
     // beforesearch = [listarr copy];
     
     [self searches];
-    }
+//    }
 }
 //搜索事件
 -(void)searches
@@ -507,7 +507,15 @@
     [SVHTTPRequest POST:@"/api/contact/cateSearch.html" parameters:dcit completion:
      ^(id response, NSHTTPURLResponse *urlResponse, NSError *error) {
          [[FuncPublic SharedFuncPublic]StopActivityAnimation];
+         if(error!=nil)
+         {
+             return ;
+         }
          
+          if ([[response objectForKey:@"status"]isEqualToString:@"false"])
+         {
+             [WToast showWithText:[response objectForKey:@"msg"]];
+         }
          NSLog(@"搜索结果：------------------------------------%@",response);
          if([[response objectForKey:@"status"]isEqualToString:@"true"])
          {
