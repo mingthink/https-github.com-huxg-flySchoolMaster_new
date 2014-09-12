@@ -18,7 +18,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization萨萨说
+        // Custom initialization萨萨说sss
     }
     return self;
 }
