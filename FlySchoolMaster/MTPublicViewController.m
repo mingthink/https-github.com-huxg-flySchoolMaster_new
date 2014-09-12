@@ -8,6 +8,7 @@
 
 #import "MTPublicViewController.h"
 #import "SVHTTPRequest.h"
+#import "MTDetailViewController.h"
 @interface MTPublicViewController ()<UITableViewDataSource,UITableViewDelegate>
 {
     NSMutableArray *arrary;
@@ -179,6 +180,11 @@
     [self getList:classID];
 }
 
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    MTDetailViewController *vii = [[MTDetailViewController alloc]init];
+    [self.navigationController pushViewController:vii animated:NO];
+}
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [but resignFirstResponder];

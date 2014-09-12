@@ -91,6 +91,7 @@
 		65155E1719C18F8D00518840 /* 08.gif in Resources */ = {isa = PBXBuildFile; fileRef = 65155E1619C18F8D00518840 /* 08.gif */; };
 		65155E1919C190CE00518840 /* setting_btn_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 65155E1819C190CE00518840 /* setting_btn_bg.png */; };
 		65155E1D19C1950900518840 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 65155E1C19C1950900518840 /* 1.png */; };
+		6516812A19C2CDE100069113 /* MTDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6516812919C2CDE100069113 /* MTDetailViewController.m */; };
 		6519D633198F1B6D00B55F97 /* deleteTag.png in Resources */ = {isa = PBXBuildFile; fileRef = 6519D632198F1B6D00B55F97 /* deleteTag.png */; };
 		6519D635198F1C3D00B55F97 /* album_delete@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6519D634198F1C3D00B55F97 /* album_delete@2x.png */; };
 		652554901951127800E57A3D /* MTLINianGZViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6525548E1951127800E57A3D /* MTLINianGZViewController.m */; };
@@ -561,6 +562,8 @@
 		65155E1619C18F8D00518840 /* 08.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = 08.gif; sourceTree = "<group>"; };
 		65155E1819C190CE00518840 /* setting_btn_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = setting_btn_bg.png; sourceTree = "<group>"; };
 		65155E1C19C1950900518840 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
+		6516812819C2CDE100069113 /* MTDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTDetailViewController.h; sourceTree = "<group>"; };
+		6516812919C2CDE100069113 /* MTDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTDetailViewController.m; sourceTree = "<group>"; };
 		6519D632198F1B6D00B55F97 /* deleteTag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = deleteTag.png; sourceTree = "<group>"; };
 		6519D634198F1C3D00B55F97 /* album_delete@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "album_delete@2x.png"; sourceTree = "<group>"; };
 		6525548D1951127800E57A3D /* MTLINianGZViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTLINianGZViewController.h; sourceTree = "<group>"; };
@@ -1520,6 +1523,8 @@
 				650C03BC1946CE670006E624 /* MTMainViewController.xib */,
 				65155E1119C16D8A00518840 /* MTPublicViewController.h */,
 				65155E1219C16D8A00518840 /* MTPublicViewController.m */,
+				6516812819C2CDE100069113 /* MTDetailViewController.h */,
+				6516812919C2CDE100069113 /* MTDetailViewController.m */,
 				650C03AB1946CDE60006E624 /* MTZiYuanViewController.m */,
 				650C03AA1946CDE60006E624 /* MTZiYuanViewController.h */,
 				650C03AC1946CDE60006E624 /* MTZiYuanViewController.xib */,
@@ -2305,6 +2310,7 @@
 				6597BCEF1992170000D87DB6 /* MTPageModel.m in Sources */,
 				65DB2E3A19AF10B500071F36 /* MTMyWebView.m in Sources */,
 				650C02C71946A6440006E624 /* FuncPublic.m in Sources */,
+				6516812A19C2CDE100069113 /* MTDetailViewController.m in Sources */,
 				652554901951127800E57A3D /* MTLINianGZViewController.m in Sources */,
 				65727A971988DF0B00D91B1D /* DispatchTimer.m in Sources */,
 				65D08A95197C976A00738BA1 /* FMDatabase.m in Sources */,
