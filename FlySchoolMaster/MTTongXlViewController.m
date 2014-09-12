@@ -82,7 +82,9 @@
     
     [searchbut setTitle:@"取消搜索" forState:UIControlStateNormal];
     
-    searchbut.titleLabel.font = [UIFont systemFontOfSize:10];
+    searchbut.titleLabel.font = [UIFont systemFontOfSize:12];
+    
+    searchbut.backgroundColor = [UIColor grayColor];
     
     [searchbut setFrame:CGRectMake(DEVW-50, 60, 50, 40)];
     
@@ -139,7 +141,7 @@
     {
         UIView *v = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 40)];
         
-        v.backgroundColor = [UIColor redColor];
+        v.backgroundColor = [UIColor darkGrayColor];
         
         MTCustomBut *buttons = [[MTCustomBut alloc]initWithFrame:CGRectMake(0, 0, 200, 40)];
         
